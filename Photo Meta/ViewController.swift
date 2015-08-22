@@ -10,6 +10,10 @@ import Cocoa
 
 class ViewController: NSViewController {
 
+  @IBAction func openFileDialog(sender: NSButton) {
+    choosePath()
+  }
+  
   override func viewDidLoad() {
     super.viewDidLoad()
     
@@ -22,6 +26,27 @@ class ViewController: NSViewController {
     }
   }
 
-
+  func choosePath() {
+    
+    var myOpenDialog: NSOpenPanel = NSOpenPanel()
+    myOpenDialog.canChooseDirectories = true
+    myOpenDialog.runModal()
+    
+    // Get the path to the file chosen in the NSOpenPanel
+    var path = myOpenDialog.URL?.path
+    
+    // Make sure that a path was chosen
+    if (path != nil) {
+      var err = NSError?()
+      
+      println(path)
+      let runner = ExifToolRunner()
+      runner.runTool(path!)
+      
+     if !(err != nil) {
+        NSLog(path!)
+     }
+    }
+  }
 }
 

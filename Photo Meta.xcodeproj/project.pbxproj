@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		DD2118A51B884E4E0030745C /* ExifToolRunner.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD2118A41B884E4E0030745C /* ExifToolRunner.swift */; };
 		DDBA7A091B83E8B500CB49A3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDBA7A081B83E8B500CB49A3 /* AppDelegate.swift */; };
 		DDBA7A0B1B83E8B500CB49A3 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDBA7A0A1B83E8B500CB49A3 /* ViewController.swift */; };
 		DDBA7A0D1B83E8B500CB49A3 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DDBA7A0C1B83E8B500CB49A3 /* Images.xcassets */; };
@@ -25,6 +26,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		DD2118A41B884E4E0030745C /* ExifToolRunner.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExifToolRunner.swift; sourceTree = "<group>"; };
 		DDBA7A031B83E8B500CB49A3 /* Photo Meta.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Photo Meta.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DDBA7A071B83E8B500CB49A3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DDBA7A081B83E8B500CB49A3 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -80,6 +82,7 @@
 				DDBA7A0C1B83E8B500CB49A3 /* Images.xcassets */,
 				DDBA7A0E1B83E8B500CB49A3 /* Main.storyboard */,
 				DDBA7A061B83E8B500CB49A3 /* Supporting Files */,
+				DD2118A41B884E4E0030745C /* ExifToolRunner.swift */,
 			);
 			path = "Photo Meta";
 			sourceTree = "<group>";
@@ -208,6 +211,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DD2118A51B884E4E0030745C /* ExifToolRunner.swift in Sources */,
 				DDBA7A0B1B83E8B500CB49A3 /* ViewController.swift in Sources */,
 				DDBA7A091B83E8B500CB49A3 /* AppDelegate.swift in Sources */,
 			);
@@ -397,6 +401,7 @@
 				DDBA7A211B83E8B500CB49A3 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		DDBA7A221B83E8B500CB49A3 /* Build configuration list for PBXNativeTarget "Photo MetaTests" */ = {
 			isa = XCConfigurationList;
@@ -405,6 +410,7 @@
 				DDBA7A241B83E8B500CB49A3 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
