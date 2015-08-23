@@ -37,7 +37,6 @@ class ExifToolRunner: NSObject {
     // Pipe the standard out to an NSPipe
     let pipe = NSPipe()
     task.standardOutput = pipe
-    // @todo Works with async?
     task.standardError = pipe
     
     if synchronous {
@@ -64,12 +63,6 @@ class ExifToolRunner: NSObject {
     
     // Set up the observer function
     NSNotificationCenter.defaultCenter().addObserver(observer, selector: selector, name:"NSFileHandleDataAvailableNotification", object: fh)
-
-    // You can also set a function to fire after the task terminates
-    task.terminationHandler = {task -> Void in
-      // Handle the task ending here
-      NSNotificationCenter.defaultCenter().removeObserver(self)
-    }
     
     task.launch()
   }
