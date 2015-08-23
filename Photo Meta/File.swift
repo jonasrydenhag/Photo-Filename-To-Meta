@@ -21,7 +21,20 @@ class File {
   }
   
   func process (tags: [Tag]) {
-    println(runner.titleFor(self))
+    for tag in tags {
+      var output: String
+      
+      switch tag.name {
+      case Tag.TitleTag:
+        output = runner.titleFor(self)
+      case Tag.DateTag:
+        output = runner.dateFor(self)
+      default:
+        output = ""
+      }
+      
+      println(output)
+    }
   }
   
   static func fileTypeConfomsTo(inPath: String, types: [CFString!]) -> Bool {

@@ -64,7 +64,7 @@ class ViewController: NSViewController {
       if fileManager.fileExistsAtPath(path, isDirectory:&isDir) && !isDir {
         if File.fileTypeConfomsTo(path, types: [kUTTypeJPEG, kUTTypeGIF, kUTTypeTIFF]) {
           let file = File(fileURL: URL, runner: exifToolRunner)
-          file.process([Tag(name: "title")])
+          file.process([Tag(name: Tag.TitleTag), Tag(name: Tag.DateTag)])
         }
       }
     }

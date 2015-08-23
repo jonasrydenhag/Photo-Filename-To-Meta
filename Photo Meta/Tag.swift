@@ -10,6 +10,9 @@ import Foundation
 
 class Tag {
   
+  static let TitleTag = "title"
+  static let DateTag = "date"
+  
   private (set) var name: String
   
   init(name: String) {

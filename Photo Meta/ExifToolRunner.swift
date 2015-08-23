@@ -18,6 +18,10 @@ class ExifToolRunner: NSObject {
     return run(file.path, arguments: ["-title", "-s3"], synchronous: true);
   }
   
+  func dateFor(file: File) -> String {
+    return run(file.path, arguments: ["-dateTimeOriginal", "-s3"], synchronous: true);
+  }
+  
   private func run(path: String, arguments: [String], synchronous: Bool = false) -> String {
     var defaultArgs = Array<String>()
     
