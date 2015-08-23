@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		DD11F4B41B89830F008B14B3 /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD11F4B31B89830F008B14B3 /* File.swift */; };
 		DD2118A51B884E4E0030745C /* ExifToolRunner.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD2118A41B884E4E0030745C /* ExifToolRunner.swift */; };
 		DDBA7A091B83E8B500CB49A3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDBA7A081B83E8B500CB49A3 /* AppDelegate.swift */; };
 		DDBA7A0B1B83E8B500CB49A3 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDBA7A0A1B83E8B500CB49A3 /* ViewController.swift */; };
@@ -26,6 +27,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		DD11F4B31B89830F008B14B3 /* File.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = File.swift; sourceTree = "<group>"; };
 		DD2118A41B884E4E0030745C /* ExifToolRunner.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExifToolRunner.swift; sourceTree = "<group>"; };
 		DDBA7A031B83E8B500CB49A3 /* Photo Meta.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Photo Meta.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DDBA7A071B83E8B500CB49A3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -56,6 +58,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		DD11F4B21B89829B008B14B3 /* Library */ = {
+			isa = PBXGroup;
+			children = (
+				DD2118A41B884E4E0030745C /* ExifToolRunner.swift */,
+				DD11F4B31B89830F008B14B3 /* File.swift */,
+			);
+			name = Library;
+			sourceTree = "<group>";
+		};
 		DDBA79FA1B83E8B500CB49A3 = {
 			isa = PBXGroup;
 			children = (
@@ -81,8 +92,8 @@
 				DDBA7A0A1B83E8B500CB49A3 /* ViewController.swift */,
 				DDBA7A0C1B83E8B500CB49A3 /* Images.xcassets */,
 				DDBA7A0E1B83E8B500CB49A3 /* Main.storyboard */,
+				DD11F4B21B89829B008B14B3 /* Library */,
 				DDBA7A061B83E8B500CB49A3 /* Supporting Files */,
-				DD2118A41B884E4E0030745C /* ExifToolRunner.swift */,
 			);
 			path = "Photo Meta";
 			sourceTree = "<group>";
@@ -212,6 +223,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				DD2118A51B884E4E0030745C /* ExifToolRunner.swift in Sources */,
+				DD11F4B41B89830F008B14B3 /* File.swift in Sources */,
 				DDBA7A0B1B83E8B500CB49A3 /* ViewController.swift in Sources */,
 				DDBA7A091B83E8B500CB49A3 /* AppDelegate.swift in Sources */,
 			);
