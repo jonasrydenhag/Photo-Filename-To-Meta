@@ -10,20 +10,56 @@ import Foundation
 
 class ExifToolRunner: NSObject {
   
-  func runTool(path: String) {
+  let exifToolPath = "/usr/local/bin/exiftool"
+  
+  let ignoreMinorErrors = true
+  
+  func titleFor(file: File) -> String {
+    return run(file.path, arguments: ["-title", "-s3"], synchronous: true);
+  }
+  
+  private func run(path: String, arguments: [String], synchronous: Bool = false) -> String {
+    var defaultArgs = Array<String>()
+    
+    if ignoreMinorErrors {
+      defaultArgs.append("-m")
+    }
+    
     // Setup the task
     let task = NSTask()
-    task.launchPath = "/Users/jonas/Library/Mobile Documents/com~apple~CloudDocs/Projekt/Foto meta projekt/photo.sh"
-    task.arguments = ["-p /usr/local/bin/exiftool", path]
-    
-    // Pipe the standard out to an NSPipe, and set it to notify us when it gets data
+    task.launchPath = exifToolPath
+    task.arguments = defaultArgs + arguments + [path]
+
+    // Pipe the standard out to an NSPipe
     let pipe = NSPipe()
     task.standardOutput = pipe
+    // @todo Works with async?
+    task.standardError = pipe
+    
+    if synchronous {
+      return runSynchronous(task, pipe: pipe)
+      
+    } else {
+      runAsynchronous(task, pipe: pipe, observer: self, selector: "receivedData:")
+      return ""
+    }
+  }
+  
+  private func runSynchronous(task: NSTask, pipe: NSPipe) -> String {
+    task.launch()
+  
+    let data: NSData = pipe.fileHandleForReading.readDataToEndOfFile()
+    task.waitUntilExit()
+    
+    return NSString(data: data, encoding: NSUTF8StringEncoding) as! String
+  }
+  
+  private func runAsynchronous(task: NSTask, pipe: NSPipe, observer: AnyObject, selector: Selector) {
     let fh = pipe.fileHandleForReading
     fh.waitForDataInBackgroundAndNotify()
     
     // Set up the observer function
-    NSNotificationCenter.defaultCenter().addObserver(self, selector: "receivedData:", name:"NSFileHandleDataAvailableNotification", object: fh)
+    NSNotificationCenter.defaultCenter().addObserver(observer, selector: selector, name:"NSFileHandleDataAvailableNotification", object: fh)
 
     // You can also set a function to fire after the task terminates
     task.terminationHandler = {task -> Void in
@@ -47,5 +83,18 @@ class ExifToolRunner: NSObject {
       let string = NSString(data: data, encoding: NSASCIIStringEncoding)
       println(string!)
     }
+  }
+  
+  func runPhotoScript(path: String) {
+    // Setup the task
+    let task = NSTask()
+    task.launchPath = "/Users/jonas/Library/Mobile Documents/com~apple~CloudDocs/Projekt/Foto meta projekt/photo.sh"
+    task.arguments = ["-p \(exifToolPath)", path]
+    
+    // Pipe the standard out to an NSPipe, and set it to notify us when it gets data
+    let pipe = NSPipe()
+    task.standardOutput = pipe
+    
+    runAsynchronous(task, pipe: pipe, observer: self, selector: "receivedData:")
   }
 }

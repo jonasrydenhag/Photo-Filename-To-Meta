@@ -14,6 +14,7 @@
 		DDBA7A0D1B83E8B500CB49A3 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DDBA7A0C1B83E8B500CB49A3 /* Images.xcassets */; };
 		DDBA7A101B83E8B500CB49A3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DDBA7A0E1B83E8B500CB49A3 /* Main.storyboard */; };
 		DDBA7A1C1B83E8B500CB49A3 /* Photo_MetaTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDBA7A1B1B83E8B500CB49A3 /* Photo_MetaTests.swift */; };
+		DDF7324B1B89B5BF002BE282 /* Tag.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDF7324A1B89B5BF002BE282 /* Tag.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -38,6 +39,7 @@
 		DDBA7A151B83E8B500CB49A3 /* Photo MetaTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Photo MetaTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DDBA7A1A1B83E8B500CB49A3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DDBA7A1B1B83E8B500CB49A3 /* Photo_MetaTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Photo_MetaTests.swift; sourceTree = "<group>"; };
+		DDF7324A1B89B5BF002BE282 /* Tag.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tag.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -63,6 +65,7 @@
 			children = (
 				DD2118A41B884E4E0030745C /* ExifToolRunner.swift */,
 				DD11F4B31B89830F008B14B3 /* File.swift */,
+				DDF7324A1B89B5BF002BE282 /* Tag.swift */,
 			);
 			name = Library;
 			sourceTree = "<group>";
@@ -224,6 +227,7 @@
 			files = (
 				DD2118A51B884E4E0030745C /* ExifToolRunner.swift in Sources */,
 				DD11F4B41B89830F008B14B3 /* File.swift in Sources */,
+				DDF7324B1B89B5BF002BE282 /* Tag.swift in Sources */,
 				DDBA7A0B1B83E8B500CB49A3 /* ViewController.swift in Sources */,
 				DDBA7A091B83E8B500CB49A3 /* AppDelegate.swift in Sources */,
 			);

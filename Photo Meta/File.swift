@@ -20,8 +20,8 @@ class File {
     self.runner = runner
   }
   
-  func process () {
-    runner.runTool(path)
+  func process (tags: [Tag]) {
+    println(runner.titleFor(self))
   }
   
   static func fileTypeConfomsTo(inPath: String, types: [CFString!]) -> Bool {
