@@ -12,10 +12,11 @@ class Tag {
   
   static let TitleTag = "title"
   static let DateTag = "date"
-  
   private (set) var name: String
+  var value: String
   
   init(name: String) {
     self.name = name
+    self.value = ""
   }
 }

@@ -12,28 +12,176 @@ class File {
   
   private (set) var URL: NSURL
   private (set) var path: String
+  var fileName: String {
+    get {
+      return extractTitle()
+    }
+  }
+  let dateFormatter = NSDateFormatter()
   var runner: ExifToolRunner
   
   init(fileURL: NSURL, runner: ExifToolRunner) {
     self.URL = fileURL
     self.path = fileURL.path!
     self.runner = runner
+    dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+    extractDate()
   }
   
-  func process (tags: [Tag]) {
+  func process(tags: [Tag], force: Bool = true) {
+    var writeTags = Array<Tag>()
+    
     for tag in tags {
       var output: String
       
-      switch tag.name {
-      case Tag.TitleTag:
-        output = runner.titleFor(self)
-      case Tag.DateTag:
-        output = runner.dateFor(self)
-      default:
-        output = ""
+      var write = true
+      if !force && runner.valueFor(tag, file: self) != "" {
+         write = false;
+      } else {
+        switch tag.name {
+        case Tag.TitleTag:
+          let title = extractTitle()
+          
+          if title != "" {
+            tag.value = title
+            writeTags.append(tag)
+          }
+        case Tag.DateTag:
+          if let date = extractDate() {
+            tag.value = dateFormatter.stringFromDate(date)
+            writeTags.append(tag)
+          }
+        default:
+          continue
+        }
+      }
+    }
+    
+    // @todo Check if any tags
+    runner.write(writeTags, file: self)
+  }
+  
+  private func extractTitle() -> String {
+      return path.lastPathComponent.stringByDeletingPathExtension
+  }
+  
+  private func extractDate() -> NSDate? {
+    let regex = NSRegularExpression(pattern:"[0-9][0-9?][0-9?][0-9?]-[0-1?][0-9?]-[0-3?][0-9?]-*[0-9]*[0-9]*", options:nil, error:nil)!
+    
+    let results = regex.matchesInString(fileName,
+      options: nil, range: NSMakeRange(0, (fileName as NSString).length))
+      as! [NSTextCheckingResult]
+    let dates = map(results) { (self.fileName as NSString).substringWithRange($0.range)}
+    
+    if let firstDate = dates.first {
+      if count(firstDate) < 10 {
+        return nil
+      }
+      let formattedDate = "\(formatYear(firstDate))-\(formatMonth(firstDate))-\(formatDay(firstDate)) 00:00:\(formatEnumerator(firstDate))";
+      
+      return dateFormatter.dateFromString(formattedDate)
+      
+    } else {
+      return nil
+    }
+
+  }
+  
+  private func formatYear(fullDate: String) -> String {
+    let yearCand = (fullDate as NSString).substringWithRange(NSRange(location: 0, length: 4))
+    var year = ""
+    
+    var stringPos = 0;
+    for char in yearCand {
+      if char == "?" {
+        switch stringPos {
+        case 0:
+          year += "1"
+        case 1:
+          year += "9"
+        default:
+          year += "0"
+        }
+      } else {
+        year.append(char)
       }
       
-      println(output)
+      stringPos++
+    }
+    
+    return year
+  }
+  
+  private func formatMonth(fullDate: String) -> String {
+    let monthCand = (fullDate as NSString).substringWithRange(NSRange(location: 5, length: 2))
+    var month = ""
+    
+    var stringPos = 0;
+    for char in monthCand {
+      if char == "?" {
+        switch stringPos {
+        case 1:
+          month += "1"
+        default:
+          month += "0"
+        }
+      } else if stringPos == 1 && char == "0" {
+          month += "1"
+      } else {
+        month.append(char)
+      }
+      
+      stringPos++
+    }
+    
+    return month
+  }
+  
+  private func formatDay(fullDate: String) -> String {
+    let dayCand = (fullDate as NSString).substringWithRange(NSRange(location: 8, length: 2))
+    var day = ""
+    
+    var stringPos = 0;
+    for char in dayCand {
+      if char == "?" {
+        switch stringPos {
+        case 1:
+          day += "1"
+        default:
+          day += "0"
+        }
+      } else if stringPos == 1 && char == "0" {
+          day += "1"
+      } else {
+        day.append(char)
+      }
+      
+      stringPos++
+    }
+    
+    return day
+  }
+  
+  private func formatEnumerator(fullDate: String) -> String {
+    if count(fullDate) < 13 {
+      return "00"
+      
+    } else {
+      let enumCand = (fullDate as NSString).substringWithRange(NSRange(location: 11, length: 2))
+      var enumResult = ""
+      
+      var stringPos = 0;
+      for char in enumCand {
+        if char == "?" {
+            enumResult += "0"
+        } else {
+          enumResult.append(char)
+        }
+        
+        stringPos++
+      }
+      
+      return enumResult
     }
   }
   

@@ -14,12 +14,58 @@ class ExifToolRunner: NSObject {
   
   let ignoreMinorErrors = true
   
+  func valueFor(tag: Tag, file: File) -> String {
+      switch tag.name {
+      case Tag.TitleTag:
+        return titleFor(file)
+      case Tag.DateTag:
+        return dateFor(file)
+      default:
+        return ""
+      }
+  }
+  
   func titleFor(file: File) -> String {
     return run(file.path, arguments: ["-title", "-s3"], synchronous: true);
   }
   
   func dateFor(file: File) -> String {
     return run(file.path, arguments: ["-dateTimeOriginal", "-s3"], synchronous: true);
+  }
+  
+  func write(tags: [Tag], file: File) {
+    var defaultArgs = ["-overwrite_original"]
+    var tagsArgs = Array<String>()
+    
+    for tag in tags {
+      switch tag.name {
+      case Tag.TitleTag:
+        tagsArgs += writeTitleArgs(tag.value)
+      case Tag.DateTag:
+        tagsArgs += writeDateArgs(tag.value)
+      default: ()
+      }
+    }
+    
+    run(file.path, arguments: tagsArgs + defaultArgs, synchronous: true);
+  }
+  
+  private func writeTitleArgs(title: String) -> [String] {
+    let tag = "-title"
+    if title == "" {
+      return ["\(tag)="]
+    } else {
+      return ["\(tag)=\(title)"]
+    }
+  }
+  
+  private func writeDateArgs(date: String) -> [String] {
+    let tag = "-dateTimeOriginal"
+    if date == "" {
+      return ["\(tag)="]
+    } else {
+      return ["\(tag)=\(date)"]
+    }
   }
   
   private func run(path: String, arguments: [String], synchronous: Bool = false) -> String {
@@ -78,7 +124,6 @@ class ExifToolRunner: NSObject {
       fh.waitForDataInBackgroundAndNotify()
       // Convert the data into a string
       let string = NSString(data: data, encoding: NSASCIIStringEncoding)
-      println(string!)
     }
   }
   
