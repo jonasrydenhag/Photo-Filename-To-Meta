@@ -19,6 +19,8 @@ class File {
   }
   let dateFormatter = NSDateFormatter()
   var runner: ExifToolRunner
+  var kept = Array<Tag>()
+  var extractionFailed = Array<Tag>()
   
   init(fileURL: NSURL, runner: ExifToolRunner) {
     self.URL = fileURL
@@ -30,30 +32,38 @@ class File {
   
   func process(tags: [Tag], keepExistingTags: Bool = true, overwriteFile: Bool = false) {
     var writeTags = Array<Tag>()
+    kept = Array<Tag>()
+    extractionFailed = Array<Tag>()
     
     for tag in tags {
       var output: String
       
       var write = true
       if keepExistingTags && runner.valueFor(tag, file: self) != "" {
-         write = false;
-      } else {
-        switch tag.name {
-        case Tag.TitleTag:
-          let title = extractTitle()
-          
-          if title != "" {
-            tag.value = title
-            writeTags.append(tag)
-          }
-        case Tag.DateTag:
-          if let date = extractDate() {
-            tag.value = dateFormatter.stringFromDate(date)
-            writeTags.append(tag)
-          }
-        default:
-          continue
+        write = false;
+        kept.append(tag)
+        continue
+      }
+      
+      switch tag.name {
+      case Tag.TitleTag:
+        let title = extractTitle()
+        
+        if title != "" {
+          tag.value = title
+          writeTags.append(tag)
+        } else {
+          extractionFailed.append(tag)
         }
+      case Tag.DateTag:
+        if let date = extractDate() {
+          tag.value = dateFormatter.stringFromDate(date)
+          writeTags.append(tag)
+        } else {
+          extractionFailed.append(tag)
+        }
+      default:
+        continue
       }
     }
     
