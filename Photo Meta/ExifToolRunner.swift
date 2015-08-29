@@ -14,6 +14,8 @@ class ExifToolRunner: NSObject {
   
   let ignoreMinorErrors = true
   
+  let supportedFileTypes: [CFString!] = [kUTTypeJPEG, kUTTypeGIF, kUTTypeTIFF]
+  
   func valueFor(tag: Tag, file: File) -> String {
       switch tag.name {
       case Tag.TitleTag:

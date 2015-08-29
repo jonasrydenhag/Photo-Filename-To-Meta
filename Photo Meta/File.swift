@@ -12,6 +12,7 @@ class File {
   
   private (set) var URL: NSURL
   private (set) var path: String
+  private (set) var valid: Bool = false
   var fileName: String {
     get {
       return extractTitle()
@@ -26,6 +27,7 @@ class File {
     self.URL = fileURL
     self.path = fileURL.path!
     self.runner = runner
+    self.valid = self.fileTypeConformsTo(runner.supportedFileTypes)
     dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
     extractDate()
   }
@@ -194,8 +196,8 @@ class File {
     }
   }
   
-  static func fileTypeConfomsTo(inPath: String, types: [CFString!]) -> Bool {
-    let pathExtension = inPath.pathExtension
+  private func fileTypeConformsTo(types: [CFString!]) -> Bool {
+    let pathExtension = path.pathExtension
     let fileUTI: Unmanaged<CFString>! = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, pathExtension, nil)
     let fileUTICF: CFString! = fileUTI.takeRetainedValue()
     
