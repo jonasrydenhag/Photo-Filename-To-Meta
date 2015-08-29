@@ -28,11 +28,11 @@ class ExifToolRunner: NSObject {
   }
   
   func titleFor(file: File) -> String {
-    return run(file.path, arguments: ["-title", "-s3"], synchronous: true);
+    return run(file.path, arguments: ["-title", "-s3"], synchronous: true).stringByReplacingOccurrencesOfString("\\n*", withString: "", options: .RegularExpressionSearch)
   }
   
   func dateFor(file: File) -> String {
-    return run(file.path, arguments: ["-dateTimeOriginal", "-s3"], synchronous: true);
+    return run(file.path, arguments: ["-dateTimeOriginal", "-s3"], synchronous: true).stringByReplacingOccurrencesOfString("\\n*", withString: "", options: .RegularExpressionSearch)
   }
   
   func write(tags: [Tag], file: File, overwriteFile: Bool = false) {

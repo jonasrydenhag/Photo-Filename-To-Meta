@@ -21,6 +21,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
   private var reportObjects: [File] = []
   private var pathUrl: NSURL = NSURL()
   private var pathUrlIsDir: ObjCBool = false
+  private var keepExistingTags = true
   
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -67,10 +68,10 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
   func processFile(URL: NSURL) {
     if let path: String = URL.path {
       var isDir: ObjCBool = false
-      if fileManager.fileExistsAtPath(path, isDirectory:&isDir) && !isDir {
+      if fileManager.fileExistsAtPath(path, isDirectory:&isDir) && !isDir && path.lastPathComponent != ".DS_Store" {
         let file = File(fileURL: URL, runner: exifToolRunner)
         if file.valid {
-          file.process([Tag(name: Tag.TitleTag), Tag(name: Tag.DateTag)], keepExistingTags: false, overwriteFile: true)
+          file.process([Tag(name: Tag.TitleTag), Tag(name: Tag.DateTag)], keepExistingTags: keepExistingTags, overwriteFile: true)
         }
         self.reportObjects.append(file)
         self.tableView.reloadData()
@@ -85,28 +86,53 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
   }
   
   func tableView(tableView: NSTableView, viewForTableColumn tableColumn: NSTableColumn?, row: Int) -> NSView? {
-    var cellView = tableView.makeViewWithIdentifier("cell", owner: self) as! NSTableCellView
+    var cellView: NSTableCellView!
+    var text = ""
     
     if self.reportObjects.count > row {
       var file = self.reportObjects[row]
-      var path: String = file.path
       
-      if pathUrlIsDir {
-        path = file.path.stringByReplacingOccurrencesOfString(pathUrl.path! + "/", withString: "", options: NSStringCompareOptions.LiteralSearch, range: nil)
+      if let columnID = tableColumn?.identifier {
+        if columnID == "path" {
+          cellView = tableView.makeViewWithIdentifier("pathCell", owner: self) as! NSTableCellView
+          text = file.path
+          if pathUrlIsDir {
+            text = file.path.stringByReplacingOccurrencesOfString(pathUrl.path! + "/", withString: "", options: NSStringCompareOptions.LiteralSearch, range: nil)
+            
+          } else {
+            text = file.path.lastPathComponent
+          }
+          
+        } else if columnID == "date" {
+          cellView = tableView.makeViewWithIdentifier("dateCell", owner: self) as! NSTableCellView
+          if !keepExistingTags {
+            tableColumn?.hidden = true
+          } else {
+            if file.originalTagValues[Tag.DateTag] != nil {
+              text = file.originalTagValues[Tag.DateTag]!
+            }
+          }
+          
+        } else if columnID == "title" {
+          cellView = tableView.makeViewWithIdentifier("titleCell", owner: self) as! NSTableCellView
+          if !keepExistingTags {
+            tableColumn?.hidden = true
+          } else {
+            if file.originalTagValues[Tag.TitleTag] != nil {
+              text = file.originalTagValues[Tag.TitleTag]!
+            }
+          }
+        }
         
-      } else {
-        path = file.path.lastPathComponent.stringByDeletingPathExtension
-      }
-      
-      cellView.textField!.stringValue = path
-      
-      if !file.valid {
-        cellView.textField!.textColor = NSColor.redColor()
-      } else {
-        cellView.textField!.textColor = nil
+        cellView.textField?.stringValue = text
+        
+        if !file.valid {
+          cellView.textField?.textColor = NSColor.redColor()
+        } else {
+          cellView.textField?.textColor = nil
+        }
       }
     }
-    
     
     return cellView
   }

@@ -13,6 +13,7 @@ class File {
   private (set) var URL: NSURL
   private (set) var path: String
   private (set) var valid: Bool = false
+  private (set) var originalTagValues: [String : String] = [String : String]()
   var fileName: String {
     get {
       return extractTitle()
@@ -41,7 +42,7 @@ class File {
       var output: String
       
       var write = true
-      if keepExistingTags && runner.valueFor(tag, file: self) != "" {
+      if keepExistingTags && originalValueFor(tag) != "" {
         write = false;
         kept.append(tag)
         continue
@@ -70,6 +71,13 @@ class File {
     }
     
     runner.write(writeTags, file: self, overwriteFile: overwriteFile)
+  }
+  
+  private func originalValueFor(tag: Tag) -> String {
+    if originalTagValues[tag.name] == nil {
+      originalTagValues[tag.name] = runner.valueFor(tag, file: self)
+    }
+    return originalTagValues[tag.name]!
   }
   
   private func extractTitle() -> String {
