@@ -33,9 +33,13 @@ class ExifToolRunner: NSObject {
     return run(file.path, arguments: ["-dateTimeOriginal", "-s3"], synchronous: true);
   }
   
-  func write(tags: [Tag], file: File) {
-    var defaultArgs = ["-overwrite_original"]
+  func write(tags: [Tag], file: File, overwriteFile: Bool = false) {
+    var defaultArgs = Array<String>()
     var tagsArgs = Array<String>()
+    
+    if overwriteFile {
+      defaultArgs.append("-overwrite_original")
+    }
     
     for tag in tags {
       switch tag.name {
@@ -47,7 +51,9 @@ class ExifToolRunner: NSObject {
       }
     }
     
-    run(file.path, arguments: tagsArgs + defaultArgs, synchronous: true);
+    if tagsArgs.count > 0 {
+      run(file.path, arguments: tagsArgs + defaultArgs, synchronous: true);
+    }
   }
   
   private func writeTitleArgs(title: String) -> [String] {

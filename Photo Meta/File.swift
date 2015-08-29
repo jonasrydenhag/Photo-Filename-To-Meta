@@ -28,14 +28,14 @@ class File {
     extractDate()
   }
   
-  func process(tags: [Tag], force: Bool = true) {
+  func process(tags: [Tag], keepExistingTags: Bool = true, overwriteFile: Bool = false) {
     var writeTags = Array<Tag>()
     
     for tag in tags {
       var output: String
       
       var write = true
-      if !force && runner.valueFor(tag, file: self) != "" {
+      if keepExistingTags && runner.valueFor(tag, file: self) != "" {
          write = false;
       } else {
         switch tag.name {
@@ -57,8 +57,7 @@ class File {
       }
     }
     
-    // @todo Check if any tags
-    runner.write(writeTags, file: self)
+    runner.write(writeTags, file: self, overwriteFile: overwriteFile)
   }
   
   private func extractTitle() -> String {
