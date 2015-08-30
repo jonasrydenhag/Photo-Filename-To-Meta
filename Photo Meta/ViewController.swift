@@ -97,6 +97,18 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
           cellView = tableView.makeViewWithIdentifier("enumCell", owner: self) as! NSTableCellView
           text = "\(row + 1)"
           
+        } else if columnID == "status" {
+          cellView = tableView.makeViewWithIdentifier("statusCell", owner: self) as! NSTableCellView
+          if !file.valid {
+            cellView.textField?.backgroundColor = NSColor.grayColor()
+            
+          } else if keepExistingTags && file.originalTagValues.count > 0 {
+            cellView.textField?.backgroundColor = NSColor.yellowColor()
+            
+          } else {
+            cellView.textField?.backgroundColor = NSColor.greenColor()
+          }
+          
         } else if columnID == "path" {
           cellView = tableView.makeViewWithIdentifier("pathCell", owner: self) as! NSTableCellView
           text = file.path
@@ -135,7 +147,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
         cellView.textField?.stringValue = text
         
         if !file.valid {
-          cellView.textField?.textColor = NSColor.redColor()
+          cellView.textField?.textColor = NSColor.grayColor()
         } else {
           cellView.textField?.textColor = nil
         }
