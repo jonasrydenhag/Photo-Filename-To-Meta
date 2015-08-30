@@ -133,7 +133,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     }
     
     for tagName in kept.keys {
-      overwrite(kept[tagName]!, tags: [Tag(name: tagName)])
+      overwrite(kept[tagName]!, tag: Tag(name: tagName))
     }
   }
   
@@ -169,11 +169,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
   // MARK: - Table View
   
   func tableObjects() -> [File] {
-    if runMode {
-      return processedFiles
-    } else {
-      return filesInUrl
-    }
+    return runMode ? processedFiles : filesInUrl
   }
   
   func numberOfRowsInTableView(tableView: NSTableView) -> Int {
@@ -243,17 +239,18 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
   
   // MARK: - Alert
   
-  func overwrite(files: [File], tags: [Tag]) {
+  func overwrite(files: [File], tag: Tag) {
     var alert = NSAlert()
     alert.addButtonWithTitle("Yes")
     alert.addButtonWithTitle("No")
-    alert.messageText = "Existing tags"
-    alert.informativeText = "Want to overwrite"
+    alert.messageText = "Existing values for the \(tag.name) tag"
+    var fileEnum = (files.count == 1) ? "file" : "files"
+    alert.informativeText = "\(files.count) \(fileEnum) already have a values. Do you want to overwrite?"
     alert.alertStyle = NSAlertStyle.InformationalAlertStyle
     
     let result = alert.runModal()
     if result == NSAlertFirstButtonReturn {
-      run(files, tags: tags, keepExistingTags: false, process: false)
+      run(files, tags: [tag], keepExistingTags: false, process: false)
     }
   }
 }
