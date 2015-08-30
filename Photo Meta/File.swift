@@ -76,6 +76,7 @@ class File {
   }
   
   func deleteValueFor(tags: [Tag], overwriteFile: Bool = false) {
+    kept = Array<Tag>()
     runner.deleteValueFor(tags, file: self, overwriteFile: overwriteFile)
     for tag in tags {
       tagValues[tag.name] = nil
