@@ -93,7 +93,11 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
       var file = self.reportObjects[row]
       
       if let columnID = tableColumn?.identifier {
-        if columnID == "path" {
+        if columnID == "enum" {
+          cellView = tableView.makeViewWithIdentifier("enumCell", owner: self) as! NSTableCellView
+          text = "\(row + 1)"
+          
+        } else if columnID == "path" {
           cellView = tableView.makeViewWithIdentifier("pathCell", owner: self) as! NSTableCellView
           text = file.path
           if pathUrlIsDir {
@@ -107,7 +111,9 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
           cellView = tableView.makeViewWithIdentifier("dateCell", owner: self) as! NSTableCellView
           if !keepExistingTags {
             tableColumn?.hidden = true
+            
           } else {
+            tableColumn?.hidden = false
             if file.originalTagValues[Tag.DateTag] != nil {
               text = file.originalTagValues[Tag.DateTag]!
             }
@@ -117,7 +123,9 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
           cellView = tableView.makeViewWithIdentifier("titleCell", owner: self) as! NSTableCellView
           if !keepExistingTags {
             tableColumn?.hidden = true
+            
           } else {
+            tableColumn?.hidden = false
             if file.originalTagValues[Tag.TitleTag] != nil {
               text = file.originalTagValues[Tag.TitleTag]!
             }
