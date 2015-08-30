@@ -33,7 +33,7 @@ class File {
     extractDate()
   }
   
-  func process(tags: [Tag], keepExistingTags: Bool = true, overwriteFile: Bool = false) {
+  func write(tags: [Tag], keepExistingTags: Bool = true, overwriteFile: Bool = false) {
     var writeTags = Array<Tag>()
     kept = Array<Tag>()
     extractionFailed = Array<Tag>()
@@ -71,6 +71,10 @@ class File {
     }
     
     runner.write(writeTags, file: self, overwriteFile: overwriteFile)
+  }
+  
+  func deleteValueFor(tags: [Tag], overwriteFile: Bool = false) {
+    runner.deleteValueFor(tags, file: self, overwriteFile: overwriteFile)
   }
   
   private func originalValueFor(tag: Tag) -> String {

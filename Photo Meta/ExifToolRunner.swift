@@ -58,6 +58,13 @@ class ExifToolRunner: NSObject {
     }
   }
   
+  func deleteValueFor(tags: [Tag], file: File, overwriteFile: Bool = false) {
+    for tag in tags {
+      tag.value = ""
+    }
+    write(tags, file: file, overwriteFile: overwriteFile)
+  }
+  
   private func writeTitleArgs(title: String) -> [String] {
     let tag = "-title"
     if title == "" {

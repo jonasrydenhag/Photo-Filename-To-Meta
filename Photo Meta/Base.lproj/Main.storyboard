@@ -679,7 +679,7 @@
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowSizeStyle="automatic" headerView="Y6s-aC-B5m" viewBased="YES" id="0xu-QC-DLK">
-                                            <rect key="frame" x="0.0" y="0.0" width="532" height="0.0"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="613" height="0.0"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <animations/>
                                             <size key="intercellSpacing" width="3" height="2"/>
@@ -904,7 +904,7 @@
                                     <constraint firstAttribute="width" constant="70" id="fZo-H8-ZMJ"/>
                                 </constraints>
                                 <animations/>
-                                <buttonCell key="cell" type="push" title="Button" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="Oq2-7g-xJh">
+                                <buttonCell key="cell" type="push" title="Select" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="Oq2-7g-xJh">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
@@ -912,9 +912,32 @@
                                     <action selector="openFileDialog:" target="XfG-lQ-9wD" id="g0v-uZ-fir"/>
                                 </connections>
                             </button>
+                            <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="O1U-Rk-jRC">
+                                <rect key="frame" x="164" y="352" width="82" height="32"/>
+                                <animations/>
+                                <buttonCell key="cell" type="push" title="Run" bezelStyle="rounded" alignment="center" enabled="NO" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="Mnt-eO-scU">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="run:" target="XfG-lQ-9wD" id="hyP-W1-Uzh"/>
+                                </connections>
+                            </button>
+                            <button ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="jCU-rl-zMw">
+                                <rect key="frame" x="536" y="364" width="61" height="18"/>
+                                <animations/>
+                                <buttonCell key="cell" type="check" title="Delete tags" bezelStyle="regularSquare" imagePosition="left" inset="2" id="B4p-c3-Yey">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="deleteCheck:" target="XfG-lQ-9wD" id="2wd-A3-77m"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <constraints>
                             <constraint firstAttribute="trailing" secondItem="cpI-pk-UO1" secondAttribute="trailing" constant="20" symbolic="YES" id="7qs-ux-4cQ"/>
+                            <constraint firstItem="jCU-rl-zMw" firstAttribute="leading" secondItem="cpI-pk-UO1" secondAttribute="trailing" constant="-92" id="LGK-Wx-0yq"/>
                             <constraint firstItem="o9i-5T-F3N" firstAttribute="top" secondItem="m2S-Jp-Qdl" secondAttribute="top" constant="20" symbolic="YES" id="NbX-Zm-5mi"/>
                             <constraint firstAttribute="bottom" secondItem="cpI-pk-UO1" secondAttribute="bottom" constant="60" id="VsA-eI-kwn"/>
                             <constraint firstItem="o9i-5T-F3N" firstAttribute="leading" secondItem="m2S-Jp-Qdl" secondAttribute="leading" constant="20" symbolic="YES" id="k5W-HF-Zm7"/>
@@ -924,6 +947,7 @@
                         <animations/>
                     </view>
                     <connections>
+                        <outlet property="runBtn" destination="O1U-Rk-jRC" id="b5z-4D-JPA"/>
                         <outlet property="tableView" destination="0xu-QC-DLK" id="rK8-KW-SGY"/>
                     </connections>
                 </viewController>
