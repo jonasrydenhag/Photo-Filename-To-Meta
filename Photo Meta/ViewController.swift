@@ -12,6 +12,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
 
   @IBOutlet weak var tableView: NSTableView!
   @IBOutlet weak var runBtn: NSButton!
+  @IBOutlet weak var deleteCheckBtn: NSButton!
   
   @IBAction func openFileDialog(sender: NSButton) {
     choosePath()
@@ -25,21 +26,25 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     deleteTags = (sender.state == NSOnState)
   }
   
-  private let fileManager = NSFileManager.defaultManager()
   private let exifToolRunner = ExifToolRunner()
+  private let fileManager = NSFileManager.defaultManager()
+  private var baseUrl: NSURL = NSURL()
+  private var baseUrlIsDir: ObjCBool = false
+  private var files: [File] = []
   private var reportObjects: [File] = []
-  private var pathUrl: NSURL = NSURL() {
+  private var runMode = false
+  
+  private var keepExistingTags = true
+  private var deleteTags = false {
     didSet {
-      if pathUrl.path == nil {
-        runBtn.enabled = false
+      if deleteTags {
+        deleteCheckBtn.state = NSOnState
       } else {
-        runBtn.enabled = true
+        deleteCheckBtn.state = NSOffState
       }
     }
   }
-  private var pathUrlIsDir: ObjCBool = false
-  private var keepExistingTags = true
-  private var deleteTags = false
+
   
 
   
@@ -69,33 +74,50 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
         var err = NSError?()
         
         if !(err != nil) {
-          reportObjects = []
-          pathUrl = selectedPath
-        }
-      }
-    }
-  }
-
-  func run() {
-    if pathUrl.path != nil {
-      if fileManager.fileExistsAtPath(pathUrl.path!, isDirectory:&pathUrlIsDir) && !pathUrlIsDir {
-        processFile(pathUrl)
-        
-      } else {
-        let enumerator: NSDirectoryEnumerator? = fileManager.enumeratorAtURL(pathUrl, includingPropertiesForKeys: nil, options: nil, errorHandler: nil)
-        
-        while let fileURL: NSURL = enumerator?.nextObject() as? NSURL {
-          processFile(fileURL)
+          deleteTags = false
+          collectFilesFrom(selectedPath)
+          runBtn.enabled = true
         }
       }
     }
   }
   
-  func processFile(URL: NSURL) {
+  func collectFilesFrom(URL: NSURL) {
+    baseUrl = URL
+    files = []
+    if URL.path != nil {
+      if fileManager.fileExistsAtPath(URL.path!, isDirectory:&baseUrlIsDir) && !baseUrlIsDir {
+        addFileIn(URL)
+        
+      } else {
+        let enumerator: NSDirectoryEnumerator? = fileManager.enumeratorAtURL(URL, includingPropertiesForKeys: nil, options: nil, errorHandler: nil)
+        
+        while let fileURL: NSURL = enumerator?.nextObject() as? NSURL {
+          addFileIn(fileURL)
+        }
+      }
+    }
+    runMode = false
+    toggleColumnVisibility(tableView)
+    tableView.reloadData()
+  }
+  
+  private func addFileIn(URL: NSURL) {
     if let path: String = URL.path {
       var isDir: ObjCBool = false
       if fileManager.fileExistsAtPath(path, isDirectory:&isDir) && !isDir && path.lastPathComponent != ".DS_Store" {
         let file = File(fileURL: URL, runner: exifToolRunner)
+        files.append(file)
+      }
+    }
+  }
+  
+  private func run() {
+    runMode = true
+    reportObjects = []
+    toggleColumnVisibility(tableView)
+    for file in files {
+      if fileManager.fileExistsAtPath(file.path) {
         if file.valid {
           if deleteTags {
             file.deleteValueFor([Tag(name: Tag.TitleTag), Tag(name: Tag.DateTag)], overwriteFile: true)
@@ -103,25 +125,60 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
             file.write([Tag(name: Tag.TitleTag), Tag(name: Tag.DateTag)], keepExistingTags: keepExistingTags, overwriteFile: true)
           }
         }
-        self.reportObjects.append(file)
-        self.tableView.reloadData()
+        reportObjects.append(file)
+        tableView.reloadData()
+      }
+    }
+  }
+  
+  private func toggleColumnVisibility(tableView: NSTableView) {
+    let showExistingData = runMode && (keepExistingTags || !deleteTags)
+    var column = tableView.columnWithIdentifier("status")
+    
+    for column in tableView.tableColumns {
+      if let column = column as? NSTableColumn {
+        
+        switch column.identifier {
+        case "status":
+          if runMode {
+            column.hidden = false
+          } else {
+            column.hidden = true
+          }
+
+        case "date", "title":
+          if showExistingData {
+            column.hidden = false
+          } else {
+            column.hidden = true
+          }
+          
+        default: ()
+        }
       }
     }
   }
   
   // MARK: - Table View
   
+  func tableObjects() -> [File] {
+    if runMode {
+      return reportObjects
+    } else {
+      return files
+    }
+  }
+  
   func numberOfRowsInTableView(tableView: NSTableView) -> Int {
-    return self.reportObjects.count
+    return tableObjects().count
   }
   
   func tableView(tableView: NSTableView, viewForTableColumn tableColumn: NSTableColumn?, row: Int) -> NSView? {
     var cellView: NSTableCellView!
     var text = ""
-    let showExistingData = (keepExistingTags || !deleteTags)
     
-    if self.reportObjects.count > row {
-      var file = self.reportObjects[row]
+    if tableObjects().count > row {
+      var file = tableObjects()[row]
       
       if let columnID = tableColumn?.identifier {
         if columnID == "enum" {
@@ -149,8 +206,8 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
         } else if columnID == "path" {
           cellView = tableView.makeViewWithIdentifier("pathCell", owner: self) as! NSTableCellView
           text = file.path
-          if pathUrlIsDir {
-            text = file.path.stringByReplacingOccurrencesOfString(pathUrl.path! + "/", withString: "", options: NSStringCompareOptions.LiteralSearch, range: nil)
+          if baseUrlIsDir {
+            text = file.path.stringByReplacingOccurrencesOfString(baseUrl.path! + "/", withString: "", options: NSStringCompareOptions.LiteralSearch, range: nil)
             
           } else {
             text = file.path.lastPathComponent
@@ -158,26 +215,14 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
           
         } else if columnID == "date" {
           cellView = tableView.makeViewWithIdentifier("dateCell", owner: self) as! NSTableCellView
-          if !showExistingData {
-            tableColumn?.hidden = true
-            
-          } else {
-            tableColumn?.hidden = false
-            if file.originalTagValues[Tag.DateTag] != nil {
-              text = file.originalTagValues[Tag.DateTag]!
-            }
+          if file.originalTagValues[Tag.DateTag] != nil {
+            text = file.originalTagValues[Tag.DateTag]!
           }
           
         } else if columnID == "title" {
           cellView = tableView.makeViewWithIdentifier("titleCell", owner: self) as! NSTableCellView
-          if !showExistingData {
-            tableColumn?.hidden = true
-            
-          } else {
-            tableColumn?.hidden = false
-            if file.originalTagValues[Tag.TitleTag] != nil {
-              text = file.originalTagValues[Tag.TitleTag]!
-            }
+          if file.originalTagValues[Tag.TitleTag] != nil {
+            text = file.originalTagValues[Tag.TitleTag]!
           }
         }
         

@@ -947,6 +947,7 @@
                         <animations/>
                     </view>
                     <connections>
+                        <outlet property="deleteCheckBtn" destination="jCU-rl-zMw" id="lIc-ma-L9R"/>
                         <outlet property="runBtn" destination="O1U-Rk-jRC" id="b5z-4D-JPA"/>
                         <outlet property="tableView" destination="0xu-QC-DLK" id="rK8-KW-SGY"/>
                     </connections>
