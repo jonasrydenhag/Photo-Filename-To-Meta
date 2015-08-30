@@ -12,41 +12,29 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
 
   @IBOutlet weak var tableView: NSTableView!
   @IBOutlet weak var runBtn: NSButton!
-  @IBOutlet weak var deleteCheckBtn: NSButton!
+  @IBOutlet weak var deleteBtn: NSButton!
+  @IBOutlet weak var keepCheckBtn: NSButton!
   
   @IBAction func openFileDialog(sender: NSButton) {
     choosePath()
   }
   
   @IBAction func run(sender: NSButton) {
-    run()
+    run(filesInUrl, tags: selectedTags, keepExistingTags: (keepCheckBtn.state == NSOnState))
   }
   
-  @IBAction func deleteCheck(sender: NSButton) {
-    deleteTags = (sender.state == NSOnState)
+  @IBAction func delete(sender: NSButton) {
+    run(filesInUrl, tags: selectedTags, keepExistingTags: false, deleteTags: true)
   }
   
   private let exifToolRunner = ExifToolRunner()
   private let fileManager = NSFileManager.defaultManager()
   private var baseUrl: NSURL = NSURL()
   private var baseUrlIsDir: ObjCBool = false
-  private var files: [File] = []
-  private var reportObjects: [File] = []
+  private var filesInUrl: [File] = []
+  private var processedFiles: [File] = []
   private var runMode = false
-  
-  private var keepExistingTags = true
-  private var deleteTags = false {
-    didSet {
-      if deleteTags {
-        deleteCheckBtn.state = NSOnState
-      } else {
-        deleteCheckBtn.state = NSOffState
-      }
-    }
-  }
-
-  
-
+  private var selectedTags: [Tag] = [Tag(name: Tag.TitleTag), Tag(name: Tag.DateTag)]
   
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -74,9 +62,9 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
         var err = NSError?()
         
         if !(err != nil) {
-          deleteTags = false
           collectFilesFrom(selectedPath)
           runBtn.enabled = true
+          deleteBtn.enabled = true
         }
       }
     }
@@ -84,7 +72,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
   
   func collectFilesFrom(URL: NSURL) {
     baseUrl = URL
-    files = []
+    filesInUrl = []
     if URL.path != nil {
       if fileManager.fileExistsAtPath(URL.path!, isDirectory:&baseUrlIsDir) && !baseUrlIsDir {
         addFileIn(URL)
@@ -107,53 +95,72 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
       var isDir: ObjCBool = false
       if fileManager.fileExistsAtPath(path, isDirectory:&isDir) && !isDir && path.lastPathComponent != ".DS_Store" {
         let file = File(fileURL: URL, runner: exifToolRunner)
-        files.append(file)
+        filesInUrl.append(file)
       }
     }
   }
   
-  private func run() {
+  private func run(files: [File], tags: [Tag], keepExistingTags: Bool = true, deleteTags: Bool = false, process: Bool = true) {
     runMode = true
-    reportObjects = []
-    toggleColumnVisibility(tableView)
+    if process {
+      processedFiles = []
+    }
+    var kept: [String: [File]] = [String : [File]]()
+    toggleColumnVisibility(tableView, runMode: runMode, tags: selectedTags)
+    
     for file in files {
       if fileManager.fileExistsAtPath(file.path) {
         if file.valid {
           if deleteTags {
-            file.deleteValueFor([Tag(name: Tag.TitleTag), Tag(name: Tag.DateTag)], overwriteFile: true)
+            file.deleteValueFor(tags, overwriteFile: true)
           } else {
-            file.write([Tag(name: Tag.TitleTag), Tag(name: Tag.DateTag)], keepExistingTags: keepExistingTags, overwriteFile: true)
+            file.write(tags, keepExistingTags: keepExistingTags, overwriteFile: true)
+            if keepExistingTags && file.kept.count > 0 {
+              for tag in file.kept {
+                if kept[tag.name] == nil {
+                   kept[tag.name] = []
+                }
+                kept[tag.name]!.append(file)
+              }
+            }
           }
         }
-        reportObjects.append(file)
+        if process {
+          processedFiles.append(file)
+        }
         tableView.reloadData()
       }
     }
+    
+    for tagName in kept.keys {
+      overwrite(kept[tagName]!, tags: [Tag(name: tagName)])
+    }
   }
   
-  private func toggleColumnVisibility(tableView: NSTableView) {
-    let showExistingData = runMode && (keepExistingTags || !deleteTags)
+  private func toggleColumnVisibility(tableView: NSTableView, runMode: Bool = false, tags: [Tag] = []) {
     var column = tableView.columnWithIdentifier("status")
     
     for column in tableView.tableColumns {
       if let column = column as? NSTableColumn {
         
         switch column.identifier {
+        case "enum", "path":
+            column.hidden = false
+          
         case "status":
           if runMode {
             column.hidden = false
           } else {
             column.hidden = true
           }
-
-        case "date", "title":
-          if showExistingData {
-            column.hidden = false
-          } else {
-            column.hidden = true
-          }
           
-        default: ()
+        default:
+          column.hidden = true
+          for tag in tags {
+            if column.identifier == tag.name && runMode {
+              column.hidden = false
+            }
+          }
         }
       }
     }
@@ -163,9 +170,9 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
   
   func tableObjects() -> [File] {
     if runMode {
-      return reportObjects
+      return processedFiles
     } else {
-      return files
+      return filesInUrl
     }
   }
   
@@ -193,13 +200,8 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
           } else {
             cellView.textField?.backgroundColor = NSColor.greenColor()
             
-            if keepExistingTags {
-              for (tagName, tagValue) in file.originalTagValues {
-                if tagValue != "" {
-                  cellView.textField?.backgroundColor = NSColor.yellowColor()
-                  break
-                }
-              }
+            if file.kept.count > 0 {
+              cellView.textField?.backgroundColor = NSColor.yellowColor()
             }
           }
           
@@ -215,14 +217,14 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
           
         } else if columnID == "date" {
           cellView = tableView.makeViewWithIdentifier("dateCell", owner: self) as! NSTableCellView
-          if file.originalTagValues[Tag.DateTag] != nil {
-            text = file.originalTagValues[Tag.DateTag]!
+          if file.tagValues[Tag.DateTag] != nil {
+            text = file.tagValues[Tag.DateTag]!
           }
           
         } else if columnID == "title" {
           cellView = tableView.makeViewWithIdentifier("titleCell", owner: self) as! NSTableCellView
-          if file.originalTagValues[Tag.TitleTag] != nil {
-            text = file.originalTagValues[Tag.TitleTag]!
+          if file.tagValues[Tag.TitleTag] != nil {
+            text = file.tagValues[Tag.TitleTag]!
           }
         }
         
@@ -237,5 +239,21 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     }
     
     return cellView
+  }
+  
+  // MARK: - Alert
+  
+  func overwrite(files: [File], tags: [Tag]) {
+    var alert = NSAlert()
+    alert.addButtonWithTitle("Yes")
+    alert.addButtonWithTitle("No")
+    alert.messageText = "Existing tags"
+    alert.informativeText = "Want to overwrite"
+    alert.alertStyle = NSAlertStyle.InformationalAlertStyle
+    
+    let result = alert.runModal()
+    if result == NSAlertFirstButtonReturn {
+      run(files, tags: tags, keepExistingTags: false, process: false)
+    }
   }
 }

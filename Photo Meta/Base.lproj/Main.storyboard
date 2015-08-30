@@ -860,9 +860,9 @@
                                                                 </textField>
                                                             </subviews>
                                                             <constraints>
-                                                                <constraint firstItem="DQH-Mi-r6C" firstAttribute="centerY" secondItem="11M-aA-eVo" secondAttribute="centerY" id="GUH-iw-1Ij"/>
-                                                                <constraint firstItem="DQH-Mi-r6C" firstAttribute="leading" secondItem="11M-aA-eVo" secondAttribute="leading" constant="2" id="HWg-Ou-MDx"/>
-                                                                <constraint firstAttribute="trailing" secondItem="DQH-Mi-r6C" secondAttribute="trailing" constant="3" id="jzC-Xg-i5f"/>
+                                                                <constraint firstAttribute="trailing" secondItem="DQH-Mi-r6C" secondAttribute="trailing" constant="3" id="65e-hu-XrL"/>
+                                                                <constraint firstItem="DQH-Mi-r6C" firstAttribute="centerY" secondItem="11M-aA-eVo" secondAttribute="centerY" id="6z3-e7-XCo"/>
+                                                                <constraint firstItem="DQH-Mi-r6C" firstAttribute="leading" secondItem="11M-aA-eVo" secondAttribute="leading" constant="2" id="FnE-pr-jiU"/>
                                                             </constraints>
                                                             <animations/>
                                                             <connections>
@@ -923,21 +923,28 @@
                                     <action selector="run:" target="XfG-lQ-9wD" id="hyP-W1-Uzh"/>
                                 </connections>
                             </button>
-                            <button ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="jCU-rl-zMw">
-                                <rect key="frame" x="536" y="364" width="61" height="18"/>
+                            <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="zub-yx-Jha">
+                                <rect key="frame" x="256" y="352" width="102" height="32"/>
                                 <animations/>
-                                <buttonCell key="cell" type="check" title="Delete tags" bezelStyle="regularSquare" imagePosition="left" inset="2" id="B4p-c3-Yey">
-                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                <buttonCell key="cell" type="push" title="Delete tags" bezelStyle="rounded" alignment="center" enabled="NO" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="EP9-zP-2Hc">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
                                 <connections>
-                                    <action selector="deleteCheck:" target="XfG-lQ-9wD" id="2wd-A3-77m"/>
+                                    <action selector="delete:" target="XfG-lQ-9wD" id="PD4-he-EYk"/>
                                 </connections>
+                            </button>
+                            <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="6nu-2y-pcn">
+                                <rect key="frame" x="505" y="360" width="127" height="18"/>
+                                <animations/>
+                                <buttonCell key="cell" type="check" title="Keep exiting tags" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="GW4-Qv-HlZ">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
                             </button>
                         </subviews>
                         <constraints>
                             <constraint firstAttribute="trailing" secondItem="cpI-pk-UO1" secondAttribute="trailing" constant="20" symbolic="YES" id="7qs-ux-4cQ"/>
-                            <constraint firstItem="jCU-rl-zMw" firstAttribute="leading" secondItem="cpI-pk-UO1" secondAttribute="trailing" constant="-92" id="LGK-Wx-0yq"/>
                             <constraint firstItem="o9i-5T-F3N" firstAttribute="top" secondItem="m2S-Jp-Qdl" secondAttribute="top" constant="20" symbolic="YES" id="NbX-Zm-5mi"/>
                             <constraint firstAttribute="bottom" secondItem="cpI-pk-UO1" secondAttribute="bottom" constant="60" id="VsA-eI-kwn"/>
                             <constraint firstItem="o9i-5T-F3N" firstAttribute="leading" secondItem="m2S-Jp-Qdl" secondAttribute="leading" constant="20" symbolic="YES" id="k5W-HF-Zm7"/>
@@ -947,7 +954,8 @@
                         <animations/>
                     </view>
                     <connections>
-                        <outlet property="deleteCheckBtn" destination="jCU-rl-zMw" id="lIc-ma-L9R"/>
+                        <outlet property="deleteBtn" destination="zub-yx-Jha" id="m32-jB-Cgn"/>
+                        <outlet property="keepCheckBtn" destination="6nu-2y-pcn" id="4ox-21-pAz"/>
                         <outlet property="runBtn" destination="O1U-Rk-jRC" id="b5z-4D-JPA"/>
                         <outlet property="tableView" destination="0xu-QC-DLK" id="rK8-KW-SGY"/>
                     </connections>

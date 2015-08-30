@@ -13,7 +13,7 @@ class File {
   private (set) var URL: NSURL
   private (set) var path: String
   private (set) var valid: Bool = false
-  private (set) var originalTagValues: [String : String] = [String : String]()
+  private (set) var tagValues: [String : String] = [String : String]()
   var fileName: String {
     get {
       return extractTitle()
@@ -42,7 +42,7 @@ class File {
       var output: String
       
       var write = true
-      if keepExistingTags && originalValueFor(tag) != "" {
+      if keepExistingTags && valueFor(tag) != "" {
         write = false;
         kept.append(tag)
         continue
@@ -55,6 +55,7 @@ class File {
         if title != "" {
           tag.value = title
           writeTags.append(tag)
+          valueFor(tag, value: tag.value)
         } else {
           extractionFailed.append(tag)
         }
@@ -62,6 +63,7 @@ class File {
         if let date = extractDate() {
           tag.value = dateFormatter.stringFromDate(date)
           writeTags.append(tag)
+          valueFor(tag, value: tag.value)
         } else {
           extractionFailed.append(tag)
         }
@@ -75,13 +77,18 @@ class File {
   
   func deleteValueFor(tags: [Tag], overwriteFile: Bool = false) {
     runner.deleteValueFor(tags, file: self, overwriteFile: overwriteFile)
+    for tag in tags {
+      tagValues[tag.name] = nil
+    }
   }
   
-  private func originalValueFor(tag: Tag) -> String {
-    if originalTagValues[tag.name] == nil {
-      originalTagValues[tag.name] = runner.valueFor(tag, file: self)
+  private func valueFor(tag: Tag, value: String = "") -> String {
+    if tagValues[tag.name] == nil && value == "" {
+      tagValues[tag.name] = runner.valueFor(tag, file: self)
+    } else if value != "" {
+      tagValues[tag.name] = value
     }
-    return originalTagValues[tag.name]!
+    return tagValues[tag.name]!
   }
   
   private func extractTitle() -> String {
