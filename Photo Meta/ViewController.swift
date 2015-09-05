@@ -14,9 +14,24 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
   @IBOutlet weak var runBtn: NSButton!
   @IBOutlet weak var deleteBtn: NSButton!
   @IBOutlet weak var keepCheckBtn: NSButton!
+  @IBOutlet weak var tagCheckTitle: NSButton!
+  @IBOutlet weak var tagCheckDate: NSButton!
   
   @IBAction func openFileDialog(sender: NSButton) {
     choosePath()
+  }
+  
+  @IBAction func tagCheckClick(sender: NSButton) {
+    if baseUrl.path != nil {
+      collectFilesFrom(baseUrl)
+    }
+    if selectedTags.count > 0 {
+      runBtn.enabled = true
+      deleteBtn.enabled = true
+    } else {
+      runBtn.enabled = false
+      deleteBtn.enabled = false
+    }
   }
   
   @IBAction func run(sender: NSButton) {
@@ -29,12 +44,30 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
   
   private let exifToolRunner = ExifToolRunner()
   private let fileManager = NSFileManager.defaultManager()
-  private var baseUrl: NSURL = NSURL()
+  private var baseUrl: NSURL = NSURL() {
+    didSet {
+      if baseUrl.path != nil {
+        runBtn.enabled = true
+        deleteBtn.enabled = true
+      }
+    }
+  }
   private var baseUrlIsDir: ObjCBool = false
   private var filesInUrl: [File] = []
   private var processedFiles: [File] = []
   private var runMode = false
-  private var selectedTags: [Tag] = [Tag(name: Tag.TitleTag), Tag(name: Tag.DateTag)]
+  private var selectedTags: [Tag] {
+    get {
+      var checkedTags = [Tag]()
+      if tagCheckTitle.state == NSOnState {
+        checkedTags.append(Tag(name: Tag.TitleTag))
+      }
+      if tagCheckDate.state == NSOnState {
+        checkedTags.append(Tag(name: Tag.DateTag))
+      }
+      return checkedTags
+    }
+  }
   
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -63,8 +96,6 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
         
         if !(err != nil) {
           collectFilesFrom(selectedPath)
-          runBtn.enabled = true
-          deleteBtn.enabled = true
         }
       }
     }

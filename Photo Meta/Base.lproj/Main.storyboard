@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="7706" systemVersion="14F27" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="B8D-0N-5wS">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="7706" systemVersion="15A278b" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="B8D-0N-5wS">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="7706"/>
     </dependencies>
@@ -675,7 +675,7 @@
                         <subviews>
                             <scrollView autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cpI-pk-UO1">
                                 <rect key="frame" x="20" y="60" width="610" height="284"/>
-                                <clipView key="contentView" id="f5A-aJ-mMQ">
+                                <clipView key="contentView" misplaced="YES" id="f5A-aJ-mMQ">
                                     <rect key="frame" x="1" y="0.0" width="238" height="134"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
@@ -913,8 +913,11 @@
                                     <action selector="openFileDialog:" target="XfG-lQ-9wD" id="g0v-uZ-fir"/>
                                 </connections>
                             </button>
-                            <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="O1U-Rk-jRC">
-                                <rect key="frame" x="164" y="352" width="82" height="32"/>
+                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="O1U-Rk-jRC">
+                                <rect key="frame" x="554" y="13" width="82" height="32"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="70" id="MGm-0h-aRG"/>
+                                </constraints>
                                 <animations/>
                                 <buttonCell key="cell" type="push" title="Run" bezelStyle="rounded" alignment="center" enabled="NO" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="Mnt-eO-scU">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -924,8 +927,11 @@
                                     <action selector="run:" target="XfG-lQ-9wD" id="hyP-W1-Uzh"/>
                                 </connections>
                             </button>
-                            <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="zub-yx-Jha">
-                                <rect key="frame" x="256" y="352" width="102" height="32"/>
+                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="zub-yx-Jha">
+                                <rect key="frame" x="14" y="13" width="102" height="32"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="90" id="IrM-9i-3N3"/>
+                                </constraints>
                                 <animations/>
                                 <buttonCell key="cell" type="push" title="Delete tags" bezelStyle="rounded" alignment="center" enabled="NO" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="EP9-zP-2Hc">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -935,7 +941,7 @@
                                     <action selector="delete:" target="XfG-lQ-9wD" id="PD4-he-EYk"/>
                                 </connections>
                             </button>
-                            <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="6nu-2y-pcn">
+                            <button ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="6nu-2y-pcn">
                                 <rect key="frame" x="502" y="361" width="130" height="18"/>
                                 <animations/>
                                 <buttonCell key="cell" type="check" title="Keep exiting tags" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="GW4-Qv-HlZ">
@@ -943,14 +949,50 @@
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
                             </button>
+                            <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="rZQ-6Y-J3h">
+                                <rect key="frame" x="324" y="361" width="49" height="18"/>
+                                <animations/>
+                                <buttonCell key="cell" type="check" title="Title" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="UcB-YD-ri5">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="tagCheckClick:" target="XfG-lQ-9wD" id="CHf-UF-LYH"/>
+                                </connections>
+                            </button>
+                            <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="FGT-b4-nAV">
+                                <rect key="frame" x="383" y="361" width="51" height="18"/>
+                                <animations/>
+                                <buttonCell key="cell" type="check" title="Date" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="Uk4-NQ-b4P">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="tagCheckClick:" target="XfG-lQ-9wD" id="7I4-e9-h9E"/>
+                                </connections>
+                            </button>
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9oO-vZ-yha">
+                                <rect key="frame" x="267" y="362" width="53" height="17"/>
+                                <animations/>
+                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Update:" id="ANx-mO-aqg">
+                                    <font key="font" metaFont="system"/>
+                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
                         </subviews>
                         <constraints>
+                            <constraint firstItem="O1U-Rk-jRC" firstAttribute="trailing" secondItem="6nu-2y-pcn" secondAttribute="trailing" id="1Ch-iI-0vU"/>
                             <constraint firstAttribute="trailing" secondItem="cpI-pk-UO1" secondAttribute="trailing" constant="20" symbolic="YES" id="7qs-ux-4cQ"/>
+                            <constraint firstItem="zub-yx-Jha" firstAttribute="leading" secondItem="cpI-pk-UO1" secondAttribute="leading" id="CRr-Tg-gZg"/>
                             <constraint firstItem="o9i-5T-F3N" firstAttribute="top" secondItem="m2S-Jp-Qdl" secondAttribute="top" constant="20" symbolic="YES" id="NbX-Zm-5mi"/>
+                            <constraint firstItem="zub-yx-Jha" firstAttribute="baseline" secondItem="O1U-Rk-jRC" secondAttribute="baseline" id="TDa-6E-P1q"/>
                             <constraint firstAttribute="bottom" secondItem="cpI-pk-UO1" secondAttribute="bottom" constant="60" id="VsA-eI-kwn"/>
                             <constraint firstItem="o9i-5T-F3N" firstAttribute="leading" secondItem="m2S-Jp-Qdl" secondAttribute="leading" constant="20" symbolic="YES" id="k5W-HF-Zm7"/>
                             <constraint firstItem="cpI-pk-UO1" firstAttribute="top" secondItem="o9i-5T-F3N" secondAttribute="bottom" constant="15" id="rNE-RB-N6o"/>
                             <constraint firstItem="cpI-pk-UO1" firstAttribute="leading" secondItem="o9i-5T-F3N" secondAttribute="leading" id="tKI-uU-G3W"/>
+                            <constraint firstItem="O1U-Rk-jRC" firstAttribute="trailing" secondItem="cpI-pk-UO1" secondAttribute="trailing" id="voJ-EL-Fdf"/>
+                            <constraint firstAttribute="bottom" secondItem="zub-yx-Jha" secondAttribute="bottom" constant="20" symbolic="YES" id="yRP-OC-2hL"/>
                         </constraints>
                         <animations/>
                     </view>
@@ -959,6 +1001,8 @@
                         <outlet property="keepCheckBtn" destination="6nu-2y-pcn" id="4ox-21-pAz"/>
                         <outlet property="runBtn" destination="O1U-Rk-jRC" id="b5z-4D-JPA"/>
                         <outlet property="tableView" destination="0xu-QC-DLK" id="rK8-KW-SGY"/>
+                        <outlet property="tagCheckDate" destination="FGT-b4-nAV" id="ad4-gA-96A"/>
+                        <outlet property="tagCheckTitle" destination="rZQ-6Y-J3h" id="NPr-1U-INA"/>
                     </connections>
                 </viewController>
                 <customObject id="rPt-NT-nkU" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
