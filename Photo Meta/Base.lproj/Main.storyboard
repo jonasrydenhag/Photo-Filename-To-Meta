@@ -919,12 +919,12 @@
                                     <constraint firstAttribute="width" constant="70" id="MGm-0h-aRG"/>
                                 </constraints>
                                 <animations/>
-                                <buttonCell key="cell" type="push" title="Run" bezelStyle="rounded" alignment="center" enabled="NO" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="Mnt-eO-scU">
+                                <buttonCell key="cell" type="push" title="Write" bezelStyle="rounded" alignment="center" enabled="NO" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="Mnt-eO-scU">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
                                 <connections>
-                                    <action selector="run:" target="XfG-lQ-9wD" id="hyP-W1-Uzh"/>
+                                    <action selector="write:" target="XfG-lQ-9wD" id="d0I-MD-b2i"/>
                                 </connections>
                             </button>
                             <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="zub-yx-Jha">
@@ -980,6 +980,20 @@
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
+                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="kR8-Uh-u2S">
+                                <rect key="frame" x="472" y="13" width="82" height="32"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="70" id="S1G-mj-1wM"/>
+                                </constraints>
+                                <animations/>
+                                <buttonCell key="cell" type="push" title="Read" bezelStyle="rounded" alignment="center" enabled="NO" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="A9n-Lb-0u8">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="read:" target="XfG-lQ-9wD" id="VtW-ch-EQ0"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <constraints>
                             <constraint firstItem="O1U-Rk-jRC" firstAttribute="trailing" secondItem="6nu-2y-pcn" secondAttribute="trailing" id="1Ch-iI-0vU"/>
@@ -988,6 +1002,8 @@
                             <constraint firstItem="o9i-5T-F3N" firstAttribute="top" secondItem="m2S-Jp-Qdl" secondAttribute="top" constant="20" symbolic="YES" id="NbX-Zm-5mi"/>
                             <constraint firstItem="zub-yx-Jha" firstAttribute="baseline" secondItem="O1U-Rk-jRC" secondAttribute="baseline" id="TDa-6E-P1q"/>
                             <constraint firstAttribute="bottom" secondItem="cpI-pk-UO1" secondAttribute="bottom" constant="60" id="VsA-eI-kwn"/>
+                            <constraint firstItem="O1U-Rk-jRC" firstAttribute="leading" secondItem="kR8-Uh-u2S" secondAttribute="trailing" constant="12" symbolic="YES" id="XYl-Ze-dcR"/>
+                            <constraint firstItem="kR8-Uh-u2S" firstAttribute="baseline" secondItem="O1U-Rk-jRC" secondAttribute="baseline" id="hy1-9l-3Uf"/>
                             <constraint firstItem="o9i-5T-F3N" firstAttribute="leading" secondItem="m2S-Jp-Qdl" secondAttribute="leading" constant="20" symbolic="YES" id="k5W-HF-Zm7"/>
                             <constraint firstItem="cpI-pk-UO1" firstAttribute="top" secondItem="o9i-5T-F3N" secondAttribute="bottom" constant="15" id="rNE-RB-N6o"/>
                             <constraint firstItem="cpI-pk-UO1" firstAttribute="leading" secondItem="o9i-5T-F3N" secondAttribute="leading" id="tKI-uU-G3W"/>
@@ -999,10 +1015,11 @@
                     <connections>
                         <outlet property="deleteBtn" destination="zub-yx-Jha" id="m32-jB-Cgn"/>
                         <outlet property="keepCheckBtn" destination="6nu-2y-pcn" id="4ox-21-pAz"/>
-                        <outlet property="runBtn" destination="O1U-Rk-jRC" id="b5z-4D-JPA"/>
+                        <outlet property="readBtn" destination="kR8-Uh-u2S" id="lut-Ml-wLz"/>
                         <outlet property="tableView" destination="0xu-QC-DLK" id="rK8-KW-SGY"/>
                         <outlet property="tagCheckDate" destination="FGT-b4-nAV" id="ad4-gA-96A"/>
                         <outlet property="tagCheckTitle" destination="rZQ-6Y-J3h" id="NPr-1U-INA"/>
+                        <outlet property="writeBtn" destination="O1U-Rk-jRC" id="FwE-GF-CF9"/>
                     </connections>
                 </viewController>
                 <customObject id="rPt-NT-nkU" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>

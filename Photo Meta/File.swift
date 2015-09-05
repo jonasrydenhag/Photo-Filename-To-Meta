@@ -86,6 +86,12 @@ class File {
     }
   }
   
+  func read(tags: [Tag]) {
+    for tag in tags {
+      valueFor(tag)
+    }
+  }
+  
   private func valueFor(tag: Tag, value: String = "") -> String {
     if tagValues[tag.name] == nil && value == "" {
       tagValues[tag.name] = runner.valueFor(tag, file: self)

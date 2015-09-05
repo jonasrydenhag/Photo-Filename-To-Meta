@@ -11,8 +11,9 @@ import Cocoa
 class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelegate {
 
   @IBOutlet weak var tableView: NSTableView!
-  @IBOutlet weak var runBtn: NSButton!
   @IBOutlet weak var deleteBtn: NSButton!
+  @IBOutlet weak var readBtn: NSButton!
+  @IBOutlet weak var writeBtn: NSButton!
   @IBOutlet weak var keepCheckBtn: NSButton!
   @IBOutlet weak var tagCheckTitle: NSButton!
   @IBOutlet weak var tagCheckDate: NSButton!
@@ -25,20 +26,21 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     if baseUrl.path != nil {
       collectFilesFrom(baseUrl)
     }
-    if selectedTags.count > 0 {
-      runBtn.enabled = true
-      deleteBtn.enabled = true
-    } else {
-      runBtn.enabled = false
-      deleteBtn.enabled = false
-    }
+    setButtonEnableState()
   }
   
-  @IBAction func run(sender: NSButton) {
+  @IBAction func read(sender: NSButton) {
+    mode = ViewController.readMode
+    run(filesInUrl, tags: selectedTags, readTags: true)
+  }
+  
+  @IBAction func write(sender: NSButton) {
+    mode = ViewController.writeMode
     run(filesInUrl, tags: selectedTags, keepExistingTags: (keepCheckBtn.state == NSOnState))
   }
   
   @IBAction func delete(sender: NSButton) {
+    mode = ViewController.writeMode
     run(filesInUrl, tags: selectedTags, keepExistingTags: false, deleteTags: true)
   }
   
@@ -46,16 +48,16 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
   private let fileManager = NSFileManager.defaultManager()
   private var baseUrl: NSURL = NSURL() {
     didSet {
-      if baseUrl.path != nil {
-        runBtn.enabled = true
-        deleteBtn.enabled = true
-      }
+      setButtonEnableState()
     }
   }
   private var baseUrlIsDir: ObjCBool = false
   private var filesInUrl: [File] = []
   private var processedFiles: [File] = []
-  private var runMode = false
+  private static let listMode = "list"
+  private static let readMode = "read"
+  private static let writeMode = "write"
+  private var mode = listMode
   private var selectedTags: [Tag] {
     get {
       var checkedTags = [Tag]()
@@ -78,6 +80,20 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
   override var representedObject: AnyObject? {
     didSet {
       // Update the view, if already loaded.
+    }
+  }
+  
+  private func setButtonEnableState() {
+    if baseUrl.path != nil {
+      deleteBtn.enabled = true
+      readBtn.enabled = true
+      writeBtn.enabled = true
+      
+      if selectedTags.count == 0 {
+        deleteBtn.enabled = false
+        readBtn.enabled = false
+        writeBtn.enabled = false
+      }
     }
   }
 
@@ -103,6 +119,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
   
   func collectFilesFrom(URL: NSURL) {
     baseUrl = URL
+    mode = ViewController.listMode
     filesInUrl = []
     if URL.path != nil {
       if fileManager.fileExistsAtPath(URL.path!, isDirectory:&baseUrlIsDir) && !baseUrlIsDir {
@@ -116,7 +133,6 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
         }
       }
     }
-    runMode = false
     toggleColumnVisibility(tableView)
     tableView.reloadData()
   }
@@ -131,19 +147,22 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     }
   }
   
-  private func run(files: [File], tags: [Tag], keepExistingTags: Bool = true, deleteTags: Bool = false, process: Bool = true) {
-    runMode = true
+  private func run(files: [File], tags: [Tag], keepExistingTags: Bool = true, readTags: Bool = false, deleteTags: Bool = false, process: Bool = true) {
     if process {
       processedFiles = []
     }
     var kept: [String: [File]] = [String : [File]]()
-    toggleColumnVisibility(tableView, runMode: runMode, tags: selectedTags)
+    toggleColumnVisibility(tableView, tags: selectedTags)
     
     for file in files {
       if fileManager.fileExistsAtPath(file.path) {
         if file.valid {
           if deleteTags {
             file.deleteValueFor(tags, overwriteFile: true)
+            
+          } else if readTags {
+            file.read(tags)
+            
           } else {
             file.write(tags, keepExistingTags: keepExistingTags, overwriteFile: true)
             if keepExistingTags && file.kept.count > 0 {
@@ -168,7 +187,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     }
   }
   
-  private func toggleColumnVisibility(tableView: NSTableView, runMode: Bool = false, tags: [Tag] = []) {
+  private func toggleColumnVisibility(tableView: NSTableView, tags: [Tag] = []) {
     var column = tableView.columnWithIdentifier("status")
     
     for column in tableView.tableColumns {
@@ -179,7 +198,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
             column.hidden = false
           
         case "status":
-          if runMode {
+          if mode == ViewController.writeMode {
             column.hidden = false
           } else {
             column.hidden = true
@@ -188,7 +207,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
         default:
           column.hidden = true
           for tag in tags {
-            if column.identifier == tag.name && runMode {
+            if column.identifier == tag.name && mode != ViewController.listMode {
               column.hidden = false
             }
           }
@@ -200,7 +219,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
   // MARK: - Table View
   
   func tableObjects() -> [File] {
-    return runMode ? processedFiles : filesInUrl
+    return mode == ViewController.listMode ? filesInUrl : processedFiles
   }
   
   func numberOfRowsInTableView(tableView: NSTableView) -> Int {
