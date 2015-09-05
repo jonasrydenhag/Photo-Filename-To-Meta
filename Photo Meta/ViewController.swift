@@ -196,7 +196,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
           } else {
             cellView.textField?.backgroundColor = NSColor.greenColor()
             
-            if file.kept.count > 0 {
+            if !file.allInitialValuesUpdated() {
               cellView.textField?.backgroundColor = NSColor.yellowColor()
             }
           }
