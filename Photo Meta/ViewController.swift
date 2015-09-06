@@ -19,6 +19,9 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
   @IBOutlet weak var tagCheckDate: NSButton!
   @IBOutlet weak var overwriteCheck: NSButton!
   @IBOutlet weak var targetSelectBtn: NSButton!
+  @IBOutlet weak var sourceTextField: NSTextField!
+  @IBOutlet weak var targetTextField: NSTextField!
+  @IBOutlet weak var targetTextFieldLabel: NSTextField!
   
   @IBAction func selectSourceDialog(sender: NSButton) {
     if let selectedPath = choosePath() {
@@ -36,11 +39,11 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     if sourceUrl.path != nil {
       collectFilesFrom(sourceUrl)
     }
-    setButtonEnableState()
+    setOutletsEnableState()
   }
   
   @IBAction func overwriteCheckClick(sender: NSButton) {
-    setButtonEnableState()
+    setOutletsEnableState()
   }
   
   @IBAction func read(sender: NSButton) {
@@ -60,15 +63,32 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
   
   private let exifToolRunner = ExifToolRunner()
   private let fileManager = NSFileManager.defaultManager()
-  private var collectedFilesBaseUrl: NSURL = NSURL()
+  private var collectedFilesBaseUrl: NSURL = NSURL() {
+    didSet {
+      var value: String
+      if collectedFilesBaseUrl.path != nil {
+        value = collectedFilesBaseUrl.path!.stringByReplacingOccurrencesOfString(NSHomeDirectory() + "/", withString: "", options: NSStringCompareOptions.LiteralSearch, range: nil)
+      } else {
+        value = ""
+      }
+      sourceTextField.stringValue = value
+    }
+  }
   private var sourceUrl: NSURL = NSURL() {
     didSet {
-      setButtonEnableState()
+      setOutletsEnableState()
     }
   }
   private var targetUrl: NSURL = NSURL() {
     didSet {
-      setButtonEnableState()
+      setOutletsEnableState()
+      var value: String
+      if targetUrl.path != nil {
+        value = targetUrl.path!.stringByReplacingOccurrencesOfString(NSHomeDirectory() + "/", withString: "", options: NSStringCompareOptions.LiteralSearch, range: nil)
+      } else {
+        value = ""
+      }
+      targetTextField.stringValue = value
     }
   }
   private var baseUrlIsDir: ObjCBool = false
@@ -103,7 +123,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     }
   }
   
-  private func setButtonEnableState() {
+  private func setOutletsEnableState() {
     if sourceUrl.path != nil && (overwriteCheck.state == NSOnState || targetUrl.path != nil) {
       deleteBtn.enabled = true
       readBtn.enabled = true
@@ -122,8 +142,12 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     
     if overwriteCheck.state == NSOnState {
       targetSelectBtn.enabled = false
+      targetTextField.enabled = false
+      targetTextFieldLabel.textColor = NSColor.grayColor()
     } else {
       targetSelectBtn.enabled = true
+      targetTextField.enabled = true
+      targetTextFieldLabel.textColor = nil
     }
   }
 
