@@ -913,8 +913,8 @@
                                     <action selector="write:" target="XfG-lQ-9wD" id="d0I-MD-b2i"/>
                                 </connections>
                             </button>
-                            <button verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="zub-yx-Jha">
-                                <rect key="frame" x="14" y="26" width="102" height="32"/>
+                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="zub-yx-Jha">
+                                <rect key="frame" x="14" y="26" width="102" height="19"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="90" id="LMP-Cz-3h4"/>
                                 </constraints>
@@ -977,7 +977,7 @@
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
                                 <connections>
-                                    <action selector="openFileDialog:" target="XfG-lQ-9wD" id="g0v-uZ-fir"/>
+                                    <action selector="selectSourceDialog:" target="XfG-lQ-9wD" id="EzA-v3-cLX"/>
                                 </connections>
                             </button>
                             <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="pIA-bt-Dv5">

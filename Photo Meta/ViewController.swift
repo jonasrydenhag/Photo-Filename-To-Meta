@@ -20,7 +20,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
   @IBOutlet weak var overwriteCheck: NSButton!
   @IBOutlet weak var targetSelectBtn: NSButton!
   
-  @IBAction func openFileDialog(sender: NSButton) {
+  @IBAction func selectSourceDialog(sender: NSButton) {
     if let selectedPath = choosePath() {
       collectFilesFrom(selectedPath)
     }
@@ -60,7 +60,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
   
   private let exifToolRunner = ExifToolRunner()
   private let fileManager = NSFileManager.defaultManager()
-  private var firstSourceUrl: NSURL = NSURL()
+  private var collectedFilesBaseUrl: NSURL = NSURL()
   private var sourceUrl: NSURL = NSURL() {
     didSet {
       setButtonEnableState()
@@ -148,7 +148,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
   }
   
   func collectFilesFrom(URL: NSURL) {
-    firstSourceUrl = URL
+    collectedFilesBaseUrl = URL
     sourceUrl = URL
     targetUrl = NSURL()
     mode = ViewController.listMode
@@ -375,7 +375,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
           cellView = tableView.makeViewWithIdentifier("pathCell", owner: self) as! NSTableCellView
           text = file.path
           if baseUrlIsDir {
-            let basePath: String = targetUrl.path == nil || !file.valid ? firstSourceUrl.path! : targetUrl.path!
+            let basePath: String = targetUrl.path == nil || !file.valid ? collectedFilesBaseUrl.path! : targetUrl.path!
             text = file.path.stringByReplacingOccurrencesOfString(basePath + "/", withString: "", options: NSStringCompareOptions.LiteralSearch, range: nil)
             
           } else {
