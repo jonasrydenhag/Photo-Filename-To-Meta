@@ -10,7 +10,11 @@ import Foundation
 
 class File {
   
-  private (set) var URL: NSURL
+  var URL: NSURL {
+    didSet {
+      path = URL.path!
+    }
+  }
   private (set) var path: String
   private (set) var valid: Bool = false
   private (set) var initialTagUpdated: [String : Bool] = [String : Bool]()
@@ -34,7 +38,7 @@ class File {
     extractDate()
   }
   
-  func write(tags: [Tag], keepExistingTags: Bool = true, overwriteFile: Bool = false) {
+  func write(tags: [Tag], keepExistingTags: Bool = true) {
     var writeTags = Array<Tag>()
     kept = Array<Tag>()
     extractionFailed = Array<Tag>()
@@ -75,12 +79,12 @@ class File {
       }
     }
     
-    runner.write(writeTags, file: self, overwriteFile: overwriteFile)
+    runner.write(writeTags, file: self)
   }
   
-  func deleteValueFor(tags: [Tag], overwriteFile: Bool = false) {
+  func deleteValueFor(tags: [Tag]) {
     kept = Array<Tag>()
-    runner.deleteValueFor(tags, file: self, overwriteFile: overwriteFile)
+    runner.deleteValueFor(tags, file: self)
     for tag in tags {
       tagValues[tag.name] = nil
     }
@@ -88,6 +92,7 @@ class File {
   
   func read(tags: [Tag]) {
     for tag in tags {
+      tagValues[tag.name] = nil
       valueFor(tag)
     }
   }

@@ -17,15 +17,29 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
   @IBOutlet weak var keepCheckBtn: NSButton!
   @IBOutlet weak var tagCheckTitle: NSButton!
   @IBOutlet weak var tagCheckDate: NSButton!
+  @IBOutlet weak var overwriteCheck: NSButton!
+  @IBOutlet weak var targetSelectBtn: NSButton!
   
   @IBAction func openFileDialog(sender: NSButton) {
-    choosePath()
+    if let selectedPath = choosePath() {
+      collectFilesFrom(selectedPath)
+    }
+  }
+  
+  @IBAction func selectTargetDialog(sender: NSButton) {
+    if let selectedPath = choosePath(canChooseFiles: false) {
+      targetUrl = selectedPath
+    }
   }
   
   @IBAction func tagCheckClick(sender: NSButton) {
-    if baseUrl.path != nil {
-      collectFilesFrom(baseUrl)
+    if sourceUrl.path != nil {
+      collectFilesFrom(sourceUrl)
     }
+    setButtonEnableState()
+  }
+  
+  @IBAction func overwriteCheckClick(sender: NSButton) {
     setButtonEnableState()
   }
   
@@ -46,7 +60,13 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
   
   private let exifToolRunner = ExifToolRunner()
   private let fileManager = NSFileManager.defaultManager()
-  private var baseUrl: NSURL = NSURL() {
+  private var firstSourceUrl: NSURL = NSURL()
+  private var sourceUrl: NSURL = NSURL() {
+    didSet {
+      setButtonEnableState()
+    }
+  }
+  private var targetUrl: NSURL = NSURL() {
     didSet {
       setButtonEnableState()
     }
@@ -84,7 +104,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
   }
   
   private func setButtonEnableState() {
-    if baseUrl.path != nil {
+    if sourceUrl.path != nil && (overwriteCheck.state == NSOnState || targetUrl.path != nil) {
       deleteBtn.enabled = true
       readBtn.enabled = true
       writeBtn.enabled = true
@@ -94,31 +114,43 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
         readBtn.enabled = false
         writeBtn.enabled = false
       }
+    } else {
+      deleteBtn.enabled = false
+      readBtn.enabled = false
+      writeBtn.enabled = false
+    }
+    
+    if overwriteCheck.state == NSOnState {
+      targetSelectBtn.enabled = false
+    } else {
+      targetSelectBtn.enabled = true
     }
   }
 
-  func choosePath() {
+  func choosePath(canChooseFiles: Bool = true) -> NSURL? {
+    var selectedPath: NSURL?
     var myOpenDialog: NSOpenPanel = NSOpenPanel()
     myOpenDialog.canChooseDirectories = true
+    myOpenDialog.canChooseFiles = canChooseFiles
     var clickedBtn = myOpenDialog.runModal()
     
     if clickedBtn == NSFileHandlingPanelOKButton {
-      // Get the path to the file chosen in the NSOpenPanel
-      var selectedPath = myOpenDialog.URL
-      
       // Make sure that a path was chosen
       if let selectedPath: NSURL = myOpenDialog.URL {
         var err = NSError?()
         
         if !(err != nil) {
-          collectFilesFrom(selectedPath)
+          return selectedPath
         }
       }
     }
+    return selectedPath
   }
   
   func collectFilesFrom(URL: NSURL) {
-    baseUrl = URL
+    firstSourceUrl = URL
+    sourceUrl = URL
+    targetUrl = NSURL()
     mode = ViewController.listMode
     filesInUrl = []
     if URL.path != nil {
@@ -157,20 +189,28 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     for file in files {
       if fileManager.fileExistsAtPath(file.path) {
         if file.valid {
-          if deleteTags {
-            file.deleteValueFor(tags, overwriteFile: true)
-            
-          } else if readTags {
+          if readTags {
             file.read(tags)
             
           } else {
-            file.write(tags, keepExistingTags: keepExistingTags, overwriteFile: true)
-            if keepExistingTags && file.kept.count > 0 {
-              for tag in file.kept {
-                if kept[tag.name] == nil {
-                   kept[tag.name] = []
+            if overwriteCheck.state == NSOffState {
+              if !copy(file, toDir: targetUrl) {
+                break
+              }
+            }
+            
+            if deleteTags {
+              file.deleteValueFor(tags)
+              
+            } else {
+              file.write(tags, keepExistingTags: keepExistingTags)
+              if keepExistingTags && file.kept.count > 0 {
+                for tag in file.kept {
+                  if kept[tag.name] == nil {
+                    kept[tag.name] = []
+                  }
+                  kept[tag.name]!.append(file)
                 }
-                kept[tag.name]!.append(file)
               }
             }
           }
@@ -182,9 +222,89 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
       }
     }
     
+    if overwriteCheck.state == NSOffState {
+      sourceUrl = targetUrl
+    }
+    
     for tagName in kept.keys {
       overwrite(kept[tagName]!, tag: Tag(name: tagName))
     }
+  }
+  
+  private func prepareCopyDestPath(file: File, fromBase: NSURL, toDir: NSURL) -> String? {
+    var fromBaseDir: ObjCBool = false
+    var destPath: String?
+    
+    if fileManager.fileExistsAtPath(fromBase.path!, isDirectory:&fromBaseDir) {
+      var diffFromBase = file.path.stringByReplacingOccurrencesOfString(fromBase.path! + "/", withString: "", options: NSStringCompareOptions.LiteralSearch, range: nil)
+      var targetPath = toDir.path! + "/"
+      destPath = targetPath + file.path.lastPathComponent
+      
+      if fromBaseDir {
+        
+        for component in diffFromBase.pathComponents {
+          if component != file.path.lastPathComponent {
+            targetPath += component + "/"
+          }
+        }
+        
+        destPath = targetPath + file.path.lastPathComponent
+        
+        if destPath != file.path {
+          var targetPathDir: ObjCBool = false
+          if fileManager.fileExistsAtPath(targetPath, isDirectory:&targetPathDir) && !targetPathDir {
+            var targetPathRemove: NSError?
+            fileManager.removeItemAtPath(targetPath, error: &targetPathRemove)
+            
+            if targetPathRemove != nil {
+              return nil
+            }
+          }
+          
+          var create: NSError?
+          fileManager.createDirectoryAtPath(targetPath, withIntermediateDirectories: true, attributes: nil, error: &create)
+          
+          if create != nil {
+            return nil
+          }
+        }
+      }
+      
+      if destPath != file.path {
+        if fileManager.fileExistsAtPath(destPath!) {
+          var targetPathRemove: NSError?
+          fileManager.removeItemAtPath(destPath!, error: &targetPathRemove)
+          
+          if targetPathRemove != nil {
+            return nil
+          }
+        }
+      }
+    }
+    return destPath
+  }
+  
+  private func copy(file: File, toDir: NSURL) -> Bool {
+    var error: NSError?
+    
+    if let toDirPath = toDir.path {
+      var isDir: ObjCBool = false
+      if fileManager.fileExistsAtPath(toDirPath, isDirectory:&isDir) && isDir {
+        if fileManager.fileExistsAtPath(file.path) {
+          if let destPath = prepareCopyDestPath(file, fromBase: sourceUrl, toDir: targetUrl) {
+            if destPath != file.path {
+              if fileManager.copyItemAtPath(file.path, toPath: destPath, error: &error){
+                file.URL = NSURL(fileURLWithPath: destPath)!
+                return true
+              }
+            } else {
+              return true
+            }
+          }
+        }
+      }
+    }
+    return false
   }
   
   private func toggleColumnVisibility(tableView: NSTableView, tags: [Tag] = []) {
@@ -255,7 +375,8 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
           cellView = tableView.makeViewWithIdentifier("pathCell", owner: self) as! NSTableCellView
           text = file.path
           if baseUrlIsDir {
-            text = file.path.stringByReplacingOccurrencesOfString(baseUrl.path! + "/", withString: "", options: NSStringCompareOptions.LiteralSearch, range: nil)
+            let basePath: String = targetUrl.path == nil || !file.valid ? firstSourceUrl.path! : targetUrl.path!
+            text = file.path.stringByReplacingOccurrencesOfString(basePath + "/", withString: "", options: NSStringCompareOptions.LiteralSearch, range: nil)
             
           } else {
             text = file.path.lastPathComponent

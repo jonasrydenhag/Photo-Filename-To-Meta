@@ -35,7 +35,7 @@ class ExifToolRunner: NSObject {
     return run(file.path, arguments: ["-dateTimeOriginal", "-s3"], synchronous: true).stringByReplacingOccurrencesOfString("\\n*", withString: "", options: .RegularExpressionSearch)
   }
   
-  func write(tags: [Tag], file: File, overwriteFile: Bool = false) {
+  func write(tags: [Tag], file: File, overwriteFile: Bool = true) {
     var defaultArgs = Array<String>()
     var tagsArgs = Array<String>()
     
@@ -58,7 +58,7 @@ class ExifToolRunner: NSObject {
     }
   }
   
-  func deleteValueFor(tags: [Tag], file: File, overwriteFile: Bool = false) {
+  func deleteValueFor(tags: [Tag], file: File, overwriteFile: Bool = true) {
     for tag in tags {
       tag.value = ""
     }
