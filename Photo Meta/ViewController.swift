@@ -124,19 +124,23 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
   }
   
   private func setOutletsEnableState() {
+    if sourceUrl.path != nil && selectedTags.count > 0 {
+      readBtn.enabled = true
+    } else {
+      readBtn.enabled = false
+    }
+    
     if sourceUrl.path != nil && (overwriteCheck.state == NSOnState || targetUrl.path != nil) {
       deleteBtn.enabled = true
-      readBtn.enabled = true
       writeBtn.enabled = true
       
       if selectedTags.count == 0 {
         deleteBtn.enabled = false
-        readBtn.enabled = false
         writeBtn.enabled = false
       }
+      
     } else {
       deleteBtn.enabled = false
-      readBtn.enabled = false
       writeBtn.enabled = false
     }
     
@@ -246,7 +250,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
       }
     }
     
-    if overwriteCheck.state == NSOffState {
+    if overwriteCheck.state == NSOffState && targetUrl.path != nil {
       sourceUrl = targetUrl
     }
     
