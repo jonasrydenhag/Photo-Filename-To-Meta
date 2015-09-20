@@ -18,6 +18,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
   @IBOutlet weak var tagCheckTitle: NSButton!
   @IBOutlet weak var tagCheckDate: NSButton!
   @IBOutlet weak var overwriteCheck: NSButton!
+  @IBOutlet weak var sourceSelectBtn: NSButton!
   @IBOutlet weak var targetSelectBtn: NSButton!
   @IBOutlet weak var sourceTextField: NSTextField!
   @IBOutlet weak var targetTextField: NSTextField!
@@ -153,6 +154,27 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
       targetTextField.enabled = true
       targetTextFieldLabel.textColor = nil
     }
+    
+    sourceSelectBtn.enabled = true
+    overwriteCheck.enabled = true
+    
+    keepCheckBtn.enabled = true
+    tagCheckTitle.enabled = true
+    tagCheckDate.enabled = true
+  }
+  
+  private func disableAllOutlets() {
+    readBtn.enabled = false
+    deleteBtn.enabled = false
+    writeBtn.enabled = false
+  
+    sourceSelectBtn.enabled = false
+    targetSelectBtn.enabled = false
+    overwriteCheck.enabled = false
+    
+    keepCheckBtn.enabled = false
+    tagCheckTitle.enabled = false
+    tagCheckDate.enabled = false
   }
 
   func choosePath(canChooseFiles: Bool = true) -> NSURL? {
@@ -214,6 +236,8 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     var kept: [String: [File]] = [String : [File]]()
     toggleColumnVisibility(tableView, tags: selectedTags)
     
+    disableAllOutlets()
+    
     dispatch_async(dispatch_get_global_queue(Int(QOS_CLASS_USER_INITIATED.value), 0)) {
       for file in files {
         if self.fileManager.fileExistsAtPath(file.path) {
@@ -257,6 +281,8 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
       if self.overwriteCheck.state == NSOffState && self.targetUrl.path != nil {
         self.sourceUrl = self.targetUrl
       }
+      
+      self.setOutletsEnableState()
       
       for tagName in kept.keys {
         self.overwrite(kept[tagName]!, tag: Tag(name: tagName))

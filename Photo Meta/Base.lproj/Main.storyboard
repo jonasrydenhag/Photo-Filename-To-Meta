@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="7706" systemVersion="15A278b" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="B8D-0N-5wS">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="7706" systemVersion="15A282a" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="B8D-0N-5wS">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="7706"/>
     </dependencies>
@@ -883,7 +883,7 @@
                                     <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </clipView>
                                 <animations/>
-                                <scroller key="horizontalScroller" verticalHuggingPriority="750" doubleValue="0.070832522543148271" horizontal="YES" id="Qmf-7c-o81">
+                                <scroller key="horizontalScroller" verticalHuggingPriority="750" horizontal="YES" id="Qmf-7c-o81">
                                     <rect key="frame" x="1" y="116.181216776371" width="234" height="16"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <animations/>
@@ -1031,7 +1031,7 @@
                                 </connections>
                             </button>
                             <button verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="zub-yx-Jha">
-                                <rect key="frame" x="14" y="26" width="102" height="19"/>
+                                <rect key="frame" x="14" y="26" width="102" height="32"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="90" id="93a-lH-tvy"/>
                                 </constraints>
@@ -1103,6 +1103,7 @@
                         <outlet property="keepCheckBtn" destination="6nu-2y-pcn" id="4ox-21-pAz"/>
                         <outlet property="overwriteCheck" destination="G3J-8u-6Vv" id="FLq-zt-1Nm"/>
                         <outlet property="readBtn" destination="kR8-Uh-u2S" id="lut-Ml-wLz"/>
+                        <outlet property="sourceSelectBtn" destination="o9i-5T-F3N" id="0Bf-39-sBG"/>
                         <outlet property="sourceTextField" destination="azP-WD-d2E" id="omp-n2-mQV"/>
                         <outlet property="tableView" destination="0xu-QC-DLK" id="rK8-KW-SGY"/>
                         <outlet property="tagCheckDate" destination="FGT-b4-nAV" id="ad4-gA-96A"/>
