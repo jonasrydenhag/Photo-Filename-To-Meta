@@ -32,7 +32,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
   }
   
   @IBAction func selectTargetDialog(sender: NSButton) {
-    if let selectedPath = choosePath(canChooseFiles: false) {
+    if let selectedPath = choosePath(canChooseFiles: false, canCreateDirectories: true) {
       targetUrl = selectedPath
     }
   }
@@ -191,11 +191,12 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     }
   }
 
-  func choosePath(canChooseFiles: Bool = true) -> NSURL? {
+  func choosePath(canChooseFiles: Bool = true, canCreateDirectories: Bool = false) -> NSURL? {
     var selectedPath: NSURL?
     var myOpenDialog: NSOpenPanel = NSOpenPanel()
     myOpenDialog.canChooseDirectories = true
     myOpenDialog.canChooseFiles = canChooseFiles
+    myOpenDialog.canCreateDirectories = canCreateDirectories
     var clickedBtn = myOpenDialog.runModal()
     
     if clickedBtn == NSFileHandlingPanelOKButton {
