@@ -1058,6 +1058,20 @@
                                     <action selector="read:" target="XfG-lQ-9wD" id="VtW-ch-EQ0"/>
                                 </connections>
                             </button>
+                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="py3-xA-jin">
+                                <rect key="frame" x="390" y="20" width="82" height="32"/>
+                                <animations/>
+                                <buttonCell key="cell" type="push" title="Cancel" bezelStyle="rounded" alignment="center" enabled="NO" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="X4W-T3-2VA">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                    <string key="keyEquivalent" base64-UTF8="YES">
+Gw
+</string>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="cancelBtnClick:" target="XfG-lQ-9wD" id="6Xe-DU-38D"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <constraints>
                             <constraint firstItem="6nu-2y-pcn" firstAttribute="leading" secondItem="FGT-b4-nAV" secondAttribute="trailing" constant="72" id="4s4-ST-q86"/>
@@ -1077,6 +1091,7 @@
                             <constraint firstItem="zub-yx-Jha" firstAttribute="leading" secondItem="m2S-Jp-Qdl" secondAttribute="leading" constant="20" symbolic="YES" id="Tgx-kD-bTc"/>
                             <constraint firstItem="kR8-Uh-u2S" firstAttribute="baseline" secondItem="O1U-Rk-jRC" secondAttribute="baseline" id="UNf-Ri-zaG"/>
                             <constraint firstItem="o9i-5T-F3N" firstAttribute="trailing" secondItem="pIA-bt-Dv5" secondAttribute="trailing" id="Wg9-wS-ixe"/>
+                            <constraint firstItem="kR8-Uh-u2S" firstAttribute="leading" secondItem="py3-xA-jin" secondAttribute="trailing" constant="12" symbolic="YES" id="Ww3-Hw-8O0"/>
                             <constraint firstItem="o9i-5T-F3N" firstAttribute="baseline" secondItem="azP-WD-d2E" secondAttribute="baseline" id="XKY-DR-6SK"/>
                             <constraint firstItem="S2T-xZ-nzy" firstAttribute="leading" secondItem="gIk-Io-Fet" secondAttribute="trailing" constant="8" symbolic="YES" id="XpI-JG-bUm"/>
                             <constraint firstItem="S2T-xZ-nzy" firstAttribute="top" secondItem="pIA-bt-Dv5" secondAttribute="top" id="aP6-iz-APh"/>
@@ -1091,6 +1106,7 @@
                             <constraint firstItem="gIk-Io-Fet" firstAttribute="leading" secondItem="cpI-pk-UO1" secondAttribute="leading" id="o5k-zf-Zjn"/>
                             <constraint firstItem="6nu-2y-pcn" firstAttribute="baseline" secondItem="FGT-b4-nAV" secondAttribute="baseline" id="oO7-x4-c3c"/>
                             <constraint firstItem="O1U-Rk-jRC" firstAttribute="leading" secondItem="kR8-Uh-u2S" secondAttribute="trailing" constant="12" symbolic="YES" id="poh-2v-9YO"/>
+                            <constraint firstItem="py3-xA-jin" firstAttribute="baseline" secondItem="kR8-Uh-u2S" secondAttribute="baseline" id="ruK-It-Mfo"/>
                             <constraint firstItem="G3J-8u-6Vv" firstAttribute="leading" secondItem="o9i-5T-F3N" secondAttribute="trailing" constant="8" symbolic="YES" id="tki-uy-yzX"/>
                             <constraint firstItem="cpI-pk-UO1" firstAttribute="top" secondItem="m2S-Jp-Qdl" secondAttribute="top" constant="118" id="vFx-jn-PR1"/>
                             <constraint firstItem="rZQ-6Y-J3h" firstAttribute="leading" secondItem="9oO-vZ-yha" secondAttribute="trailing" constant="8" symbolic="YES" id="xCk-vu-QdN"/>
@@ -1099,6 +1115,7 @@
                         <animations/>
                     </view>
                     <connections>
+                        <outlet property="cancelBtn" destination="py3-xA-jin" id="fCb-Mg-BZv"/>
                         <outlet property="deleteBtn" destination="zub-yx-Jha" id="m32-jB-Cgn"/>
                         <outlet property="keepCheckBtn" destination="6nu-2y-pcn" id="4ox-21-pAz"/>
                         <outlet property="overwriteCheck" destination="G3J-8u-6Vv" id="FLq-zt-1Nm"/>

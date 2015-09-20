@@ -12,6 +12,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
 
   @IBOutlet weak var tableView: NSTableView!
   @IBOutlet weak var deleteBtn: NSButton!
+  @IBOutlet weak var cancelBtn: NSButton!
   @IBOutlet weak var readBtn: NSButton!
   @IBOutlet weak var writeBtn: NSButton!
   @IBOutlet weak var keepCheckBtn: NSButton!
@@ -45,6 +46,10 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
   
   @IBAction func overwriteCheckClick(sender: NSButton) {
     setOutletsEnableState()
+  }
+  
+  @IBAction func cancelBtnClick(sender: NSButton) {
+    cancelRun = true
   }
   
   @IBAction func read(sender: NSButton) {
@@ -111,6 +116,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
       return checkedTags
     }
   }
+  private var cancelRun = false
   
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -161,9 +167,11 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     keepCheckBtn.enabled = true
     tagCheckTitle.enabled = true
     tagCheckDate.enabled = true
+    
+    cancelBtn.enabled = false
   }
   
-  private func disableAllOutlets() {
+  private func disableAllOutlets(exceptions: [NSControl] = []) {
     readBtn.enabled = false
     deleteBtn.enabled = false
     writeBtn.enabled = false
@@ -175,6 +183,12 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     keepCheckBtn.enabled = false
     tagCheckTitle.enabled = false
     tagCheckDate.enabled = false
+    
+    cancelBtn.enabled = false
+    
+    for control in exceptions {
+      control.enabled = true
+    }
   }
 
   func choosePath(canChooseFiles: Bool = true) -> NSURL? {
@@ -236,10 +250,13 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     var kept: [String: [File]] = [String : [File]]()
     toggleColumnVisibility(tableView, tags: selectedTags)
     
-    disableAllOutlets()
+    disableAllOutlets(exceptions: [cancelBtn])
     
     dispatch_async(dispatch_get_global_queue(Int(QOS_CLASS_USER_INITIATED.value), 0)) {
       for file in files {
+        if self.cancelRun {
+          break
+        }
         if self.fileManager.fileExistsAtPath(file.path) {
           if file.valid {
             if readTags {
@@ -278,15 +295,22 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
         }
       }
       
-      if self.overwriteCheck.state == NSOffState && self.targetUrl.path != nil {
-        self.sourceUrl = self.targetUrl
+      if self.cancelRun {
+        self.disableAllOutlets(exceptions: [self.sourceSelectBtn])
+        
+      } else {
+        self.setOutletsEnableState()
+        
+        if self.overwriteCheck.state == NSOffState && self.targetUrl.path != nil {
+          self.sourceUrl = self.targetUrl
+        }
+        
+        for tagName in kept.keys {
+          self.overwrite(kept[tagName]!, tag: Tag(name: tagName))
+        }
       }
       
-      self.setOutletsEnableState()
-      
-      for tagName in kept.keys {
-        self.overwrite(kept[tagName]!, tag: Tag(name: tagName))
-      }
+      self.cancelRun = false
     }
   }
   
