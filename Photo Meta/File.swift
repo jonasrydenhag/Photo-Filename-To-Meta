@@ -179,7 +179,7 @@ class File {
         default:
           month += "0"
         }
-      } else if stringPos == 1 && char == "0" {
+      } else if stringPos == 1 && month == "0" && char == "0" {
           month += "1"
       } else {
         month.append(char)
@@ -204,7 +204,7 @@ class File {
         default:
           day += "0"
         }
-      } else if stringPos == 1 && char == "0" {
+      } else if stringPos == 1 && day == "0" && char == "0" {
           day += "1"
       } else {
         day.append(char)
