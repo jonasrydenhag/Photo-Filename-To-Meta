@@ -351,9 +351,9 @@
                                 </tableHeaderView>
                             </scrollView>
                             <button translatesAutoresizingMaskIntoConstraints="NO" id="6nu-2y-pcn">
-                                <rect key="frame" x="502" y="359" width="130" height="18"/>
+                                <rect key="frame" x="206" y="360" width="176" height="18"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="126" id="jby-ye-w77"/>
+                                    <constraint firstAttribute="width" constant="172" id="BoN-6z-aQE"/>
                                 </constraints>
                                 <animations/>
                                 <buttonCell key="cell" type="check" title="Keep exiting tags" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="GW4-Qv-HlZ">
@@ -362,7 +362,7 @@
                                 </buttonCell>
                             </button>
                             <button translatesAutoresizingMaskIntoConstraints="NO" id="rZQ-6Y-J3h">
-                                <rect key="frame" x="324" y="359" width="49" height="18"/>
+                                <rect key="frame" x="75" y="360" width="49" height="18"/>
                                 <animations/>
                                 <buttonCell key="cell" type="check" title="Title" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="UcB-YD-ri5">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -373,7 +373,7 @@
                                 </connections>
                             </button>
                             <button translatesAutoresizingMaskIntoConstraints="NO" id="FGT-b4-nAV">
-                                <rect key="frame" x="383" y="359" width="51" height="18"/>
+                                <rect key="frame" x="128" y="360" width="51" height="18"/>
                                 <animations/>
                                 <buttonCell key="cell" type="check" title="Date" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="Uk4-NQ-b4P">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -384,7 +384,7 @@
                                 </connections>
                             </button>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="9oO-vZ-yha">
-                                <rect key="frame" x="267" y="360" width="53" height="17"/>
+                                <rect key="frame" x="18" y="361" width="53" height="17"/>
                                 <animations/>
                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Update:" id="ANx-mO-aqg">
                                     <font key="font" metaFont="system"/>
@@ -467,7 +467,7 @@
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
-                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="O1U-Rk-jRC">
+                            <button verticalHuggingPriority="750" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="O1U-Rk-jRC">
                                 <rect key="frame" x="554" y="20" width="82" height="32"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="70" id="6IL-CN-QNA"/>
@@ -481,21 +481,7 @@
                                     <action selector="write:" target="XfG-lQ-9wD" id="d0I-MD-b2i"/>
                                 </connections>
                             </button>
-                            <button verticalHuggingPriority="750" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="zub-yx-Jha">
-                                <rect key="frame" x="14" y="26" width="102" height="32"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="90" id="93a-lH-tvy"/>
-                                </constraints>
-                                <animations/>
-                                <buttonCell key="cell" type="push" title="Delete tags" bezelStyle="rounded" alignment="center" enabled="NO" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="EP9-zP-2Hc">
-                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                    <font key="font" metaFont="system"/>
-                                </buttonCell>
-                                <connections>
-                                    <action selector="delete:" target="XfG-lQ-9wD" id="PD4-he-EYk"/>
-                                </connections>
-                            </button>
-                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="kR8-Uh-u2S">
+                            <button verticalHuggingPriority="750" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="kR8-Uh-u2S">
                                 <rect key="frame" x="472" y="20" width="82" height="32"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="70" id="wAg-Vt-r4f"/>
@@ -509,7 +495,7 @@
                                     <action selector="read:" target="XfG-lQ-9wD" id="VtW-ch-EQ0"/>
                                 </connections>
                             </button>
-                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="py3-xA-jin">
+                            <button verticalHuggingPriority="750" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="py3-xA-jin">
                                 <rect key="frame" x="390" y="20" width="82" height="32"/>
                                 <animations/>
                                 <buttonCell key="cell" type="push" title="Cancel" bezelStyle="rounded" alignment="center" enabled="NO" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="X4W-T3-2VA">
@@ -523,44 +509,55 @@ Gw
                                     <action selector="cancelBtnClick:" target="XfG-lQ-9wD" id="6Xe-DU-38D"/>
                                 </connections>
                             </button>
+                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="zub-yx-Jha">
+                                <rect key="frame" x="14" y="20" width="114" height="32"/>
+                                <animations/>
+                                <buttonCell key="cell" type="push" title="Delete tags" bezelStyle="rounded" alignment="center" enabled="NO" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="EP9-zP-2Hc">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="delete:" target="XfG-lQ-9wD" id="PD4-he-EYk"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <constraints>
-                            <constraint firstItem="6nu-2y-pcn" firstAttribute="leading" secondItem="FGT-b4-nAV" secondAttribute="trailing" constant="72" id="4s4-ST-q86"/>
-                            <constraint firstItem="FGT-b4-nAV" firstAttribute="baseline" secondItem="rZQ-6Y-J3h" secondAttribute="baseline" id="5bU-U4-C7y"/>
+                            <constraint firstItem="9oO-vZ-yha" firstAttribute="leading" secondItem="gIk-Io-Fet" secondAttribute="leading" id="4vm-0r-iRs"/>
                             <constraint firstItem="98H-ES-1Hd" firstAttribute="leading" secondItem="gIk-Io-Fet" secondAttribute="leading" id="5hC-zZ-WgF"/>
+                            <constraint firstItem="zub-yx-Jha" firstAttribute="baseline" secondItem="py3-xA-jin" secondAttribute="baseline" id="97b-Vz-14P"/>
                             <constraint firstItem="pIA-bt-Dv5" firstAttribute="leading" secondItem="S2T-xZ-nzy" secondAttribute="trailing" constant="8" symbolic="YES" id="BOw-Mf-A8c"/>
                             <constraint firstItem="kR8-Uh-u2S" firstAttribute="top" secondItem="cpI-pk-UO1" secondAttribute="bottom" constant="20" symbolic="YES" id="E7k-qy-WCy"/>
                             <constraint firstItem="o9i-5T-F3N" firstAttribute="leading" secondItem="azP-WD-d2E" secondAttribute="trailing" constant="8" symbolic="YES" id="EPH-o2-vtn"/>
-                            <constraint firstItem="6nu-2y-pcn" firstAttribute="trailing" secondItem="cpI-pk-UO1" secondAttribute="trailing" id="GUs-m3-qwV"/>
                             <constraint firstItem="S2T-xZ-nzy" firstAttribute="top" secondItem="azP-WD-d2E" secondAttribute="bottom" constant="10" symbolic="YES" id="Hmx-HK-eti"/>
-                            <constraint firstItem="6nu-2y-pcn" firstAttribute="trailing" secondItem="O1U-Rk-jRC" secondAttribute="trailing" id="JRR-X9-SmQ"/>
+                            <constraint firstItem="rZQ-6Y-J3h" firstAttribute="baseline" secondItem="FGT-b4-nAV" secondAttribute="baseline" id="Imk-UF-6Gc"/>
                             <constraint firstItem="azP-WD-d2E" firstAttribute="top" secondItem="98H-ES-1Hd" secondAttribute="top" id="K3z-kg-BX2"/>
                             <constraint firstAttribute="bottom" secondItem="cpI-pk-UO1" secondAttribute="bottom" constant="68" id="LFe-Ah-zTW"/>
                             <constraint firstItem="o9i-5T-F3N" firstAttribute="centerY" secondItem="G3J-8u-6Vv" secondAttribute="centerY" id="Mtd-xv-HVh"/>
                             <constraint firstItem="S2T-xZ-nzy" firstAttribute="top" secondItem="gIk-Io-Fet" secondAttribute="top" id="PfP-68-jMD"/>
                             <constraint firstItem="O1U-Rk-jRC" firstAttribute="top" secondItem="kR8-Uh-u2S" secondAttribute="top" id="Rzz-9n-ZNI"/>
-                            <constraint firstItem="zub-yx-Jha" firstAttribute="leading" secondItem="m2S-Jp-Qdl" secondAttribute="leading" constant="20" symbolic="YES" id="Tgx-kD-bTc"/>
                             <constraint firstItem="kR8-Uh-u2S" firstAttribute="baseline" secondItem="O1U-Rk-jRC" secondAttribute="baseline" id="UNf-Ri-zaG"/>
                             <constraint firstItem="o9i-5T-F3N" firstAttribute="trailing" secondItem="pIA-bt-Dv5" secondAttribute="trailing" id="Wg9-wS-ixe"/>
                             <constraint firstItem="kR8-Uh-u2S" firstAttribute="leading" secondItem="py3-xA-jin" secondAttribute="trailing" constant="12" symbolic="YES" id="Ww3-Hw-8O0"/>
+                            <constraint firstItem="9oO-vZ-yha" firstAttribute="baseline" secondItem="rZQ-6Y-J3h" secondAttribute="baseline" id="XEz-an-ApR"/>
                             <constraint firstItem="o9i-5T-F3N" firstAttribute="baseline" secondItem="azP-WD-d2E" secondAttribute="baseline" id="XKY-DR-6SK"/>
                             <constraint firstItem="S2T-xZ-nzy" firstAttribute="leading" secondItem="gIk-Io-Fet" secondAttribute="trailing" constant="8" symbolic="YES" id="XpI-JG-bUm"/>
+                            <constraint firstItem="zub-yx-Jha" firstAttribute="leading" secondItem="cpI-pk-UO1" secondAttribute="leading" id="ZEa-lj-456"/>
                             <constraint firstItem="S2T-xZ-nzy" firstAttribute="top" secondItem="pIA-bt-Dv5" secondAttribute="top" id="aP6-iz-APh"/>
-                            <constraint firstItem="FGT-b4-nAV" firstAttribute="leading" secondItem="rZQ-6Y-J3h" secondAttribute="trailing" constant="14" id="eTM-HW-xIU"/>
+                            <constraint firstItem="cpI-pk-UO1" firstAttribute="top" secondItem="9oO-vZ-yha" secondAttribute="bottom" constant="9" id="cXJ-MM-q1m"/>
                             <constraint firstItem="98H-ES-1Hd" firstAttribute="top" secondItem="m2S-Jp-Qdl" secondAttribute="top" constant="20" symbolic="YES" id="gcw-LD-mxq"/>
-                            <constraint firstItem="cpI-pk-UO1" firstAttribute="top" secondItem="9oO-vZ-yha" secondAttribute="bottom" constant="8" symbolic="YES" id="h10-Jq-yoH"/>
-                            <constraint firstItem="cpI-pk-UO1" firstAttribute="leading" secondItem="zub-yx-Jha" secondAttribute="leading" id="jGa-VL-PVd"/>
+                            <constraint firstItem="zub-yx-Jha" firstAttribute="trailing" secondItem="rZQ-6Y-J3h" secondAttribute="trailing" id="iam-Yl-psL"/>
                             <constraint firstItem="azP-WD-d2E" firstAttribute="leading" secondItem="S2T-xZ-nzy" secondAttribute="leading" id="ky5-k4-xET"/>
-                            <constraint firstItem="kR8-Uh-u2S" firstAttribute="centerY" secondItem="zub-yx-Jha" secondAttribute="centerY" id="l1m-nT-DZe"/>
-                            <constraint firstItem="rZQ-6Y-J3h" firstAttribute="baseline" secondItem="9oO-vZ-yha" secondAttribute="baseline" id="mtn-oI-wXc"/>
+                            <constraint firstItem="FGT-b4-nAV" firstAttribute="leading" secondItem="rZQ-6Y-J3h" secondAttribute="trailing" constant="8" symbolic="YES" id="l6T-Rv-X1R"/>
                             <constraint firstItem="pIA-bt-Dv5" firstAttribute="leading" secondItem="o9i-5T-F3N" secondAttribute="leading" id="nxN-Pj-9aH"/>
                             <constraint firstItem="gIk-Io-Fet" firstAttribute="leading" secondItem="cpI-pk-UO1" secondAttribute="leading" id="o5k-zf-Zjn"/>
-                            <constraint firstItem="6nu-2y-pcn" firstAttribute="baseline" secondItem="FGT-b4-nAV" secondAttribute="baseline" id="oO7-x4-c3c"/>
+                            <constraint firstItem="6nu-2y-pcn" firstAttribute="leading" secondItem="FGT-b4-nAV" secondAttribute="trailing" constant="31" id="o7B-3R-4IL"/>
                             <constraint firstItem="O1U-Rk-jRC" firstAttribute="leading" secondItem="kR8-Uh-u2S" secondAttribute="trailing" constant="12" symbolic="YES" id="poh-2v-9YO"/>
+                            <constraint firstItem="zub-yx-Jha" firstAttribute="leading" secondItem="m2S-Jp-Qdl" secondAttribute="leading" constant="20" symbolic="YES" id="qaa-YV-W4E"/>
                             <constraint firstItem="py3-xA-jin" firstAttribute="baseline" secondItem="kR8-Uh-u2S" secondAttribute="baseline" id="ruK-It-Mfo"/>
+                            <constraint firstItem="6nu-2y-pcn" firstAttribute="baseline" secondItem="FGT-b4-nAV" secondAttribute="baseline" id="sNr-og-1lF"/>
                             <constraint firstItem="G3J-8u-6Vv" firstAttribute="leading" secondItem="o9i-5T-F3N" secondAttribute="trailing" constant="8" symbolic="YES" id="tki-uy-yzX"/>
                             <constraint firstItem="cpI-pk-UO1" firstAttribute="top" secondItem="m2S-Jp-Qdl" secondAttribute="top" constant="118" id="vFx-jn-PR1"/>
-                            <constraint firstItem="rZQ-6Y-J3h" firstAttribute="leading" secondItem="9oO-vZ-yha" secondAttribute="trailing" constant="8" symbolic="YES" id="xCk-vu-QdN"/>
+                            <constraint firstItem="rZQ-6Y-J3h" firstAttribute="leading" secondItem="9oO-vZ-yha" secondAttribute="trailing" constant="8" symbolic="YES" id="vfs-9N-ViB"/>
                             <constraint firstAttribute="trailing" secondItem="cpI-pk-UO1" secondAttribute="trailing" constant="20" symbolic="YES" id="yi8-ts-aNG"/>
                         </constraints>
                         <animations/>

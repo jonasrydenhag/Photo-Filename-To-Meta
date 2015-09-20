@@ -496,11 +496,11 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
   
   func overwrite(files: [File], tag: Tag) {
     var alert = NSAlert()
-    alert.addButtonWithTitle("Yes")
-    alert.addButtonWithTitle("No")
-    alert.messageText = "Existing values for the \(tag.name) tag"
-    var fileEnum = (files.count == 1) ? "file" : "files"
-    alert.informativeText = "\(files.count) \(fileEnum) already have a values. Do you want to overwrite?"
+    alert.addButtonWithTitle(NSLocalizedString("Yes", comment: "Overwrite alert"))
+    alert.addButtonWithTitle(NSLocalizedString("No", comment: "Overwrite alert"))
+    alert.messageText = String(format: NSLocalizedString("Existing values for the %@ tag", comment: "Overwrite alert"), NSLocalizedString(tag.name, comment: "Overwrite alert"))
+    var fileEnum = (files.count == 1) ? NSLocalizedString("file", comment: "Overwrite alert") :NSLocalizedString("files", comment: "Overwrite alert")
+    alert.informativeText = String(format: NSLocalizedString("%1$d %2$@ already have values. Do you want to overwrite?", comment: "Overwrite alert"), files.count, fileEnum)
     alert.alertStyle = NSAlertStyle.InformationalAlertStyle
     
     let result = alert.runModal()

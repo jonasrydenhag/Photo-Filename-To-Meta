@@ -1,0 +1,24 @@
+/* Overwrite alert */
+"%1$d %2$@ already have values. Do you want to overwrite?" = "%1$d %2$@ har redan värden. Vill du skriva över?";
+
+/* Overwrite alert */
+"Existing values for the %@ tag" = "Befintliga värden för %@ taggen";
+
+/* Overwrite alert */
+"title" = "titel";
+
+/* Overwrite alert */
+"date" = "datum";
+
+/* Overwrite alert */
+"No" = "Nej";
+
+/* Overwrite alert */
+"Yes" = "Ja";
+
+/* Overwrite alert */
+"file" = "fil";
+
+/* Overwrite alert */
+"files" = "filer";
+
