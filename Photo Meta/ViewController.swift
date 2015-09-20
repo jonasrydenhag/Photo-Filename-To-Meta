@@ -214,48 +214,53 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     var kept: [String: [File]] = [String : [File]]()
     toggleColumnVisibility(tableView, tags: selectedTags)
     
-    for file in files {
-      if fileManager.fileExistsAtPath(file.path) {
-        if file.valid {
-          if readTags {
-            file.read(tags)
-            
-          } else {
-            if overwriteCheck.state == NSOffState {
-              if !copy(file, toDir: targetUrl) {
-                break
-              }
-            }
-            
-            if deleteTags {
-              file.deleteValueFor(tags)
+    dispatch_async(dispatch_get_global_queue(Int(QOS_CLASS_USER_INITIATED.value), 0)) {
+      for file in files {
+        if self.fileManager.fileExistsAtPath(file.path) {
+          if file.valid {
+            if readTags {
+              file.read(tags)
               
             } else {
-              file.write(tags, keepExistingTags: keepExistingTags)
-              if keepExistingTags && file.kept.count > 0 {
-                for tag in file.kept {
-                  if kept[tag.name] == nil {
-                    kept[tag.name] = []
+              if self.overwriteCheck.state == NSOffState {
+                if !self.copy(file, toDir: self.targetUrl) {
+                  break
+                }
+              }
+              
+              if deleteTags {
+                file.deleteValueFor(tags)
+                
+              } else {
+                file.write(tags, keepExistingTags: keepExistingTags)
+                if keepExistingTags && file.kept.count > 0 {
+                  for tag in file.kept {
+                    if kept[tag.name] == nil {
+                      kept[tag.name] = []
+                    }
+                    kept[tag.name]!.append(file)
                   }
-                  kept[tag.name]!.append(file)
                 }
               }
             }
           }
+          
+          dispatch_async(dispatch_get_main_queue()) {
+            if process {
+              self.processedFiles.append(file)
+            }
+            self.tableView.reloadData()
+          }
         }
-        if process {
-          processedFiles.append(file)
-        }
-        tableView.reloadData()
       }
-    }
-    
-    if overwriteCheck.state == NSOffState && targetUrl.path != nil {
-      sourceUrl = targetUrl
-    }
-    
-    for tagName in kept.keys {
-      overwrite(kept[tagName]!, tag: Tag(name: tagName))
+      
+      if self.overwriteCheck.state == NSOffState && self.targetUrl.path != nil {
+        self.sourceUrl = self.targetUrl
+      }
+      
+      for tagName in kept.keys {
+        self.overwrite(kept[tagName]!, tag: Tag(name: tagName))
+      }
     }
   }
   
