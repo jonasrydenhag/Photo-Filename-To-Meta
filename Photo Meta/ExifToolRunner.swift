@@ -147,17 +147,4 @@ class ExifToolRunner: NSObject {
       let string = NSString(data: data, encoding: NSASCIIStringEncoding)
     }
   }
-  
-  func runPhotoScript(path: String) {
-    // Setup the task
-    let task = NSTask()
-    task.launchPath = "/Users/jonas/Library/Mobile Documents/com~apple~CloudDocs/Projekt/Foto meta projekt/photo.sh"
-    task.arguments = ["-p \(exifToolPath)", path]
-    
-    // Pipe the standard out to an NSPipe, and set it to notify us when it gets data
-    let pipe = NSPipe()
-    task.standardOutput = pipe
-    
-    runAsynchronous(task, pipe: pipe, observer: self, selector: "receivedData:")
-  }
 }
