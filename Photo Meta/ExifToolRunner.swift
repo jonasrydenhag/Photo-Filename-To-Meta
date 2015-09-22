@@ -10,7 +10,7 @@ import Foundation
 
 class ExifToolRunner: NSObject {
   
-  let exifToolPath = "/usr/local/bin/exiftool"
+  let exifToolPath: String
   
   let ignoreMinorErrors = true
   
@@ -25,6 +25,12 @@ class ExifToolRunner: NSObject {
       default:
         return ""
       }
+  }
+  
+  override init() {
+    exifToolPath = NSBundle.mainBundle().pathForResource("exiftool", ofType: "")!
+    
+    super.init()
   }
   
   func titleFor(file: File) -> String {

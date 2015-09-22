@@ -12,6 +12,8 @@
 		DD5FF60F1BAEBE40008A9E37 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = DD5FF6111BAEBE40008A9E37 /* InfoPlist.strings */; };
 		DD5FF6141BAEBE40008A9E37 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = DD5FF6161BAEBE40008A9E37 /* Localizable.strings */; };
 		DD5FF6191BAEBE41008A9E37 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = DD5FF61B1BAEBE41008A9E37 /* InfoPlist.strings */; };
+		DD67B6AD1BB13D2000E64585 /* lib in Resources */ = {isa = PBXBuildFile; fileRef = DD67B6AC1BB13D2000E64585 /* lib */; };
+		DD67B6B11BB13E6200E64585 /* exiftool in Resources */ = {isa = PBXBuildFile; fileRef = DD67B6B01BB13E6200E64585 /* exiftool */; };
 		DDBA7A091B83E8B500CB49A3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDBA7A081B83E8B500CB49A3 /* AppDelegate.swift */; };
 		DDBA7A0B1B83E8B500CB49A3 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDBA7A0A1B83E8B500CB49A3 /* ViewController.swift */; };
 		DDBA7A0D1B83E8B500CB49A3 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DDBA7A0C1B83E8B500CB49A3 /* Images.xcassets */; };
@@ -37,6 +39,8 @@
 		DD5FF6101BAEBE40008A9E37 /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		DD5FF6151BAEBE40008A9E37 /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/Localizable.strings; sourceTree = "<group>"; };
 		DD5FF61A1BAEBE41008A9E37 /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		DD67B6AC1BB13D2000E64585 /* lib */ = {isa = PBXFileReference; lastKnownFileType = folder; path = lib; sourceTree = "<group>"; };
+		DD67B6B01BB13E6200E64585 /* exiftool */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.perl; path = exiftool; sourceTree = "<group>"; };
 		DDBA7A031B83E8B500CB49A3 /* Photo Meta.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Photo Meta.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DDBA7A071B83E8B500CB49A3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DDBA7A081B83E8B500CB49A3 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -77,6 +81,24 @@
 			name = Library;
 			sourceTree = "<group>";
 		};
+		DD67B6AA1BB13CC000E64585 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				DD67B6AB1BB13CFE00E64585 /* ExifTool */,
+			);
+			name = Resources;
+			path = ..;
+			sourceTree = "<group>";
+		};
+		DD67B6AB1BB13CFE00E64585 /* ExifTool */ = {
+			isa = PBXGroup;
+			children = (
+				DD67B6AC1BB13D2000E64585 /* lib */,
+				DD67B6B01BB13E6200E64585 /* exiftool */,
+			);
+			name = ExifTool;
+			sourceTree = "<group>";
+		};
 		DDBA79FA1B83E8B500CB49A3 = {
 			isa = PBXGroup;
 			children = (
@@ -104,6 +126,7 @@
 				DDBA7A0E1B83E8B500CB49A3 /* Main.storyboard */,
 				DD11F4B21B89829B008B14B3 /* Library */,
 				DDBA7A061B83E8B500CB49A3 /* Supporting Files */,
+				DD67B6AA1BB13CC000E64585 /* Resources */,
 			);
 			path = "Photo Meta";
 			sourceTree = "<group>";
@@ -216,6 +239,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DD67B6B11BB13E6200E64585 /* exiftool in Resources */,
+				DD67B6AD1BB13D2000E64585 /* lib in Resources */,
 				DDBA7A0D1B83E8B500CB49A3 /* Images.xcassets in Resources */,
 				DD5FF6191BAEBE41008A9E37 /* InfoPlist.strings in Resources */,
 				DD5FF6141BAEBE40008A9E37 /* Localizable.strings in Resources */,
