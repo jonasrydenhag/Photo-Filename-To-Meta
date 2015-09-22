@@ -3,7 +3,7 @@
 //  Photo Meta
 //
 //  Created by Jonas Rydenhag on 2015-08-22.
-//  Copyright (c) 2015 Yasai, Inc. All rights reserved.
+//  Copyright (c) 2015 Jonas Rydenhag. All rights reserved.
 //
 
 import Foundation
