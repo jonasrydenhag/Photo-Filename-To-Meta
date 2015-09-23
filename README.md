@@ -20,3 +20,6 @@ The supported file types are ".jpg", ".tiff" and ".gif". Note that although the 
 
 ## OS X App
 The first version of the app supports OS X 10.10 (Yosemite) and OS X 10.11 (El Capitan) and can be downloaded here, https://github.com/jonasrydenhag/Photo-Filename-To-Meta/releases/download/v0.1-beta/Photo.Meta.app.zip.
+
+## Bash script
+This application is based on a bash script that I created. It can be found here, https://github.com/jonasrydenhag/Photo-Filename-To-Meta-Bash
