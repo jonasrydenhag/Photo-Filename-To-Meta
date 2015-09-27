@@ -34,11 +34,11 @@ class ExifToolRunner: NSObject {
   }
   
   func titleFor(file: File) -> String {
-    return run(file.path, arguments: ["-title", "-s3"], synchronous: true).stringByReplacingOccurrencesOfString("\\n*", withString: "", options: .RegularExpressionSearch)
+    return run(file.URL, arguments: ["-title", "-s3"], synchronous: true).stringByReplacingOccurrencesOfString("\\n*", withString: "", options: .RegularExpressionSearch)
   }
   
   func dateFor(file: File) -> String {
-    return run(file.path, arguments: ["-dateTimeOriginal", "-s3"], synchronous: true).stringByReplacingOccurrencesOfString("\\n*", withString: "", options: .RegularExpressionSearch)
+    return run(file.URL, arguments: ["-dateTimeOriginal", "-s3"], synchronous: true).stringByReplacingOccurrencesOfString("\\n*", withString: "", options: .RegularExpressionSearch)
   }
   
   func write(tags: [Tag], file: File, overwriteFile: Bool = true) {
@@ -60,7 +60,7 @@ class ExifToolRunner: NSObject {
     }
     
     if tagsArgs.count > 0 {
-      run(file.path, arguments: tagsArgs + defaultArgs, synchronous: true);
+      run(file.URL, arguments: tagsArgs + defaultArgs, synchronous: true);
     }
   }
   
@@ -89,7 +89,7 @@ class ExifToolRunner: NSObject {
     }
   }
   
-  private func run(path: String, arguments: [String], synchronous: Bool = false) -> String {
+  private func run(URL: NSURL, arguments: [String], synchronous: Bool = false) -> String {
     var defaultArgs = Array<String>()
     
     if ignoreMinorErrors {
@@ -99,7 +99,7 @@ class ExifToolRunner: NSObject {
     // Setup the task
     let task = NSTask()
     task.launchPath = exifToolPath
-    task.arguments = defaultArgs + arguments + [path]
+    task.arguments = defaultArgs + arguments + [URL.path!]
 
     // Pipe the standard out to an NSPipe
     let pipe = NSPipe()
@@ -144,7 +144,7 @@ class ExifToolRunner: NSObject {
       // Since we just got the notification from fh, we must tell it to notify us again when it gets more data
       fh.waitForDataInBackgroundAndNotify()
       // Convert the data into a string
-      let string = NSString(data: data, encoding: NSASCIIStringEncoding)
+      _ = NSString(data: data, encoding: NSASCIIStringEncoding)
     }
   }
 }

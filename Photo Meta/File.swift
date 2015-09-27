@@ -10,12 +10,7 @@ import Foundation
 
 class File {
   
-  var URL: NSURL {
-    didSet {
-      path = URL.path!
-    }
-  }
-  private (set) var path: String
+  var URL: NSURL
   private (set) var valid: Bool = false
   private (set) var initialTagUpdated: [String : Bool] = [String : Bool]()
   private (set) var tagValues: [String : String] = [String : String]()
@@ -31,7 +26,6 @@ class File {
   
   init(fileURL: NSURL, runner: ExifToolRunner) {
     self.URL = fileURL
-    self.path = fileURL.path!
     self.runner = runner
     self.valid = self.fileTypeConformsTo(runner.supportedFileTypes)
     dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
@@ -112,7 +106,7 @@ class File {
   }
   
   private func extractTitle() -> String {
-      return path.lastPathComponent.stringByDeletingPathExtension
+      return URL.URLByDeletingPathExtension!.lastPathComponent!
   }
   
   private func extractDate() -> NSDate? {
@@ -236,7 +230,7 @@ class File {
   }
   
   private func fileTypeConformsTo(types: [CFString!]) -> Bool {
-    let pathExtension = path.pathExtension
+    let pathExtension = URL.pathExtension!
     let fileUTI: Unmanaged<CFString>! = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, pathExtension, nil)
     let fileUTICF: CFString! = fileUTI.takeRetainedValue()
     

@@ -192,7 +192,6 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
   }
 
   func choosePath(canChooseFiles: Bool = true, canCreateDirectories: Bool = false) -> NSURL? {
-    let selectedPath: NSURL?
     let myOpenDialog: NSOpenPanel = NSOpenPanel()
     myOpenDialog.canChooseDirectories = true
     myOpenDialog.canChooseFiles = canChooseFiles
@@ -209,7 +208,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
         }
       }
     }
-    return selectedPath
+    return nil
   }
   
   func collectFilesFrom(URL: NSURL) {
@@ -237,7 +236,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
   private func addFileIn(URL: NSURL) {
     if let path: String = URL.path {
       var isDir: ObjCBool = false
-      if fileManager.fileExistsAtPath(path, isDirectory:&isDir) && !isDir && path.lastPathComponent != ".DS_Store" {
+      if fileManager.fileExistsAtPath(path, isDirectory:&isDir) && !isDir && URL.lastPathComponent != ".DS_Store" {
         let file = File(fileURL: URL, runner: exifToolRunner)
         filesInUrl.append(file)
       }
@@ -258,7 +257,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
         if self.cancelRun {
           break
         }
-        if self.fileManager.fileExistsAtPath(file.path) {
+        if self.fileManager.fileExistsAtPath(file.URL.path!) {
           if file.valid {
             if readTags {
               file.read(tags)
@@ -320,21 +319,19 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     var destPath: String?
     
     if fileManager.fileExistsAtPath(fromBase.path!, isDirectory:&fromBaseDir) {
-      let diffFromBase = file.path.stringByReplacingOccurrencesOfString(fromBase.path! + "/", withString: "", options: NSStringCompareOptions.LiteralSearch, range: nil)
       var targetPath = toDir.path! + "/"
-      destPath = targetPath + file.path.lastPathComponent
+      destPath = targetPath + file.URL.lastPathComponent!
       
       if fromBaseDir {
+        let diffFromBase = NSURL(fileURLWithPath: file.URL.path!.stringByReplacingOccurrencesOfString(fromBase.path! + "/", withString: "", options: NSStringCompareOptions.LiteralSearch, range: nil))
         
-        for component in diffFromBase.pathComponents {
-          if component != file.path.lastPathComponent {
-            targetPath += component + "/"
-          }
+        if diffFromBase.URLByDeletingLastPathComponent?.relativePath != "." {
+          targetPath += diffFromBase.URLByDeletingLastPathComponent!.relativePath! + "/"
         }
+       
+        destPath = targetPath + file.URL.lastPathComponent!
         
-        destPath = targetPath + file.path.lastPathComponent
-        
-        if destPath != file.path {
+        if destPath != file.URL.path {
           var targetPathDir: ObjCBool = false
           if fileManager.fileExistsAtPath(targetPath, isDirectory:&targetPathDir) && !targetPathDir {
             var targetPathRemove: NSError?
@@ -362,7 +359,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
         }
       }
       
-      if destPath != file.path {
+      if destPath != file.URL.path {
         if fileManager.fileExistsAtPath(destPath!) {
           var targetPathRemove: NSError?
           do {
@@ -384,11 +381,11 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     if let toDirPath = toDir.path {
       var isDir: ObjCBool = false
       if fileManager.fileExistsAtPath(toDirPath, isDirectory:&isDir) && isDir {
-        if fileManager.fileExistsAtPath(file.path) {
+        if fileManager.fileExistsAtPath(file.URL.path!) {
           if let destPath = prepareCopyDestPath(file, fromBase: sourceUrl, toDir: targetUrl) {
-            if destPath != file.path {
+            if destPath != file.URL.path {
               do {
-                try fileManager.copyItemAtPath(file.path, toPath: destPath)
+                try fileManager.copyItemAtPath(file.URL.path!, toPath: destPath)
                 file.URL = NSURL(fileURLWithPath: destPath)
                 return true
               } catch _ as NSError {
@@ -465,13 +462,13 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
           
         } else if columnID == "path" {
           cellView = tableView.makeViewWithIdentifier("pathCell", owner: self) as! NSTableCellView
-          text = file.path
+          text = file.URL.path!
           if baseUrlIsDir {
             let basePath: String = targetUrl.path == nil || !file.valid ? collectedFilesBaseUrl.path! : targetUrl.path!
-            text = file.path.stringByReplacingOccurrencesOfString(basePath + "/", withString: "", options: NSStringCompareOptions.LiteralSearch, range: nil)
+            text = file.URL.path!.stringByReplacingOccurrencesOfString(basePath + "/", withString: "", options: NSStringCompareOptions.LiteralSearch, range: nil)
             
           } else {
-            text = file.path.lastPathComponent
+            text = file.URL.lastPathComponent!
           }
           
         } else if columnID == "date" {
