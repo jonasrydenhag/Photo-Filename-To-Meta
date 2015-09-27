@@ -381,8 +381,6 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
   }
   
   private func copy(file: File, toDir: NSURL) -> Bool {
-    var error: NSError?
-    
     if let toDirPath = toDir.path {
       var isDir: ObjCBool = false
       if fileManager.fileExistsAtPath(toDirPath, isDirectory:&isDir) && isDir {
@@ -393,8 +391,8 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
                 try fileManager.copyItemAtPath(file.path, toPath: destPath)
                 file.URL = NSURL(fileURLWithPath: destPath)
                 return true
-              } catch var error1 as NSError {
-                error = error1
+              } catch _ as NSError {
+                return false
               }
             } else {
               return true
@@ -407,28 +405,23 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
   }
   
   private func toggleColumnVisibility(tableView: NSTableView, tags: [Tag] = []) {
-    var column = tableView.columnWithIdentifier("status")
-    
     for column in tableView.tableColumns {
-      if let column = column as? NSTableColumn {
+      switch column.identifier {
+      case "enum", "path":
+        column.hidden = false
         
-        switch column.identifier {
-        case "enum", "path":
-            column.hidden = false
-          
-        case "status":
-          if mode == ViewController.writeMode {
-            column.hidden = false
-          } else {
-            column.hidden = true
-          }
-          
-        default:
+      case "status":
+        if mode == ViewController.writeMode {
+          column.hidden = false
+        } else {
           column.hidden = true
-          for tag in tags {
-            if column.identifier == tag.name && mode != ViewController.listMode {
-              column.hidden = false
-            }
+        }
+        
+      default:
+        column.hidden = true
+        for tag in tags {
+          if column.identifier == tag.name && mode != ViewController.listMode {
+            column.hidden = false
           }
         }
       }

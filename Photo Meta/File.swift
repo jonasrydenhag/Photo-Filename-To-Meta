@@ -44,11 +44,7 @@ class File {
     extractionFailed = Array<Tag>()
     
     for tag in tags {
-      var output: String
-      
-      var write = true
       if keepExistingTags && valueFor(tag) != "" {
-        write = false;
         kept.append(tag)
         continue
       }
@@ -107,7 +103,7 @@ class File {
   }
   
   func allInitialValuesUpdated() -> Bool {
-    for (tagName, tagValue) in tagValues {
+    for (tagName, _) in tagValues {
       if initialTagUpdated[tagName] == nil {
         return false
       }
@@ -245,7 +241,7 @@ class File {
     let fileUTICF: CFString! = fileUTI.takeRetainedValue()
     
     for kUTType in types {
-      if UTTypeConformsTo(fileUTICF, kUTType) != 0 {
+      if UTTypeConformsTo(fileUTICF, kUTType) {
         return true;
       }
     }
