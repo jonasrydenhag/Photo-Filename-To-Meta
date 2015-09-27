@@ -32,7 +32,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
   }
   
   @IBAction func selectTargetDialog(sender: NSButton) {
-    if let selectedPath = choosePath(canChooseFiles: false, canCreateDirectories: true) {
+    if let selectedPath = choosePath(false, canCreateDirectories: true) {
       targetUrl = selectedPath
     }
   }
@@ -192,17 +192,17 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
   }
 
   func choosePath(canChooseFiles: Bool = true, canCreateDirectories: Bool = false) -> NSURL? {
-    var selectedPath: NSURL?
-    var myOpenDialog: NSOpenPanel = NSOpenPanel()
+    let selectedPath: NSURL?
+    let myOpenDialog: NSOpenPanel = NSOpenPanel()
     myOpenDialog.canChooseDirectories = true
     myOpenDialog.canChooseFiles = canChooseFiles
     myOpenDialog.canCreateDirectories = canCreateDirectories
-    var clickedBtn = myOpenDialog.runModal()
+    let clickedBtn = myOpenDialog.runModal()
     
     if clickedBtn == NSFileHandlingPanelOKButton {
       // Make sure that a path was chosen
       if let selectedPath: NSURL = myOpenDialog.URL {
-        var err = NSError?()
+        let err = NSError?()
         
         if !(err != nil) {
           return selectedPath
@@ -223,7 +223,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
         addFileIn(URL)
         
       } else {
-        let enumerator: NSDirectoryEnumerator? = fileManager.enumeratorAtURL(URL, includingPropertiesForKeys: nil, options: nil, errorHandler: nil)
+        let enumerator: NSDirectoryEnumerator? = fileManager.enumeratorAtURL(URL, includingPropertiesForKeys: nil, options: [], errorHandler: nil)
         
         while let fileURL: NSURL = enumerator?.nextObject() as? NSURL {
           addFileIn(fileURL)
@@ -251,9 +251,9 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     var kept: [String: [File]] = [String : [File]]()
     toggleColumnVisibility(tableView, tags: selectedTags)
     
-    disableAllOutlets(exceptions: [cancelBtn])
+    disableAllOutlets([cancelBtn])
     
-    dispatch_async(dispatch_get_global_queue(Int(QOS_CLASS_USER_INITIATED.value), 0)) {
+    dispatch_async(dispatch_get_global_queue(Int(QOS_CLASS_USER_INITIATED.rawValue), 0)) {
       for file in files {
         if self.cancelRun {
           break
@@ -297,7 +297,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
       }
       
       if self.cancelRun {
-        self.disableAllOutlets(exceptions: [self.sourceSelectBtn])
+        self.disableAllOutlets([self.sourceSelectBtn])
         
       } else {
         self.setOutletsEnableState()
@@ -320,7 +320,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     var destPath: String?
     
     if fileManager.fileExistsAtPath(fromBase.path!, isDirectory:&fromBaseDir) {
-      var diffFromBase = file.path.stringByReplacingOccurrencesOfString(fromBase.path! + "/", withString: "", options: NSStringCompareOptions.LiteralSearch, range: nil)
+      let diffFromBase = file.path.stringByReplacingOccurrencesOfString(fromBase.path! + "/", withString: "", options: NSStringCompareOptions.LiteralSearch, range: nil)
       var targetPath = toDir.path! + "/"
       destPath = targetPath + file.path.lastPathComponent
       
@@ -338,7 +338,11 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
           var targetPathDir: ObjCBool = false
           if fileManager.fileExistsAtPath(targetPath, isDirectory:&targetPathDir) && !targetPathDir {
             var targetPathRemove: NSError?
-            fileManager.removeItemAtPath(targetPath, error: &targetPathRemove)
+            do {
+              try fileManager.removeItemAtPath(targetPath)
+            } catch let error as NSError {
+              targetPathRemove = error
+            }
             
             if targetPathRemove != nil {
               return nil
@@ -346,7 +350,11 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
           }
           
           var create: NSError?
-          fileManager.createDirectoryAtPath(targetPath, withIntermediateDirectories: true, attributes: nil, error: &create)
+          do {
+            try fileManager.createDirectoryAtPath(targetPath, withIntermediateDirectories: true, attributes: nil)
+          } catch let error as NSError {
+            create = error
+          }
           
           if create != nil {
             return nil
@@ -357,7 +365,11 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
       if destPath != file.path {
         if fileManager.fileExistsAtPath(destPath!) {
           var targetPathRemove: NSError?
-          fileManager.removeItemAtPath(destPath!, error: &targetPathRemove)
+          do {
+            try fileManager.removeItemAtPath(destPath!)
+          } catch let error as NSError {
+            targetPathRemove = error
+          }
           
           if targetPathRemove != nil {
             return nil
@@ -377,9 +389,12 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
         if fileManager.fileExistsAtPath(file.path) {
           if let destPath = prepareCopyDestPath(file, fromBase: sourceUrl, toDir: targetUrl) {
             if destPath != file.path {
-              if fileManager.copyItemAtPath(file.path, toPath: destPath, error: &error){
-                file.URL = NSURL(fileURLWithPath: destPath)!
+              do {
+                try fileManager.copyItemAtPath(file.path, toPath: destPath)
+                file.URL = NSURL(fileURLWithPath: destPath)
                 return true
+              } catch var error1 as NSError {
+                error = error1
               }
             } else {
               return true
@@ -435,7 +450,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     var text = ""
     
     if tableObjects().count > row {
-      var file = tableObjects()[row]
+      let file = tableObjects()[row]
       
       if let columnID = tableColumn?.identifier {
         if columnID == "enum" {
@@ -495,11 +510,11 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
   // MARK: - Alert
   
   func overwrite(files: [File], tag: Tag) {
-    var alert = NSAlert()
+    let alert = NSAlert()
     alert.addButtonWithTitle(NSLocalizedString("Yes", comment: "Overwrite alert"))
     alert.addButtonWithTitle(NSLocalizedString("No", comment: "Overwrite alert"))
     alert.messageText = String(format: NSLocalizedString("Existing values for the %@ tag", comment: "Overwrite alert"), NSLocalizedString(tag.name, comment: "Overwrite alert"))
-    var fileEnum = (files.count == 1) ? NSLocalizedString("file", comment: "Overwrite alert") :NSLocalizedString("files", comment: "Overwrite alert")
+    let fileEnum = (files.count == 1) ? NSLocalizedString("file", comment: "Overwrite alert") :NSLocalizedString("files", comment: "Overwrite alert")
     alert.informativeText = String(format: NSLocalizedString("%1$d %2$@ already have values. Do you want to overwrite?", comment: "Overwrite alert"), files.count, fileEnum)
     alert.alertStyle = NSAlertStyle.InformationalAlertStyle
     

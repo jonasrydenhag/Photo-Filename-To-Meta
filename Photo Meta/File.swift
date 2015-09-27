@@ -120,15 +120,15 @@ class File {
   }
   
   private func extractDate() -> NSDate? {
-    let regex = NSRegularExpression(pattern:"[0-9][0-9?][0-9?][0-9?]-[0-1?][0-9?]-[0-3?][0-9?]-*[0-9]*[0-9]*", options:nil, error:nil)!
+    let regex = try! NSRegularExpression(pattern:"[0-9][0-9?][0-9?][0-9?]-[0-1?][0-9?]-[0-3?][0-9?]-*[0-9]*[0-9]*", options:[])
     
     let results = regex.matchesInString(fileName,
-      options: nil, range: NSMakeRange(0, (fileName as NSString).length))
-      as! [NSTextCheckingResult]
-    let dates = map(results) { (self.fileName as NSString).substringWithRange($0.range)}
+      options: [], range: NSMakeRange(0, (fileName as NSString).length))
+      
+    let dates = results.map { (self.fileName as NSString).substringWithRange($0.range)}
     
     if let firstDate = dates.first {
-      if count(firstDate) < 10 {
+      if firstDate.characters.count < 10 {
         return nil
       }
       let formattedDate = "\(formatYear(firstDate))-\(formatMonth(firstDate))-\(formatDay(firstDate)) 00:00:\(formatEnumerator(firstDate))";
@@ -146,7 +146,7 @@ class File {
     var year = ""
     
     var stringPos = 0;
-    for char in yearCand {
+    for char in yearCand.characters {
       if char == "?" {
         switch stringPos {
         case 0:
@@ -171,7 +171,7 @@ class File {
     var month = ""
     
     var stringPos = 0;
-    for char in monthCand {
+    for char in monthCand.characters {
       if char == "?" {
         switch stringPos {
         case 1:
@@ -196,7 +196,7 @@ class File {
     var day = ""
     
     var stringPos = 0;
-    for char in dayCand {
+    for char in dayCand.characters {
       if char == "?" {
         switch stringPos {
         case 1:
@@ -217,7 +217,7 @@ class File {
   }
   
   private func formatEnumerator(fullDate: String) -> String {
-    if count(fullDate) < 13 {
+    if fullDate.characters.count < 13 {
       return "00"
       
     } else {
@@ -225,7 +225,7 @@ class File {
       var enumResult = ""
       
       var stringPos = 0;
-      for char in enumCand {
+      for char in enumCand.characters {
         if char == "?" {
             enumResult += "0"
         } else {
