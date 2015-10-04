@@ -40,17 +40,17 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
   
   @IBAction func read(sender: NSButton) {
     mode = ViewController.readMode
-    run(filesInUrl, tags: selectedTags, readTags: true)
+    read(selectedTags)
   }
   
   @IBAction func write(sender: NSButton) {
     mode = ViewController.writeMode
-    run(filesInUrl, tags: selectedTags, keepExistingTags: (keepCheckBtn.state == NSOnState))
+    run(selectedTags, keepExistingTags: (keepCheckBtn.state == NSOnState))
   }
   
   @IBAction func delete(sender: NSButton) {
     mode = ViewController.writeMode
-    run(filesInUrl, tags: selectedTags, keepExistingTags: false, deleteTags: true)
+    run(selectedTags, keepExistingTags: false, deleteTags: true)
   }
   
   @IBAction func selectPaths(sender: AnyObject) {
@@ -239,9 +239,37 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     }
   }
   
-  private func run(files: [File], tags: [Tag], keepExistingTags: Bool = true, readTags: Bool = false, deleteTags: Bool = false, process: Bool = true) {
-    if process {
-      processedFiles = []
+  private func read(tags: [Tag]) {
+    toggleColumnVisibility(tableView, tags: selectedTags)
+    
+    disableAllOutlets([cancelBtn])
+    
+    dispatch_async(dispatch_get_global_queue(Int(QOS_CLASS_USER_INITIATED.rawValue), 0)) {
+      for file in self.files {
+        
+        if self.cancelRun {
+          break
+        }
+        
+        if file.valid {
+          file.read(tags)
+        }
+        
+        dispatch_async(dispatch_get_main_queue()) {
+          self.tableView.reloadData()
+        }
+      }
+      
+      self.cancelRun = false
+    }
+  }
+  
+  private func run(tags: [Tag], keepExistingTags: Bool = true, deleteTags: Bool = false, withSelected: [File] = []) {
+    var runFiles: [File]
+    if withSelected.count != 0 {
+      runFiles = withSelected
+    } else {
+      runFiles = files
     }
     var kept: [String: [File]] = [String : [File]]()
     toggleColumnVisibility(tableView, tags: selectedTags)
@@ -249,43 +277,52 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     disableAllOutlets([cancelBtn])
     
     dispatch_async(dispatch_get_global_queue(Int(QOS_CLASS_USER_INITIATED.rawValue), 0)) {
-      for file in files {
+      for (index, file) in runFiles.enumerate() {
+        var targetFile = file
+        
         if self.cancelRun {
           break
         }
-        if self.fileManager.fileExistsAtPath(file.URL.path!) {
-          if file.valid {
-            if readTags {
-              file.read(tags)
+        if self.fileManager.fileExistsAtPath(targetFile.URL.path!) {
+          if targetFile.valid {
+            if self.sourceUrl.path != self.targetUrl.path {
+              do {
+                if let copiedFile = try self.copy(targetFile, toDir: self.targetUrl) {
+                  
+                  if withSelected.count != 0 {
+                    if let i = self.files.indexOf({$0 === targetFile}) {
+                      self.files[i] = copiedFile
+                    } else {
+                      self.files.append(copiedFile)
+                    }
+                  } else {
+                    self.files[index] = copiedFile
+                  }
+                  
+                  targetFile = copiedFile
+                }
+              } catch {
+                break;
+              }
+            }
+            
+            if deleteTags {
+              targetFile.deleteValueFor(tags)
               
             } else {
-              if self.overwriteCheck.state == NSOffState {
-                if !self.copy(file, toDir: self.targetUrl) {
-                  break
-                }
-              }
-              
-              if deleteTags {
-                file.deleteValueFor(tags)
-                
-              } else {
-                file.write(tags, keepExistingTags: keepExistingTags)
-                if keepExistingTags && file.kept.count > 0 {
-                  for tag in file.kept {
-                    if kept[tag.name] == nil {
-                      kept[tag.name] = []
-                    }
-                    kept[tag.name]!.append(file)
+              targetFile.write(tags, keepExistingTags: keepExistingTags)
+              if keepExistingTags && targetFile.kept.count > 0 {
+                for tag in targetFile.kept {
+                  if kept[tag.name] == nil {
+                    kept[tag.name] = []
                   }
+                  kept[tag.name]!.append(targetFile)
                 }
               }
             }
           }
           
           dispatch_async(dispatch_get_main_queue()) {
-            if process {
-              self.processedFiles.append(file)
-            }
             self.tableView.reloadData()
           }
         }
@@ -297,19 +334,16 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
       } else {
         self.setOutletsEnableState()
         
-        if self.overwriteCheck.state == NSOffState && self.targetUrl.path != nil {
-          self.sourceUrl = self.targetUrl
-        }
-        
         for tagName in kept.keys {
-          self.overwrite(kept[tagName]!, tag: Tag(name: tagName))
+          dispatch_async(dispatch_get_main_queue()) {
+            self.overwrite(kept[tagName]!, tag: Tag(name: tagName))
+          }
         }
       }
       
       self.cancelRun = false
     }
   }
-  
   private func prepareCopyDestPath(file: File, toDir: NSURL) throws -> String {
     var fromBaseDir: ObjCBool = false
     var destPath: String
@@ -471,7 +505,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     
     let result = alert.runModal()
     if result == NSAlertFirstButtonReturn {
-      run(files, tags: [tag], keepExistingTags: false, process: false)
+      run([tag], keepExistingTags: false, withSelected: files)
     }
   }
 }
