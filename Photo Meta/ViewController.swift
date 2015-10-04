@@ -316,20 +316,14 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
         }
       }
       
-      if self.cancelRun {
-        self.disableAllOutlets()
-        
-      } else {
-        self.setOutletsEnableState()
-        
-        for tagName in kept.keys {
-          dispatch_async(dispatch_get_main_queue()) {
-            self.overwrite(kept[tagName]!, tag: Tag(name: tagName))
-          }
+      for tagName in kept.keys {
+        dispatch_async(dispatch_get_main_queue()) {
+          self.overwrite(kept[tagName]!, tag: Tag(name: tagName))
         }
       }
       
       self.cancelRun = false
+      self.setOutletsEnableState()
     }
   }
   
