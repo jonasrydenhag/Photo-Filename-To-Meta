@@ -22,7 +22,6 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
   @IBOutlet weak var keepCheckBtn: NSButton!
   @IBOutlet weak var tagCheckTitle: NSButton!
   @IBOutlet weak var tagCheckDate: NSButton!
-  @IBOutlet weak var overwriteCheck: NSButton!
   @IBOutlet weak var sourceTextField: NSTextField!
   @IBOutlet weak var targetTextField: NSTextField!
   @IBOutlet weak var targetTextFieldLabel: NSTextField!
@@ -135,7 +134,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
       readBtn.enabled = false
     }
     
-    if sourceUrl.path != nil && (overwriteCheck.state == NSOnState || targetUrl.path != nil) {
+    if sourceUrl.path != nil {
       deleteBtn.enabled = true
       writeBtn.enabled = true
       
@@ -149,15 +148,8 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
       writeBtn.enabled = false
     }
     
-    if overwriteCheck.state == NSOnState {
-      targetTextField.enabled = false
-      targetTextFieldLabel.textColor = NSColor.grayColor()
-    } else {
-      targetTextField.enabled = true
-      targetTextFieldLabel.textColor = nil
-    }
-    
-    overwriteCheck.enabled = true
+    targetTextField.enabled = true
+    targetTextFieldLabel.textColor = nil
     
     keepCheckBtn.enabled = true
     tagCheckTitle.enabled = true
@@ -344,6 +336,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
       self.cancelRun = false
     }
   }
+  
   private func prepareCopyDestPath(file: File, toDir: NSURL) throws -> String {
     var fromBaseDir: ObjCBool = false
     var destPath: String

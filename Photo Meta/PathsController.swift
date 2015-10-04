@@ -112,14 +112,6 @@ class PathsController: NSViewController, NSTableViewDataSource, NSTableViewDeleg
       okBtn.enabled = false
     }
     
-    // @todo Allow same target as path
-    if sourceUrl.path == targetUrl.path {
-      okBtn.enabled = false
-    } else {
-      okBtn.enabled = true
-    }
-    //
-    
     if caller?.sourceUrl.path != nil {
       cancelBtn.hidden = false
     } else {
