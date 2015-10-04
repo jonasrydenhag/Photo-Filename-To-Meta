@@ -8,9 +8,20 @@
 
 import Foundation
 
+enum FileExceptions: ErrorType {
+  case NotAFile
+  case FileDoesNotExist
+}
+
 class File {
   
-  var URL: NSURL
+  private (set) var URL: NSURL
+  private (set) var baseURL: NSURL
+  var relativePath: String {
+    get {
+      return URL.path!.stringByReplacingOccurrencesOfString(baseURL.path! + "/", withString: "", options: NSStringCompareOptions.LiteralSearch, range: nil)
+    }
+  }
   private (set) var valid: Bool = false
   private (set) var initialTagUpdated: [String : Bool] = [String : Bool]()
   private (set) var tagValues: [String : String] = [String : String]()
@@ -24,13 +35,19 @@ class File {
   var kept = Array<Tag>()
   var extractionFailed = Array<Tag>()
   
-  init(fileURL: NSURL, runner: ExifToolRunner) {
+  init(fileURL: NSURL, baseURL: NSURL, runner: ExifToolRunner) throws {
     self.URL = fileURL
+    self.baseURL = baseURL
     self.runner = runner
     self.valid = self.fileTypeConformsTo(runner.supportedFileTypes)
     dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
     extractDate()
+    
+    if self.URL.resourceSpecifier == NSURLFileResourceTypeDirectory {
+      throw FileExceptions.NotAFile
+    }
   }
+  
   
   func write(tags: [Tag], keepExistingTags: Bool = true) {
     var writeTags = Array<Tag>()
@@ -49,6 +66,7 @@ class File {
         
         if title != "" {
           tag.value = title
+          print(title)
           writeTags.append(tag)
           valueFor(tag, value: tag.value)
           initialTagUpdated[tag.name] = true
