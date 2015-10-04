@@ -86,7 +86,6 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
       targetTextField.stringValue = value
     }
   }
-  private var baseUrlIsDir: ObjCBool = false
   private var files: [File] = []
   private static let listMode = "list"
   private static let readMode = "read"
@@ -200,6 +199,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     mode = ViewController.listMode
     files = []
     if URL.path != nil {
+      var baseUrlIsDir: ObjCBool = false
       if fileManager.fileExistsAtPath(URL.path!, isDirectory:&baseUrlIsDir) && !baseUrlIsDir {
         addFileIn(URL.path!, baseURL: URL.URLByDeletingLastPathComponent!)
         
@@ -453,14 +453,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
       
     } else if columnID == "path" {
       cellView = tableView.makeViewWithIdentifier("pathCell", owner: self) as! NSTableCellView
-      text = file.URL.path!
-      if baseUrlIsDir {
-        let basePath: String = targetUrl.path == nil || !file.valid ? collectedFilesBaseUrl.path! : targetUrl.path!
-        text = file.URL.path!.stringByReplacingOccurrencesOfString(basePath + "/", withString: "", options: NSStringCompareOptions.LiteralSearch, range: nil)
-        
-      } else {
-        text = file.URL.lastPathComponent!
-      }
+      text = file.relativePath
       
     } else if columnID == "date" {
       cellView = tableView.makeViewWithIdentifier("dateCell", owner: self) as! NSTableCellView
