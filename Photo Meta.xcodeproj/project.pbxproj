@@ -14,6 +14,7 @@
 		DD5FF6191BAEBE41008A9E37 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = DD5FF61B1BAEBE41008A9E37 /* InfoPlist.strings */; };
 		DD67B6AD1BB13D2000E64585 /* lib in Resources */ = {isa = PBXBuildFile; fileRef = DD67B6AC1BB13D2000E64585 /* lib */; };
 		DD67B6B11BB13E6200E64585 /* exiftool in Resources */ = {isa = PBXBuildFile; fileRef = DD67B6B01BB13E6200E64585 /* exiftool */; };
+		DDAD5B611BB7E3AF00728C57 /* PathsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDAD5B601BB7E3AF00728C57 /* PathsController.swift */; settings = {ASSET_TAGS = (); }; };
 		DDBA7A091B83E8B500CB49A3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDBA7A081B83E8B500CB49A3 /* AppDelegate.swift */; };
 		DDBA7A0B1B83E8B500CB49A3 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDBA7A0A1B83E8B500CB49A3 /* ViewController.swift */; };
 		DDBA7A0D1B83E8B500CB49A3 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DDBA7A0C1B83E8B500CB49A3 /* Images.xcassets */; };
@@ -41,6 +42,7 @@
 		DD5FF61A1BAEBE41008A9E37 /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		DD67B6AC1BB13D2000E64585 /* lib */ = {isa = PBXFileReference; lastKnownFileType = folder; path = lib; sourceTree = "<group>"; };
 		DD67B6B01BB13E6200E64585 /* exiftool */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.perl; path = exiftool; sourceTree = "<group>"; };
+		DDAD5B601BB7E3AF00728C57 /* PathsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PathsController.swift; sourceTree = "<group>"; };
 		DDBA7A031B83E8B500CB49A3 /* Photo Meta.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Photo Meta.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DDBA7A071B83E8B500CB49A3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DDBA7A081B83E8B500CB49A3 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -122,6 +124,7 @@
 			children = (
 				DDBA7A081B83E8B500CB49A3 /* AppDelegate.swift */,
 				DDBA7A0A1B83E8B500CB49A3 /* ViewController.swift */,
+				DDAD5B601BB7E3AF00728C57 /* PathsController.swift */,
 				DDBA7A0C1B83E8B500CB49A3 /* Images.xcassets */,
 				DDBA7A0E1B83E8B500CB49A3 /* Main.storyboard */,
 				DD11F4B21B89829B008B14B3 /* Library */,
@@ -267,6 +270,7 @@
 			files = (
 				DD2118A51B884E4E0030745C /* ExifToolRunner.swift in Sources */,
 				DD11F4B41B89830F008B14B3 /* File.swift in Sources */,
+				DDAD5B611BB7E3AF00728C57 /* PathsController.swift in Sources */,
 				DDF7324B1B89B5BF002BE282 /* Tag.swift in Sources */,
 				DDBA7A0B1B83E8B500CB49A3 /* ViewController.swift in Sources */,
 				DDBA7A091B83E8B500CB49A3 /* AppDelegate.swift in Sources */,

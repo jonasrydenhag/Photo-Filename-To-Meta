@@ -19,32 +19,14 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
   @IBOutlet weak var tagCheckTitle: NSButton!
   @IBOutlet weak var tagCheckDate: NSButton!
   @IBOutlet weak var overwriteCheck: NSButton!
-  @IBOutlet weak var sourceSelectBtn: NSButton!
-  @IBOutlet weak var targetSelectBtn: NSButton!
   @IBOutlet weak var sourceTextField: NSTextField!
   @IBOutlet weak var targetTextField: NSTextField!
   @IBOutlet weak var targetTextFieldLabel: NSTextField!
-  
-  @IBAction func selectSourceDialog(sender: NSButton) {
-    if let selectedPath = choosePath() {
-      collectFilesFrom(selectedPath)
-    }
-  }
-  
-  @IBAction func selectTargetDialog(sender: NSButton) {
-    if let selectedPath = choosePath(false, canCreateDirectories: true) {
-      targetUrl = selectedPath
-    }
-  }
   
   @IBAction func tagCheckClick(sender: NSButton) {
     if sourceUrl.path != nil {
       collectFilesFrom(sourceUrl)
     }
-    setOutletsEnableState()
-  }
-  
-  @IBAction func overwriteCheckClick(sender: NSButton) {
     setOutletsEnableState()
   }
   
@@ -67,6 +49,10 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     run(filesInUrl, tags: selectedTags, keepExistingTags: false, deleteTags: true)
   }
   
+  @IBAction func selectPaths(sender: AnyObject) {
+    openSelectPaths()
+  }
+  
   private let exifToolRunner = ExifToolRunner()
   private let fileManager = NSFileManager.defaultManager()
   private var collectedFilesBaseUrl: NSURL = NSURL() {
@@ -80,12 +66,12 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
       sourceTextField.stringValue = value
     }
   }
-  private var sourceUrl: NSURL = NSURL() {
+  private (set) var sourceUrl: NSURL = NSURL() {
     didSet {
       setOutletsEnableState()
     }
   }
-  private var targetUrl: NSURL = NSURL() {
+  var targetUrl: NSURL = NSURL() {
     didSet {
       setOutletsEnableState()
       var value: String
@@ -118,10 +104,19 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
   }
   private var cancelRun = false
   
-  override func viewDidLoad() {
-    super.viewDidLoad()
-    
-    // Do any additional setup after loading the view.
+  override func viewDidAppear() {
+    super.viewDidAppear()
+    openSelectPaths()
+  }
+  
+  private func openSelectPaths() {
+    self.performSegueWithIdentifier("selectPaths", sender: self)
+  }
+  
+  override func prepareForSegue(segue: NSStoryboardSegue, sender: AnyObject?) {
+    if let pathsController: PathsController = segue.destinationController as? PathsController {
+      pathsController.caller = self
+    }
   }
   
   override var representedObject: AnyObject? {
@@ -152,16 +147,13 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     }
     
     if overwriteCheck.state == NSOnState {
-      targetSelectBtn.enabled = false
       targetTextField.enabled = false
       targetTextFieldLabel.textColor = NSColor.grayColor()
     } else {
-      targetSelectBtn.enabled = true
       targetTextField.enabled = true
       targetTextFieldLabel.textColor = nil
     }
     
-    sourceSelectBtn.enabled = true
     overwriteCheck.enabled = true
     
     keepCheckBtn.enabled = true
@@ -176,10 +168,6 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     deleteBtn.enabled = false
     writeBtn.enabled = false
   
-    sourceSelectBtn.enabled = false
-    targetSelectBtn.enabled = false
-    overwriteCheck.enabled = false
-    
     keepCheckBtn.enabled = false
     tagCheckTitle.enabled = false
     tagCheckDate.enabled = false
@@ -214,7 +202,6 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
   func collectFilesFrom(URL: NSURL) {
     collectedFilesBaseUrl = URL
     sourceUrl = URL
-    targetUrl = NSURL()
     mode = ViewController.listMode
     filesInUrl = []
     if URL.path != nil {
@@ -296,7 +283,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
       }
       
       if self.cancelRun {
-        self.disableAllOutlets([self.sourceSelectBtn])
+        self.disableAllOutlets()
         
       } else {
         self.setOutletsEnableState()
