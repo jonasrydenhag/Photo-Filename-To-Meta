@@ -206,16 +206,16 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     collectedFilesBaseUrl = URL
     sourceUrl = URL
     mode = ViewController.listMode
-    filesInUrl = []
+    files = []
     if URL.path != nil {
       if fileManager.fileExistsAtPath(URL.path!, isDirectory:&baseUrlIsDir) && !baseUrlIsDir {
-        addFileIn(URL)
+        addFileIn(URL.path!, baseURL: URL.URLByDeletingLastPathComponent!)
         
       } else {
         let enumerator: NSDirectoryEnumerator? = fileManager.enumeratorAtURL(URL, includingPropertiesForKeys: nil, options: [], errorHandler: nil)
         
         while let fileURL: NSURL = enumerator?.nextObject() as? NSURL {
-          addFileIn(fileURL)
+          addFileIn(fileURL.path!, baseURL: URL)
         }
       }
     }
@@ -223,13 +223,19 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     tableView.reloadData()
   }
   
-  private func addFileIn(URL: NSURL) {
-    if let path: String = URL.path {
-      var isDir: ObjCBool = false
-      if fileManager.fileExistsAtPath(path, isDirectory:&isDir) && !isDir && URL.lastPathComponent != ".DS_Store" {
-        let file = File(fileURL: URL, runner: exifToolRunner)
-        filesInUrl.append(file)
-      }
+  private func addFileIn(path: String, baseURL: NSURL) {
+    var isDir: ObjCBool = false
+    let URL = NSURL(fileURLWithPath: path, isDirectory: false)
+    
+    if !fileManager.fileExistsAtPath(path, isDirectory: &isDir) || isDir || URL.lastPathComponent == ".DS_Store"{
+      return
+    }
+    
+    do {
+      let file = try File(fileURL: URL, baseURL: baseURL, runner: exifToolRunner)
+      files.append(file)
+    } catch  {
+      // Ignore file
     }
   }
   

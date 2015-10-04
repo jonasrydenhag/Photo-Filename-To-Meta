@@ -48,7 +48,6 @@ class File {
     }
   }
   
-  
   func write(tags: [Tag], keepExistingTags: Bool = true) {
     var writeTags = Array<Tag>()
     kept = Array<Tag>()
@@ -66,7 +65,6 @@ class File {
         
         if title != "" {
           tag.value = title
-          print(title)
           writeTags.append(tag)
           valueFor(tag, value: tag.value)
           initialTagUpdated[tag.name] = true
