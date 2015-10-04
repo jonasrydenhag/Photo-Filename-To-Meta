@@ -253,6 +253,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
       }
       
       self.cancelRun = false
+      self.setOutletsEnableState()
     }
   }
   
