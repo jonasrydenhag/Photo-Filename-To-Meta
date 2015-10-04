@@ -88,8 +88,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     }
   }
   private var baseUrlIsDir: ObjCBool = false
-  private var filesInUrl: [File] = []
-  private var processedFiles: [File] = []
+  private var files: [File] = []
   private static let listMode = "list"
   private static let readMode = "read"
   private static let writeMode = "write"
@@ -380,71 +379,74 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
   
   // MARK: - Table View
   
-  func tableObjects() -> [File] {
-    return mode == ViewController.listMode ? filesInUrl : processedFiles
-  }
-  
   func numberOfRowsInTableView(tableView: NSTableView) -> Int {
-    return tableObjects().count
+    return files.count
   }
   
   func tableView(tableView: NSTableView, viewForTableColumn tableColumn: NSTableColumn?, row: Int) -> NSView? {
     var cellView: NSTableCellView!
     var text = ""
+    let columnID: String
     
-    if tableObjects().count > row {
-      let file = tableObjects()[row]
+    if files.count < row {
+      return cellView
+    }
+    
+    if (tableColumn?.identifier != nil) {
+      columnID = tableColumn!.identifier
+    } else {
+      return cellView
+    }
+    
+    let file = files[row]
+    
+    if columnID == "enum" {
+      cellView = tableView.makeViewWithIdentifier("enumCell", owner: self) as! NSTableCellView
+      text = "\(row + 1)"
       
-      if let columnID = tableColumn?.identifier {
-        if columnID == "enum" {
-          cellView = tableView.makeViewWithIdentifier("enumCell", owner: self) as! NSTableCellView
-          text = "\(row + 1)"
-          
-        } else if columnID == "status" {
-          cellView = tableView.makeViewWithIdentifier("statusCell", owner: self) as! NSTableCellView
-          if !file.valid {
-            cellView.textField?.backgroundColor = NSColor.grayColor()
-            
-          } else {
-            cellView.textField?.backgroundColor = NSColor.greenColor()
-            
-            if !file.allInitialValuesUpdated() {
-              cellView.textField?.backgroundColor = NSColor.yellowColor()
-            }
-          }
-          
-        } else if columnID == "path" {
-          cellView = tableView.makeViewWithIdentifier("pathCell", owner: self) as! NSTableCellView
-          text = file.URL.path!
-          if baseUrlIsDir {
-            let basePath: String = targetUrl.path == nil || !file.valid ? collectedFilesBaseUrl.path! : targetUrl.path!
-            text = file.URL.path!.stringByReplacingOccurrencesOfString(basePath + "/", withString: "", options: NSStringCompareOptions.LiteralSearch, range: nil)
-            
-          } else {
-            text = file.URL.lastPathComponent!
-          }
-          
-        } else if columnID == "date" {
-          cellView = tableView.makeViewWithIdentifier("dateCell", owner: self) as! NSTableCellView
-          if file.tagValues[Tag.DateTag] != nil {
-            text = file.tagValues[Tag.DateTag]!
-          }
-          
-        } else if columnID == "title" {
-          cellView = tableView.makeViewWithIdentifier("titleCell", owner: self) as! NSTableCellView
-          if file.tagValues[Tag.TitleTag] != nil {
-            text = file.tagValues[Tag.TitleTag]!
-          }
-        }
+    } else if columnID == "status" {
+      cellView = tableView.makeViewWithIdentifier("statusCell", owner: self) as! NSTableCellView
+      if !file.valid {
+        cellView.textField?.backgroundColor = NSColor.grayColor()
         
-        cellView.textField?.stringValue = text
+      } else {
+        cellView.textField?.backgroundColor = NSColor.greenColor()
         
-        if !file.valid {
-          cellView.textField?.textColor = NSColor.grayColor()
-        } else {
-          cellView.textField?.textColor = nil
+        if !file.allInitialValuesUpdated() {
+          cellView.textField?.backgroundColor = NSColor.yellowColor()
         }
       }
+      
+    } else if columnID == "path" {
+      cellView = tableView.makeViewWithIdentifier("pathCell", owner: self) as! NSTableCellView
+      text = file.URL.path!
+      if baseUrlIsDir {
+        let basePath: String = targetUrl.path == nil || !file.valid ? collectedFilesBaseUrl.path! : targetUrl.path!
+        text = file.URL.path!.stringByReplacingOccurrencesOfString(basePath + "/", withString: "", options: NSStringCompareOptions.LiteralSearch, range: nil)
+        
+      } else {
+        text = file.URL.lastPathComponent!
+      }
+      
+    } else if columnID == "date" {
+      cellView = tableView.makeViewWithIdentifier("dateCell", owner: self) as! NSTableCellView
+      if file.tagValues[Tag.DateTag] != nil {
+        text = file.tagValues[Tag.DateTag]!
+      }
+      
+    } else if columnID == "title" {
+      cellView = tableView.makeViewWithIdentifier("titleCell", owner: self) as! NSTableCellView
+      if file.tagValues[Tag.TitleTag] != nil {
+        text = file.tagValues[Tag.TitleTag]!
+      }
+    }
+    
+    cellView.textField?.stringValue = text
+    
+    if !file.valid {
+      cellView.textField?.textColor = NSColor.grayColor()
+    } else {
+      cellView.textField?.textColor = nil
     }
     
     return cellView
