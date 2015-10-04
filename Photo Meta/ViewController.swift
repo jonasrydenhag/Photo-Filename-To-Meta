@@ -58,20 +58,16 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
   
   private let exifToolRunner = ExifToolRunner()
   private let fileManager = NSFileManager.defaultManager()
-  private var collectedFilesBaseUrl: NSURL = NSURL() {
+  private (set) var sourceUrl: NSURL = NSURL() {
     didSet {
+      setOutletsEnableState()
       var value: String
-      if collectedFilesBaseUrl.path != nil {
-        value = collectedFilesBaseUrl.path!.stringByReplacingOccurrencesOfString(NSHomeDirectory() + "/", withString: "", options: NSStringCompareOptions.LiteralSearch, range: nil)
+      if sourceUrl.path != nil {
+        value = sourceUrl.path!.stringByReplacingOccurrencesOfString(NSHomeDirectory() + "/", withString: "", options: NSStringCompareOptions.LiteralSearch, range: nil)
       } else {
         value = ""
       }
       sourceTextField.stringValue = value
-    }
-  }
-  private (set) var sourceUrl: NSURL = NSURL() {
-    didSet {
-      setOutletsEnableState()
     }
   }
   var targetUrl: NSURL = NSURL() {
@@ -194,7 +190,6 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
   }
   
   func collectFilesFrom(URL: NSURL) {
-    collectedFilesBaseUrl = URL
     sourceUrl = URL
     mode = ViewController.listMode
     files = []
