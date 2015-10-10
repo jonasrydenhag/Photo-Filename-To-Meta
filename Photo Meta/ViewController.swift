@@ -25,10 +25,8 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
   @IBOutlet weak var sourceLabel: NSTextField!
   
   @IBAction func tagCheckClick(sender: NSButton) {
-    if sourceUrl.path != nil {
-      collectFilesFrom(sourceUrl)
-    }
     setOutletsEnableState()
+    toggleColumnVisibility(tableView, tags: selectedTags)
   }
   
   @IBAction func cancelBtnClick(sender: NSButton) {
@@ -377,15 +375,8 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
   private func toggleColumnVisibility(tableView: NSTableView, tags: [Tag] = []) {
     for column in tableView.tableColumns {
       switch column.identifier {
-      case "enum", "path":
+      case "status", "enum", "path":
         column.hidden = false
-        
-      case "status":
-        if mode == ViewController.writeMode {
-          column.hidden = false
-        } else {
-          column.hidden = true
-        }
         
       default:
         column.hidden = true
