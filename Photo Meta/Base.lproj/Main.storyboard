@@ -166,8 +166,8 @@
                                                             <rect key="frame" x="1" y="1" width="10.5" height="17"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
-                                                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="0B7-HH-Qyi">
-                                                                    <rect key="frame" x="2" y="0.0" width="96" height="17"/>
+                                                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="0B7-HH-Qyi">
+                                                                    <rect key="frame" x="2" y="6" width="8" height="4"/>
                                                                     <animations/>
                                                                     <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" drawsBackground="YES" id="Rlx-ze-BJS">
                                                                         <font key="font" metaFont="system"/>
