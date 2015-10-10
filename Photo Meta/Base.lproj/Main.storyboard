@@ -106,7 +106,7 @@
                 <customObject id="Voe-Tx-rLC" customClass="AppDelegate" customModule="Photo_Meta" customModuleProvider="target"/>
                 <customObject id="Ady-hI-5gd" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="15.5" y="-118"/>
+            <point key="canvasLocation" x="15" y="-27"/>
         </scene>
         <!--Window Controller-->
         <scene sceneID="R2V-B0-nI4">
@@ -117,7 +117,7 @@
                         <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
                         <rect key="contentRect" x="196" y="240" width="650" height="370"/>
                         <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1027"/>
-                        <value key="minSize" type="size" width="650" height="370"/>
+                        <value key="minSize" type="size" width="500" height="350"/>
                         <toolbar key="toolbar" implicitIdentifier="2857E27F-2B52-44C9-B87E-88CB9A79D71B" autosavesConfiguration="NO" allowsUserCustomization="NO" displayMode="labelOnly" sizeMode="regular" id="bi2-c2-wb7">
                             <allowedToolbarItems>
                                 <toolbarItem implicitItemIdentifier="NSToolbarSpaceItem" id="MWb-ol-WAn"/>
@@ -173,14 +173,14 @@
                         <rect key="frame" x="0.0" y="0.0" width="650" height="370"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
-                            <scrollView autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cpI-pk-UO1">
-                                <rect key="frame" x="20" y="41" width="610" height="284"/>
+                            <scrollView borderType="none" autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cpI-pk-UO1">
+                                <rect key="frame" x="0.0" y="32" width="650" height="307"/>
                                 <clipView key="contentView" id="f5A-aJ-mMQ">
-                                    <rect key="frame" x="1" y="0.0" width="608" height="283"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="650" height="307"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowSizeStyle="automatic" headerView="Y6s-aC-B5m" viewBased="YES" id="0xu-QC-DLK">
-                                            <rect key="frame" x="0.0" y="0.0" width="608" height="260"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="650" height="284"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <animations/>
                                             <size key="intercellSpacing" width="3" height="2"/>
@@ -407,24 +407,13 @@
                                     <animations/>
                                 </scroller>
                                 <tableHeaderView key="headerView" id="Y6s-aC-B5m">
-                                    <rect key="frame" x="0.0" y="0.0" width="608" height="23"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="650" height="23"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <animations/>
                                 </tableHeaderView>
                             </scrollView>
-                            <button translatesAutoresizingMaskIntoConstraints="NO" id="6nu-2y-pcn">
-                                <rect key="frame" x="206" y="332" width="176" height="18"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="172" id="pN7-LG-5rw"/>
-                                </constraints>
-                                <animations/>
-                                <buttonCell key="cell" type="check" title="Keep exiting tags" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="GW4-Qv-HlZ">
-                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                    <font key="font" metaFont="system"/>
-                                </buttonCell>
-                            </button>
                             <button translatesAutoresizingMaskIntoConstraints="NO" id="rZQ-6Y-J3h">
-                                <rect key="frame" x="75" y="332" width="49" height="18"/>
+                                <rect key="frame" x="75" y="346" width="49" height="18"/>
                                 <animations/>
                                 <buttonCell key="cell" type="check" title="Title" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="UcB-YD-ri5">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -435,7 +424,7 @@
                                 </connections>
                             </button>
                             <button translatesAutoresizingMaskIntoConstraints="NO" id="FGT-b4-nAV">
-                                <rect key="frame" x="128" y="332" width="51" height="18"/>
+                                <rect key="frame" x="128" y="346" width="51" height="18"/>
                                 <animations/>
                                 <buttonCell key="cell" type="check" title="Date" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="Uk4-NQ-b4P">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -446,7 +435,7 @@
                                 </connections>
                             </button>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="9oO-vZ-yha">
-                                <rect key="frame" x="18" y="333" width="53" height="17"/>
+                                <rect key="frame" x="18" y="347" width="53" height="17"/>
                                 <animations/>
                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Update:" id="ANx-mO-aqg">
                                     <font key="font" metaFont="system"/>
@@ -455,51 +444,64 @@
                                 </textFieldCell>
                             </textField>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="2Ls-Hm-iwv">
-                                <rect key="frame" x="18" y="20" width="81" height="13"/>
+                                <rect key="frame" x="18" y="11" width="81" height="13"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="77" id="81D-o8-2l0"/>
+                                    <constraint firstAttribute="width" constant="77" id="HPe-xa-YWX"/>
                                 </constraints>
                                 <animations/>
                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Original source:" id="Rrb-SE-ciJ">
-                                    <font key="font" metaFont="label"/>
+                                    <font key="font" metaFont="miniSystem"/>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
-                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="iiY-kL-1aw">
-                                <rect key="frame" x="96" y="20" width="536" height="13"/>
+                            <pathControl focusRingType="none" verticalHuggingPriority="750" allowsExpansionToolTips="YES" translatesAutoresizingMaskIntoConstraints="NO" id="lfD-Eo-MRO">
+                                <rect key="frame" x="96" y="6" width="534" height="22"/>
                                 <animations/>
-                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" placeholderString="Not selected" id="7eo-qK-Ywr">
-                                    <font key="font" metaFont="label"/>
-                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
-                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                </textFieldCell>
-                            </textField>
+                                <pathCell key="cell" selectable="YES" enabled="NO" focusRingType="none" alignment="left" placeholderString="Not selected" id="qsJ-6z-fOa">
+                                    <font key="font" metaFont="system" size="9"/>
+                                </pathCell>
+                            </pathControl>
+                            <button translatesAutoresizingMaskIntoConstraints="NO" id="6nu-2y-pcn">
+                                <rect key="frame" x="456" y="346" width="176" height="18"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="172" id="Jkd-ca-Vab"/>
+                                </constraints>
+                                <animations/>
+                                <buttonCell key="cell" type="check" title="Overwrite existing values" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="GW4-Qv-HlZ">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                            </button>
                         </subviews>
                         <constraints>
-                            <constraint firstItem="9oO-vZ-yha" firstAttribute="baseline" secondItem="rZQ-6Y-J3h" secondAttribute="baseline" id="1gA-bJ-FlA"/>
-                            <constraint firstItem="9oO-vZ-yha" firstAttribute="top" secondItem="m2S-Jp-Qdl" secondAttribute="top" constant="20" symbolic="YES" id="2HY-eG-RpT"/>
-                            <constraint firstItem="6nu-2y-pcn" firstAttribute="leading" secondItem="FGT-b4-nAV" secondAttribute="trailing" constant="31" id="2wZ-Uv-Yy5"/>
-                            <constraint firstItem="2Ls-Hm-iwv" firstAttribute="top" secondItem="cpI-pk-UO1" secondAttribute="bottom" constant="8" symbolic="YES" id="8Rq-MT-dwr"/>
-                            <constraint firstItem="FGT-b4-nAV" firstAttribute="baseline" secondItem="6nu-2y-pcn" secondAttribute="baseline" id="BFC-IY-sl8"/>
-                            <constraint firstItem="rZQ-6Y-J3h" firstAttribute="leading" secondItem="9oO-vZ-yha" secondAttribute="trailing" constant="8" symbolic="YES" id="LbO-l6-pIP"/>
-                            <constraint firstAttribute="trailing" secondItem="cpI-pk-UO1" secondAttribute="trailing" constant="20" symbolic="YES" id="N9r-av-iRr"/>
-                            <constraint firstItem="iiY-kL-1aw" firstAttribute="baseline" secondItem="2Ls-Hm-iwv" secondAttribute="baseline" id="Q1l-hj-ENe"/>
-                            <constraint firstItem="9oO-vZ-yha" firstAttribute="leading" secondItem="m2S-Jp-Qdl" secondAttribute="leading" constant="20" symbolic="YES" id="TP7-hw-uln"/>
-                            <constraint firstItem="FGT-b4-nAV" firstAttribute="leading" secondItem="rZQ-6Y-J3h" secondAttribute="trailing" constant="8" symbolic="YES" id="dPm-NI-FpC"/>
-                            <constraint firstItem="iiY-kL-1aw" firstAttribute="trailing" secondItem="cpI-pk-UO1" secondAttribute="trailing" id="fWh-iJ-rDv"/>
-                            <constraint firstItem="cpI-pk-UO1" firstAttribute="leading" secondItem="2Ls-Hm-iwv" secondAttribute="leading" id="gcS-6M-4aa"/>
-                            <constraint firstItem="iiY-kL-1aw" firstAttribute="leading" secondItem="2Ls-Hm-iwv" secondAttribute="trailing" constant="1" id="ghg-b8-rk5"/>
-                            <constraint firstAttribute="bottom" secondItem="2Ls-Hm-iwv" secondAttribute="bottom" constant="20" symbolic="YES" id="iMC-MY-8wX"/>
-                            <constraint firstItem="9oO-vZ-yha" firstAttribute="leading" secondItem="cpI-pk-UO1" secondAttribute="leading" id="jyw-Zl-Uhd"/>
-                            <constraint firstItem="rZQ-6Y-J3h" firstAttribute="baseline" secondItem="FGT-b4-nAV" secondAttribute="baseline" id="lYK-gZ-ksl"/>
-                            <constraint firstItem="cpI-pk-UO1" firstAttribute="top" secondItem="9oO-vZ-yha" secondAttribute="bottom" constant="8" symbolic="YES" id="yp3-Fq-uSR"/>
+                            <constraint firstAttribute="trailing" secondItem="cpI-pk-UO1" secondAttribute="trailing" id="5xc-xe-wAj"/>
+                            <constraint firstItem="cpI-pk-UO1" firstAttribute="centerY" secondItem="m2S-Jp-Qdl" secondAttribute="centerY" id="5yt-oP-X5l"/>
+                            <constraint firstItem="FGT-b4-nAV" firstAttribute="leading" secondItem="rZQ-6Y-J3h" secondAttribute="trailing" constant="8" symbolic="YES" id="6yV-hz-jg7"/>
+                            <constraint firstItem="9oO-vZ-yha" firstAttribute="top" secondItem="m2S-Jp-Qdl" secondAttribute="top" constant="6" id="846-7q-pin"/>
+                            <constraint firstItem="lfD-Eo-MRO" firstAttribute="centerY" secondItem="2Ls-Hm-iwv" secondAttribute="centerY" id="Ddh-tR-kXj"/>
+                            <constraint firstItem="lfD-Eo-MRO" firstAttribute="top" secondItem="cpI-pk-UO1" secondAttribute="bottom" constant="4" id="Jie-TW-JpG"/>
+                            <constraint firstAttribute="bottom" secondItem="lfD-Eo-MRO" secondAttribute="bottom" constant="6" id="O03-nO-BP7"/>
+                            <constraint firstItem="rZQ-6Y-J3h" firstAttribute="leading" secondItem="9oO-vZ-yha" secondAttribute="trailing" constant="8" symbolic="YES" id="Q9J-zj-mYo"/>
+                            <constraint firstItem="9oO-vZ-yha" firstAttribute="leading" secondItem="2Ls-Hm-iwv" secondAttribute="leading" id="Thq-sH-ICg"/>
+                            <constraint firstItem="6nu-2y-pcn" firstAttribute="baseline" secondItem="FGT-b4-nAV" secondAttribute="baseline" id="U0e-Ia-60l"/>
+                            <constraint firstItem="rZQ-6Y-J3h" firstAttribute="top" secondItem="FGT-b4-nAV" secondAttribute="top" id="WgV-Oi-QCi"/>
+                            <constraint firstItem="cpI-pk-UO1" firstAttribute="leading" secondItem="m2S-Jp-Qdl" secondAttribute="leading" id="YOp-hn-ewN"/>
+                            <constraint firstItem="lfD-Eo-MRO" firstAttribute="leading" secondItem="m2S-Jp-Qdl" secondAttribute="leading" constant="96" id="bC7-Ke-QID"/>
+                            <constraint firstItem="9oO-vZ-yha" firstAttribute="leading" secondItem="m2S-Jp-Qdl" secondAttribute="leading" constant="20" symbolic="YES" id="f2J-zY-Q0Y"/>
+                            <constraint firstItem="6nu-2y-pcn" firstAttribute="trailing" secondItem="lfD-Eo-MRO" secondAttribute="trailing" id="fK8-F7-yLC"/>
+                            <constraint firstItem="9oO-vZ-yha" firstAttribute="baseline" secondItem="rZQ-6Y-J3h" secondAttribute="baseline" id="l5u-nk-u5e"/>
+                            <constraint firstItem="rZQ-6Y-J3h" firstAttribute="centerY" secondItem="9oO-vZ-yha" secondAttribute="centerY" id="mtv-h1-VdU"/>
+                            <constraint firstItem="rZQ-6Y-J3h" firstAttribute="baseline" secondItem="FGT-b4-nAV" secondAttribute="baseline" id="oAh-WT-yrx"/>
+                            <constraint firstAttribute="trailing" secondItem="lfD-Eo-MRO" secondAttribute="trailing" constant="20" symbolic="YES" id="pTv-s3-OPW"/>
+                            <constraint firstItem="2Ls-Hm-iwv" firstAttribute="top" secondItem="cpI-pk-UO1" secondAttribute="bottom" constant="8" symbolic="YES" id="qDy-4R-ILD"/>
+                            <constraint firstItem="cpI-pk-UO1" firstAttribute="top" secondItem="9oO-vZ-yha" secondAttribute="bottom" constant="8" symbolic="YES" id="zd6-AU-KwQ"/>
                         </constraints>
                         <animations/>
                     </view>
                     <connections>
                         <outlet property="keepCheckBtn" destination="6nu-2y-pcn" id="4ox-21-pAz"/>
-                        <outlet property="sourceLabel" destination="iiY-kL-1aw" id="y68-eL-qcK"/>
+                        <outlet property="sourcePath" destination="qsJ-6z-fOa" id="f7r-1z-AkP"/>
                         <outlet property="tableView" destination="0xu-QC-DLK" id="rK8-KW-SGY"/>
                         <outlet property="tagCheckDate" destination="FGT-b4-nAV" id="ad4-gA-96A"/>
                         <outlet property="tagCheckTitle" destination="rZQ-6Y-J3h" id="NPr-1U-INA"/>
@@ -508,7 +510,7 @@
                 </viewController>
                 <customObject id="rPt-NT-nkU" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="15" y="847"/>
+            <point key="canvasLocation" x="15" y="814"/>
         </scene>
         <!--Paths Controller-->
         <scene sceneID="zBf-f2-Khw">
@@ -619,7 +621,7 @@ Gw
                 </viewController>
                 <customObject id="Xq4-7R-rHA" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="75" y="1337"/>
+            <point key="canvasLocation" x="15" y="1264"/>
         </scene>
     </scenes>
 </document>

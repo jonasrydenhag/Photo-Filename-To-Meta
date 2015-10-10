@@ -18,8 +18,8 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
   @IBOutlet weak var keepCheckBtn: NSButton!
   @IBOutlet weak var tagCheckTitle: NSButton!
   @IBOutlet weak var tagCheckDate: NSButton!
-  @IBOutlet weak var sourceLabel: NSTextField!
   
+  @IBOutlet weak var sourcePath: NSPathCell!
   @IBAction func tagCheckClick(sender: NSButton) {
     toggleColumnVisibility(tableView, tags: selectedTags)
   }
@@ -51,13 +51,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
   private let fileManager = NSFileManager.defaultManager()
   private (set) var sourceUrl: NSURL = NSURL() {
     didSet {
-      var value: String
-      if sourceUrl.path != nil {
-        value = sourceUrl.path!.stringByReplacingOccurrencesOfString(NSHomeDirectory() + "/", withString: "", options: NSStringCompareOptions.LiteralSearch, range: nil)
-      } else {
-        value = ""
-      }
-      sourceLabel.stringValue = value
+      sourcePath.URL = sourceUrl
     }
   }
   var targetUrl: NSURL = NSURL() {
