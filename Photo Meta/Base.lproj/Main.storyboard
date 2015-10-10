@@ -118,31 +118,31 @@
                         <rect key="contentRect" x="196" y="240" width="650" height="370"/>
                         <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1027"/>
                         <value key="minSize" type="size" width="500" height="350"/>
-                        <toolbar key="toolbar" implicitIdentifier="2857E27F-2B52-44C9-B87E-88CB9A79D71B" autosavesConfiguration="NO" allowsUserCustomization="NO" displayMode="labelOnly" sizeMode="regular" id="bi2-c2-wb7">
+                        <toolbar key="toolbar" implicitIdentifier="2857E27F-2B52-44C9-B87E-88CB9A79D71B" autosavesConfiguration="NO" allowsUserCustomization="NO" displayMode="iconAndLabel" sizeMode="regular" id="bi2-c2-wb7">
                             <allowedToolbarItems>
                                 <toolbarItem implicitItemIdentifier="NSToolbarSpaceItem" id="MWb-ol-WAn"/>
                                 <toolbarItem implicitItemIdentifier="NSToolbarFlexibleSpaceItem" id="DMA-im-ACV"/>
-                                <toolbarItem implicitItemIdentifier="A17D4C27-B504-482D-B49A-EAB9F7D62976" label="Select Source" paletteLabel="Select Source" tag="-1" id="P4x-k0-ZNr">
+                                <toolbarItem implicitItemIdentifier="A17D4C27-B504-482D-B49A-EAB9F7D62976" label="Select" paletteLabel="Select" tag="-1" image="Folder" id="P4x-k0-ZNr">
                                     <connections>
                                         <action selector="open:" target="Oky-zY-oP4" id="QY0-Xh-oty"/>
                                     </connections>
                                 </toolbarItem>
-                                <toolbarItem implicitItemIdentifier="FA646890-DF0F-4C4E-8AD4-2983DB3CEC6D" label="Read" paletteLabel="Read" tag="-1" id="n6k-cJ-Oda">
+                                <toolbarItem implicitItemIdentifier="FA646890-DF0F-4C4E-8AD4-2983DB3CEC6D" label="Read" paletteLabel="Read" tag="-1" image="Eye" id="n6k-cJ-Oda">
                                     <connections>
                                         <action selector="read:" target="Oky-zY-oP4" id="pMD-JN-mNk"/>
                                     </connections>
                                 </toolbarItem>
-                                <toolbarItem implicitItemIdentifier="8401F69E-44CB-4566-8132-7CA71F4619CC" label="Write" paletteLabel="Write" tag="-1" id="T4f-St-B3X">
+                                <toolbarItem implicitItemIdentifier="8401F69E-44CB-4566-8132-7CA71F4619CC" label="Write" paletteLabel="Write" tag="-1" image="PenAndPaper" id="T4f-St-B3X">
                                     <connections>
                                         <action selector="write:" target="Oky-zY-oP4" id="LJ5-Ow-9nd"/>
                                     </connections>
                                 </toolbarItem>
-                                <toolbarItem implicitItemIdentifier="FBD5874B-6F2E-47B4-991C-8C5CAEEA7EAB" label="Cancel" paletteLabel="Cancel" tag="-1" id="R8i-pN-Vae">
+                                <toolbarItem implicitItemIdentifier="FBD5874B-6F2E-47B4-991C-8C5CAEEA7EAB" label="Cancel" paletteLabel="Cancel" tag="-1" image="Cancel" id="R8i-pN-Vae">
                                     <connections>
                                         <action selector="cancel:" target="Oky-zY-oP4" id="wyh-Ph-wsz"/>
                                     </connections>
                                 </toolbarItem>
-                                <toolbarItem implicitItemIdentifier="3651257A-202A-4106-806E-66335B69AF7E" label="Delete values" paletteLabel="Delete values" tag="-1" id="ISr-KU-Qaa">
+                                <toolbarItem implicitItemIdentifier="3651257A-202A-4106-806E-66335B69AF7E" label="Erase" paletteLabel="Erase" tag="-1" image="Erase" id="ISr-KU-Qaa">
                                     <connections>
                                         <action selector="delete:" target="Oky-zY-oP4" id="EuQ-ZB-wvQ"/>
                                     </connections>
@@ -150,10 +150,14 @@
                             </allowedToolbarItems>
                             <defaultToolbarItems>
                                 <toolbarItem reference="P4x-k0-ZNr"/>
+                                <toolbarItem reference="MWb-ol-WAn"/>
                                 <toolbarItem reference="n6k-cJ-Oda"/>
+                                <toolbarItem reference="MWb-ol-WAn"/>
                                 <toolbarItem reference="T4f-St-B3X"/>
-                                <toolbarItem reference="R8i-pN-Vae"/>
+                                <toolbarItem reference="MWb-ol-WAn"/>
                                 <toolbarItem reference="ISr-KU-Qaa"/>
+                                <toolbarItem reference="DMA-im-ACV"/>
+                                <toolbarItem reference="R8i-pN-Vae"/>
                             </defaultToolbarItems>
                         </toolbar>
                     </window>
@@ -163,7 +167,7 @@
                 </windowController>
                 <customObject id="Oky-zY-oP4" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="15" y="320.5"/>
+            <point key="canvasLocation" x="15" y="320"/>
         </scene>
         <!--View Controller-->
         <scene sceneID="hIz-AP-VOD">
@@ -624,4 +628,11 @@ Gw
             <point key="canvasLocation" x="15" y="1264"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="Cancel" width="128" height="128"/>
+        <image name="Erase" width="256" height="256"/>
+        <image name="Eye" width="256" height="256"/>
+        <image name="Folder" width="256" height="256"/>
+        <image name="PenAndPaper" width="256" height="256"/>
+    </resources>
 </document>
