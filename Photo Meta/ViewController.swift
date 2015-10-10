@@ -83,7 +83,9 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
   
   override func viewDidAppear() {
     super.viewDidAppear()
-    openSelectPaths()
+    if sourceUrl.path == nil {
+      openSelectPaths()
+    }
   }
   
   private func openSelectPaths() {
