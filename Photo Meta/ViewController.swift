@@ -22,9 +22,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
   @IBOutlet weak var keepCheckBtn: NSButton!
   @IBOutlet weak var tagCheckTitle: NSButton!
   @IBOutlet weak var tagCheckDate: NSButton!
-  @IBOutlet weak var sourceTextField: NSTextField!
-  @IBOutlet weak var targetTextField: NSTextField!
-  @IBOutlet weak var targetTextFieldLabel: NSTextField!
+  @IBOutlet weak var sourceLabel: NSTextField!
   
   @IBAction func tagCheckClick(sender: NSButton) {
     if sourceUrl.path != nil {
@@ -67,19 +65,15 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
       } else {
         value = ""
       }
-      sourceTextField.stringValue = value
+      sourceLabel.stringValue = value
     }
   }
   var targetUrl: NSURL = NSURL() {
     didSet {
       setOutletsEnableState()
-      var value: String
       if targetUrl.path != nil {
-        value = targetUrl.path!.stringByReplacingOccurrencesOfString(NSHomeDirectory() + "/", withString: "", options: NSStringCompareOptions.LiteralSearch, range: nil)
-      } else {
-        value = ""
+        self.view.window?.setTitleWithRepresentedFilename(targetUrl.path!)
       }
-      targetTextField.stringValue = value
     }
   }
   private var files: [File] = []
@@ -142,9 +136,6 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
       deleteBtn.enabled = false
       writeBtn.enabled = false
     }
-    
-    targetTextField.enabled = true
-    targetTextFieldLabel.textColor = nil
     
     keepCheckBtn.enabled = true
     tagCheckTitle.enabled = true
