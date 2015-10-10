@@ -15,6 +15,12 @@ enum FileExceptions: ErrorType {
 
 class File {
   
+  enum WriteStatus {
+    case Success
+    case Partially
+    case Unset
+  }
+  
   private (set) var URL: NSURL
   private (set) var baseURL: NSURL
   var relativePath: String {
@@ -23,7 +29,7 @@ class File {
     }
   }
   private (set) var valid: Bool = false
-  private (set) var initialTagUpdated: [String : Bool] = [String : Bool]()
+  private (set) var latestRunStatus = WriteStatus.Unset
   private (set) var tagValues: [String : String] = [String : String]()
   var fileName: String {
     get {
@@ -67,7 +73,6 @@ class File {
           tag.value = title
           writeTags.append(tag)
           valueFor(tag, value: tag.value)
-          initialTagUpdated[tag.name] = true
         } else {
           extractionFailed.append(tag)
         }
@@ -76,7 +81,6 @@ class File {
           tag.value = dateFormatter.stringFromDate(date)
           writeTags.append(tag)
           valueFor(tag, value: tag.value)
-          initialTagUpdated[tag.name] = true
         } else {
           extractionFailed.append(tag)
         }
@@ -86,6 +90,16 @@ class File {
     }
     
     runner.write(writeTags, file: self)
+    
+    if writeTags.count == tags.count {
+      latestRunStatus = WriteStatus.Success
+    } else if writeTags.count < tags.count {
+      latestRunStatus = WriteStatus.Partially
+    }
+  }
+  
+  func resetLatestRunStatus() {
+    latestRunStatus = .Unset
   }
   
   func deleteValueFor(tags: [Tag]) {
@@ -110,15 +124,6 @@ class File {
       tagValues[tag.name] = value
     }
     return tagValues[tag.name]!
-  }
-  
-  func allInitialValuesUpdated() -> Bool {
-    for (tagName, _) in tagValues {
-      if initialTagUpdated[tagName] == nil {
-        return false
-      }
-    }
-    return true;
   }
   
   private func extractTitle() -> String {

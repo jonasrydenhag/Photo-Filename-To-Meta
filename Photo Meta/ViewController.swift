@@ -254,6 +254,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     toggleColumnVisibility(tableView, tags: selectedTags)
     
     disableAllOutlets([cancelBtn])
+    resetLatestRunStatus(runFiles)
     
     dispatch_async(dispatch_get_global_queue(Int(QOS_CLASS_USER_INITIATED.rawValue), 0)) {
       for (index, file) in runFiles.enumerate() {
@@ -315,6 +316,12 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
       
       self.cancelRun = false
       self.setOutletsEnableState()
+    }
+  }
+  
+  private func resetLatestRunStatus(files: [File]) {
+    for file in files {
+      file.resetLatestRunStatus()
     }
   }
   
@@ -420,15 +427,14 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
       
     } else if columnID == "status" {
       cellView = tableView.makeViewWithIdentifier("statusCell", owner: self) as! NSTableCellView
-      if !file.valid {
-        cellView.textField?.backgroundColor = NSColor.grayColor()
-        
-      } else {
+      
+      switch file.latestRunStatus {
+      case .Success:
         cellView.textField?.backgroundColor = NSColor.greenColor()
-        
-        if !file.allInitialValuesUpdated() {
-          cellView.textField?.backgroundColor = NSColor.yellowColor()
-        }
+      case .Partially:
+        cellView.textField?.backgroundColor = NSColor.yellowColor()
+      default:
+        cellView.textField?.backgroundColor = NSColor.whiteColor()
       }
       
     } else if columnID == "path" {
