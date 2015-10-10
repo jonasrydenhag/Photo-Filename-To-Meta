@@ -12,19 +12,19 @@ class PathsController: NSViewController, NSTableViewDataSource, NSTableViewDeleg
 
   @IBOutlet weak var sourceSelectBtn: NSButton!
   @IBOutlet weak var targetSelectBtn: NSButton!
-  @IBOutlet weak var sourceTextField: NSTextField!
-  @IBOutlet weak var targetTextField: NSTextField!
+  @IBOutlet weak var sourcePath: NSPathControl!
+  @IBOutlet weak var targetPath: NSPathControl!
   @IBOutlet weak var targetTextFieldLabel: NSTextField!
   @IBOutlet weak var cancelBtn: NSButton!
   @IBOutlet weak var okBtn: NSButton!
   
-  @IBAction func selectSourceDialog(sender: NSButton) {
+  @IBAction func selectSourceDialog(sender: AnyObject) {
     if let selectedPath = choosePath() {
       sourceUrl = selectedPath
     }
   }
   
-  @IBAction func selectTargetDialog(sender: NSButton) {
+  @IBAction func selectTargetDialog(sender: AnyObject) {
     if let selectedPath = choosePath(false, canCreateDirectories: true) {
       targetUrl = selectedPath
     }
@@ -60,26 +60,14 @@ class PathsController: NSViewController, NSTableViewDataSource, NSTableViewDeleg
   private var sourceUrl: NSURL = NSURL() {
     didSet {
       setOutletsEnableState()
-      var value: String
-      if sourceUrl.path != nil {
-        value = sourceUrl.path!.stringByReplacingOccurrencesOfString(NSHomeDirectory() + "/", withString: "", options: NSStringCompareOptions.LiteralSearch, range: nil)
-      } else {
-        value = ""
-      }
-      sourceTextField.stringValue = value
+      sourcePath.URL = sourceUrl
     }
   }
   
   private var targetUrl: NSURL = NSURL() {
     didSet {
       setOutletsEnableState()
-      var value: String
-      if targetUrl.path != nil {
-        value = targetUrl.path!.stringByReplacingOccurrencesOfString(NSHomeDirectory() + "/", withString: "", options: NSStringCompareOptions.LiteralSearch, range: nil)
-      } else {
-        value = ""
-      }
-      targetTextField.stringValue = value
+      targetPath.URL = targetUrl
     }
   }
   
