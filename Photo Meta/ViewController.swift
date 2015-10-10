@@ -15,48 +15,42 @@ enum PathExceptions: ErrorType {
 class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelegate {
 
   @IBOutlet weak var tableView: NSTableView!
-  @IBOutlet weak var deleteBtn: NSButton!
-  @IBOutlet weak var cancelBtn: NSButton!
-  @IBOutlet weak var readBtn: NSButton!
-  @IBOutlet weak var writeBtn: NSButton!
   @IBOutlet weak var keepCheckBtn: NSButton!
   @IBOutlet weak var tagCheckTitle: NSButton!
   @IBOutlet weak var tagCheckDate: NSButton!
   @IBOutlet weak var sourceLabel: NSTextField!
   
   @IBAction func tagCheckClick(sender: NSButton) {
-    setOutletsEnableState()
     toggleColumnVisibility(tableView, tags: selectedTags)
   }
   
-  @IBAction func cancelBtnClick(sender: NSButton) {
-    cancelRun = true
+  @IBAction func open(sender: AnyObject) {
+    openSelectPaths()
   }
   
-  @IBAction func read(sender: NSButton) {
+  @IBAction func read(sender: AnyObject) {
     mode = ViewController.readMode
     read(selectedTags)
   }
   
-  @IBAction func write(sender: NSButton) {
+  @IBAction func write(sender: AnyObject) {
     mode = ViewController.writeMode
     run(selectedTags, keepExistingTags: (keepCheckBtn.state == NSOnState))
   }
   
-  @IBAction func delete(sender: NSButton) {
+  @IBAction func delete(sender: AnyObject) {
     mode = ViewController.writeMode
     run(selectedTags, keepExistingTags: false, deleteTags: true)
   }
   
-  @IBAction func selectPaths(sender: AnyObject) {
-    openSelectPaths()
+  @IBAction func cancel(sender: AnyObject) {
+    cancelRun = true
   }
   
   private let exifToolRunner = ExifToolRunner()
   private let fileManager = NSFileManager.defaultManager()
   private (set) var sourceUrl: NSURL = NSURL() {
     didSet {
-      setOutletsEnableState()
       var value: String
       if sourceUrl.path != nil {
         value = sourceUrl.path!.stringByReplacingOccurrencesOfString(NSHomeDirectory() + "/", withString: "", options: NSStringCompareOptions.LiteralSearch, range: nil)
@@ -68,7 +62,6 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
   }
   var targetUrl: NSURL = NSURL() {
     didSet {
-      setOutletsEnableState()
       if targetUrl.path != nil {
         self.view.window?.setTitleWithRepresentedFilename(targetUrl.path!)
       }
@@ -91,6 +84,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
       return checkedTags
     }
   }
+  private var running = false
   private var cancelRun = false
   
   override func viewDidAppear() {
@@ -114,47 +108,28 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     }
   }
   
-  private func setOutletsEnableState() {
-    if sourceUrl.path != nil && selectedTags.count > 0 {
-      readBtn.enabled = true
-    } else {
-      readBtn.enabled = false
+  override func validateToolbarItem(theItem: NSToolbarItem) -> Bool {
+    if running && theItem.action != "cancel:" {
+      return false
     }
     
-    if sourceUrl.path != nil {
-      deleteBtn.enabled = true
-      writeBtn.enabled = true
-      
-      if selectedTags.count == 0 {
-        deleteBtn.enabled = false
-        writeBtn.enabled = false
+    switch theItem.action {
+    case "read:", "write:", "delete:":
+      if sourceUrl.path != nil && targetUrl.path != nil && selectedTags.count > 0 {
+        return true
+      } else {
+        return false
       }
-      
-    } else {
-      deleteBtn.enabled = false
-      writeBtn.enabled = false
-    }
-    
-    keepCheckBtn.enabled = true
-    tagCheckTitle.enabled = true
-    tagCheckDate.enabled = true
-    
-    cancelBtn.enabled = false
-  }
-  
-  private func disableAllOutlets(exceptions: [NSControl] = []) {
-    readBtn.enabled = false
-    deleteBtn.enabled = false
-    writeBtn.enabled = false
-  
-    keepCheckBtn.enabled = false
-    tagCheckTitle.enabled = false
-    tagCheckDate.enabled = false
-    
-    cancelBtn.enabled = false
-    
-    for control in exceptions {
-      control.enabled = true
+    case "cancel:":
+      if running {
+        return true
+      } else {
+        return false
+      }
+    case "open:":
+      return true
+    default:
+      return false
     }
   }
 
@@ -216,9 +191,8 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
   }
   
   private func read(tags: [Tag]) {
+    running = true
     toggleColumnVisibility(tableView, tags: selectedTags)
-    
-    disableAllOutlets([cancelBtn])
     
     dispatch_async(dispatch_get_global_queue(Int(QOS_CLASS_USER_INITIATED.rawValue), 0)) {
       for file in self.files {
@@ -236,12 +210,16 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
         }
       }
       
+      self.running = false
       self.cancelRun = false
-      self.setOutletsEnableState()
+      dispatch_async(dispatch_get_main_queue()) {
+        self.view.window?.toolbar?.validateVisibleItems()
+      }
     }
   }
   
   private func run(tags: [Tag], keepExistingTags: Bool = true, deleteTags: Bool = false, withSelected: [File] = []) {
+    running = true
     var runFiles: [File]
     if withSelected.count != 0 {
       runFiles = withSelected
@@ -251,7 +229,6 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     var kept: [String: [File]] = [String : [File]]()
     toggleColumnVisibility(tableView, tags: selectedTags)
     
-    disableAllOutlets([cancelBtn])
     resetLatestRunStatus(runFiles)
     
     dispatch_async(dispatch_get_global_queue(Int(QOS_CLASS_USER_INITIATED.rawValue), 0)) {
@@ -312,8 +289,11 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
         }
       }
       
+      self.running = false
       self.cancelRun = false
-      self.setOutletsEnableState()
+      dispatch_async(dispatch_get_main_queue()) {
+        self.view.window?.toolbar?.validateVisibleItems()
+      }
     }
   }
   
