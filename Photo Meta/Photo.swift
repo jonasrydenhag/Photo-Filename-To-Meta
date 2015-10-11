@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  Photo.swift
 //  Photo Meta
 //
 //  Created by Jonas Rydenhag on 2015-08-23.
@@ -13,7 +13,7 @@ enum FileExceptions: ErrorType {
   case FileDoesNotExist
 }
 
-class File {
+class Photo {
   
   enum WriteStatus {
     case Success

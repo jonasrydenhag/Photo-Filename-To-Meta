@@ -16,7 +16,7 @@ class ExifToolRunner: NSObject {
   
   let supportedFileTypes: [CFString!] = [kUTTypeJPEG, kUTTypeGIF, kUTTypeTIFF]
   
-  func valueFor(tag: Tag, file: File) -> String {
+  func valueFor(tag: Tag, file: Photo) -> String {
       switch tag.name {
       case Tag.TitleTag:
         return titleFor(file)
@@ -33,15 +33,15 @@ class ExifToolRunner: NSObject {
     super.init()
   }
   
-  func titleFor(file: File) -> String {
+  func titleFor(file: Photo) -> String {
     return run(file.URL, arguments: ["-title", "-s3"], synchronous: true).stringByReplacingOccurrencesOfString("\\n*", withString: "", options: .RegularExpressionSearch)
   }
   
-  func dateFor(file: File) -> String {
+  func dateFor(file: Photo) -> String {
     return run(file.URL, arguments: ["-dateTimeOriginal", "-s3"], synchronous: true).stringByReplacingOccurrencesOfString("\\n*", withString: "", options: .RegularExpressionSearch)
   }
   
-  func write(tags: [Tag], file: File, overwriteFile: Bool = true) {
+  func write(tags: [Tag], file: Photo, overwriteFile: Bool = true) {
     var defaultArgs = Array<String>()
     var tagsArgs = Array<String>()
     
@@ -64,7 +64,7 @@ class ExifToolRunner: NSObject {
     }
   }
   
-  func deleteValueFor(tags: [Tag], file: File, overwriteFile: Bool = true) {
+  func deleteValueFor(tags: [Tag], file: Photo, overwriteFile: Bool = true) {
     for tag in tags {
       tag.value = ""
     }

@@ -58,7 +58,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
       }
     }
   }
-  private var files: [File] = []
+  private var files: [Photo] = []
   private var selectedTags: [Tag] {
     get {
       var checkedTags = [Tag]()
@@ -171,7 +171,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     }
     
     do {
-      let file = try File(fileURL: URL, baseURL: baseURL, runner: exifToolRunner)
+      let file = try Photo(fileURL: URL, baseURL: baseURL, runner: exifToolRunner)
       files.append(file)
     } catch  {
       // Ignore file
@@ -206,15 +206,15 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     }
   }
   
-  private func run(tags: [Tag], keepExistingTags: Bool = true, deleteTags: Bool = false, withSelected: [File] = []) {
+  private func run(tags: [Tag], keepExistingTags: Bool = true, deleteTags: Bool = false, withSelected: [Photo] = []) {
     running = true
-    var runFiles: [File]
+    var runFiles: [Photo]
     if withSelected.count != 0 {
       runFiles = withSelected
     } else {
       runFiles = files
     }
-    var kept: [String: [File]] = [String : [File]]()
+    var kept: [String: [Photo]] = [String : [Photo]]()
     toggleColumnVisibility(selectedTags)
     
     resetLatestRunStatus(runFiles)
@@ -285,13 +285,13 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     }
   }
   
-  private func resetLatestRunStatus(files: [File]) {
+  private func resetLatestRunStatus(files: [Photo]) {
     for file in files {
       file.resetLatestRunStatus()
     }
   }
   
-  private func prepareCopyDestPath(file: File, toDir: NSURL) throws -> String {
+  private func prepareCopyDestPath(file: Photo, toDir: NSURL) throws -> String {
     var fromBaseDir: ObjCBool = false
     var destPath: String
     let relativeFilePath = file.relativePath
@@ -322,7 +322,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     return destPath
   }
   
-  private func copy(file: File, toDir: NSURL) throws -> File? {
+  private func copy(file: Photo, toDir: NSURL) throws -> Photo? {
     var isDir: ObjCBool = false
     if !fileManager.fileExistsAtPath(toDir.path!, isDirectory:&isDir) || !isDir {
       throw PathExceptions.TargetURLNotDir
@@ -337,7 +337,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     try fileManager.copyItemAtPath(file.URL.path!, toPath: destPath)
     let URL = NSURL(fileURLWithFileSystemRepresentation: destPath, isDirectory: false, relativeToURL: targetUrl)
     
-    return try File(fileURL: URL, baseURL: toDir, runner: exifToolRunner)
+    return try Photo(fileURL: URL, baseURL: toDir, runner: exifToolRunner)
   }
   
   private func toggleColumnVisibility(tags: [Tag] = []) {
@@ -432,7 +432,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
   
   // MARK: - Alert
   
-  func overwrite(files: [File], tag: Tag) {
+  func overwrite(files: [Photo], tag: Tag) {
     let alert = NSAlert()
     alert.addButtonWithTitle(NSLocalizedString("Yes", comment: "Overwrite alert"))
     alert.addButtonWithTitle(NSLocalizedString("No", comment: "Overwrite alert"))
