@@ -12,13 +12,13 @@
 		DD1311891BC92EB200DAB28F /* Erase.png in Resources */ = {isa = PBXBuildFile; fileRef = DD1311841BC92EB200DAB28F /* Erase.png */; settings = {ASSET_TAGS = (); }; };
 		DD13118A1BC92EB200DAB28F /* Eye.png in Resources */ = {isa = PBXBuildFile; fileRef = DD1311851BC92EB200DAB28F /* Eye.png */; settings = {ASSET_TAGS = (); }; };
 		DD13118B1BC92EB200DAB28F /* Folder.png in Resources */ = {isa = PBXBuildFile; fileRef = DD1311861BC92EB200DAB28F /* Folder.png */; settings = {ASSET_TAGS = (); }; };
-		DD13118C1BC92EB200DAB28F /* PenAndPaper.png in Resources */ = {isa = PBXBuildFile; fileRef = DD1311871BC92EB200DAB28F /* PenAndPaper.png */; settings = {ASSET_TAGS = (); }; };
 		DD2118A51B884E4E0030745C /* ExifToolRunner.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD2118A41B884E4E0030745C /* ExifToolRunner.swift */; };
 		DD5FF60F1BAEBE40008A9E37 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = DD5FF6111BAEBE40008A9E37 /* InfoPlist.strings */; };
 		DD5FF6141BAEBE40008A9E37 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = DD5FF6161BAEBE40008A9E37 /* Localizable.strings */; };
 		DD5FF6191BAEBE41008A9E37 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = DD5FF61B1BAEBE41008A9E37 /* InfoPlist.strings */; };
 		DD67B6AD1BB13D2000E64585 /* lib in Resources */ = {isa = PBXBuildFile; fileRef = DD67B6AC1BB13D2000E64585 /* lib */; };
 		DD67B6B11BB13E6200E64585 /* exiftool in Resources */ = {isa = PBXBuildFile; fileRef = DD67B6B01BB13E6200E64585 /* exiftool */; };
+		DD9099011BC9F0A000F4F8F8 /* PenAndPaper.png in Resources */ = {isa = PBXBuildFile; fileRef = DD9099001BC9F0A000F4F8F8 /* PenAndPaper.png */; settings = {ASSET_TAGS = (); }; };
 		DDAD5B611BB7E3AF00728C57 /* PathsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDAD5B601BB7E3AF00728C57 /* PathsController.swift */; settings = {ASSET_TAGS = (); }; };
 		DDBA7A091B83E8B500CB49A3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDBA7A081B83E8B500CB49A3 /* AppDelegate.swift */; };
 		DDBA7A0B1B83E8B500CB49A3 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDBA7A0A1B83E8B500CB49A3 /* ViewController.swift */; };
@@ -44,7 +44,6 @@
 		DD1311841BC92EB200DAB28F /* Erase.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Erase.png; sourceTree = "<group>"; };
 		DD1311851BC92EB200DAB28F /* Eye.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Eye.png; sourceTree = "<group>"; };
 		DD1311861BC92EB200DAB28F /* Folder.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Folder.png; sourceTree = "<group>"; };
-		DD1311871BC92EB200DAB28F /* PenAndPaper.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = PenAndPaper.png; sourceTree = "<group>"; };
 		DD2118A41B884E4E0030745C /* ExifToolRunner.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExifToolRunner.swift; sourceTree = "<group>"; };
 		DD5FF60C1BAEBBAD008A9E37 /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/Main.strings; sourceTree = "<group>"; };
 		DD5FF6101BAEBE40008A9E37 /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -52,6 +51,7 @@
 		DD5FF61A1BAEBE41008A9E37 /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		DD67B6AC1BB13D2000E64585 /* lib */ = {isa = PBXFileReference; lastKnownFileType = folder; path = lib; sourceTree = "<group>"; };
 		DD67B6B01BB13E6200E64585 /* exiftool */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.perl; path = exiftool; sourceTree = "<group>"; };
+		DD9099001BC9F0A000F4F8F8 /* PenAndPaper.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = PenAndPaper.png; sourceTree = "<group>"; };
 		DDAD5B601BB7E3AF00728C57 /* PathsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PathsController.swift; sourceTree = "<group>"; };
 		DDBA7A031B83E8B500CB49A3 /* Photo Meta.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Photo Meta.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DDBA7A071B83E8B500CB49A3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -96,11 +96,11 @@
 		DD1311821BC92E9F00DAB28F /* Icons */ = {
 			isa = PBXGroup;
 			children = (
+				DD9099001BC9F0A000F4F8F8 /* PenAndPaper.png */,
 				DD1311831BC92EB200DAB28F /* Cancel.png */,
 				DD1311841BC92EB200DAB28F /* Erase.png */,
 				DD1311851BC92EB200DAB28F /* Eye.png */,
 				DD1311861BC92EB200DAB28F /* Folder.png */,
-				DD1311871BC92EB200DAB28F /* PenAndPaper.png */,
 			);
 			name = Icons;
 			sourceTree = "<group>";
@@ -270,7 +270,7 @@
 				DD13118A1BC92EB200DAB28F /* Eye.png in Resources */,
 				DD67B6B11BB13E6200E64585 /* exiftool in Resources */,
 				DD67B6AD1BB13D2000E64585 /* lib in Resources */,
-				DD13118C1BC92EB200DAB28F /* PenAndPaper.png in Resources */,
+				DD9099011BC9F0A000F4F8F8 /* PenAndPaper.png in Resources */,
 				DDBA7A0D1B83E8B500CB49A3 /* Images.xcassets in Resources */,
 				DD5FF6191BAEBE41008A9E37 /* InfoPlist.strings in Resources */,
 				DD1311891BC92EB200DAB28F /* Erase.png in Resources */,
