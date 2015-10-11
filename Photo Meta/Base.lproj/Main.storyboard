@@ -208,7 +208,7 @@
                                                             <rect key="frame" x="1" y="1" width="10.5" height="17"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
-                                                                <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="0B7-HH-Qyi">
+                                                                <textField hidden="YES" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="0B7-HH-Qyi">
                                                                     <rect key="frame" x="0.0" y="1" width="3" height="15"/>
                                                                     <constraints>
                                                                         <constraint firstAttribute="height" constant="15" id="Hh6-wa-F2f"/>

@@ -394,6 +394,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
       
     } else if columnID == "status" {
       cellView = tableView.makeViewWithIdentifier("statusCell", owner: self) as! NSTableCellView
+      cellView.textField?.hidden = false
       
       switch file.latestRunStatus {
       case .Success:
@@ -401,7 +402,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
       case .Partially:
         cellView.textField?.backgroundColor = NSColor.yellowColor()
       default:
-        cellView.textField?.backgroundColor = NSColor.whiteColor()
+        cellView.textField?.hidden = true
       }
       
     } else if columnID == "path" {
