@@ -21,7 +21,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
   
   @IBOutlet weak var sourcePath: NSPathCell!
   @IBAction func tagCheckClick(sender: NSButton) {
-    toggleColumnVisibility(tableView, tags: selectedTags)
+    toggleColumnVisibility(selectedTags)
   }
   
   @IBAction func open(sender: AnyObject) {
@@ -158,7 +158,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
         }
       }
     }
-    toggleColumnVisibility(tableView)
+    toggleColumnVisibility()
     tableView.reloadData()
   }
   
@@ -180,7 +180,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
   
   private func read(tags: [Tag]) {
     running = true
-    toggleColumnVisibility(tableView, tags: selectedTags)
+    toggleColumnVisibility(selectedTags)
     
     dispatch_async(dispatch_get_global_queue(Int(QOS_CLASS_USER_INITIATED.rawValue), 0)) {
       for file in self.files {
@@ -215,7 +215,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
       runFiles = files
     }
     var kept: [String: [File]] = [String : [File]]()
-    toggleColumnVisibility(tableView, tags: selectedTags)
+    toggleColumnVisibility(selectedTags)
     
     resetLatestRunStatus(runFiles)
     
@@ -340,7 +340,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     return try File(fileURL: URL, baseURL: toDir, runner: exifToolRunner)
   }
   
-  private func toggleColumnVisibility(tableView: NSTableView, tags: [Tag] = []) {
+  private func toggleColumnVisibility(tags: [Tag] = []) {
     for column in tableView.tableColumns {
       switch column.identifier {
       case "status", "enum", "path":
