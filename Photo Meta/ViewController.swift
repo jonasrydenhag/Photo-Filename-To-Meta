@@ -347,11 +347,16 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
         column.hidden = false
         
       default:
-        column.hidden = true
+        var tagFound = false
         for tag in tags {
           if column.identifier == tag.name {
-            column.hidden = false
+            tagFound = true
           }
+        }
+        if tagFound {
+          column.hidden = false
+        } else {
+          column.hidden = true
         }
       }
     }
