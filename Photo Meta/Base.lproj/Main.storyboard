@@ -191,7 +191,7 @@
                                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                             <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                             <tableColumns>
-                                                <tableColumn identifier="status" width="10" minWidth="10" maxWidth="10" id="D1f-co-aeh">
+                                                <tableColumn identifier="status" editable="NO" width="10" minWidth="10" maxWidth="10" id="D1f-co-aeh">
                                                     <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left">
                                                         <font key="font" metaFont="smallSystem"/>
                                                         <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -202,7 +202,6 @@
                                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                         <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                     </textFieldCell>
-                                                    <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                     <prototypeCellViews>
                                                         <tableCellView identifier="statusCell" id="ej8-7g-x3y">
                                                             <rect key="frame" x="1" y="1" width="10.5" height="17"/>
@@ -233,7 +232,7 @@
                                                         </tableCellView>
                                                     </prototypeCellViews>
                                                 </tableColumn>
-                                                <tableColumn identifier="enum" width="30" minWidth="30" maxWidth="40" id="Bwa-4k-SlK">
+                                                <tableColumn identifier="enum" editable="NO" width="30" minWidth="30" maxWidth="40" id="Bwa-4k-SlK">
                                                     <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left">
                                                         <font key="font" metaFont="smallSystem"/>
                                                         <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -272,7 +271,7 @@
                                                         </tableCellView>
                                                     </prototypeCellViews>
                                                 </tableColumn>
-                                                <tableColumn identifier="path" width="201" minWidth="40" maxWidth="1000" id="sMU-bZ-wiz">
+                                                <tableColumn identifier="path" editable="NO" width="201" minWidth="40" maxWidth="1000" id="sMU-bZ-wiz">
                                                     <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="File">
                                                         <font key="font" metaFont="smallSystem"/>
                                                         <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -311,7 +310,7 @@
                                                         </tableCellView>
                                                     </prototypeCellViews>
                                                 </tableColumn>
-                                                <tableColumn identifier="date" width="150" minWidth="40" maxWidth="150" id="GzK-uK-c6s">
+                                                <tableColumn identifier="date" editable="NO" width="150" minWidth="40" maxWidth="150" id="GzK-uK-c6s">
                                                     <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Date">
                                                         <font key="font" metaFont="smallSystem"/>
                                                         <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -350,7 +349,7 @@
                                                         </tableCellView>
                                                     </prototypeCellViews>
                                                 </tableColumn>
-                                                <tableColumn identifier="title" width="201" minWidth="40" maxWidth="1000" id="4gP-zj-xyZ">
+                                                <tableColumn identifier="title" editable="NO" width="201" minWidth="40" maxWidth="1000" id="4gP-zj-xyZ">
                                                     <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Title">
                                                         <font key="font" metaFont="smallSystem"/>
                                                         <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
