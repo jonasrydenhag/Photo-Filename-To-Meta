@@ -29,17 +29,14 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
   }
   
   @IBAction func read(sender: AnyObject) {
-    mode = ViewController.readMode
     read(selectedTags)
   }
   
   @IBAction func write(sender: AnyObject) {
-    mode = ViewController.writeMode
     run(selectedTags, keepExistingTags: (keepCheckBtn.state == NSOnState))
   }
   
   @IBAction func delete(sender: AnyObject) {
-    mode = ViewController.writeMode
     run(selectedTags, keepExistingTags: false, deleteTags: true)
   }
   
@@ -62,10 +59,6 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     }
   }
   private var files: [File] = []
-  private static let listMode = "list"
-  private static let readMode = "read"
-  private static let writeMode = "write"
-  private var mode = listMode
   private var selectedTags: [Tag] {
     get {
       var checkedTags = [Tag]()
@@ -151,7 +144,6 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
   
   func collectFilesFrom(URL: NSURL) {
     sourceUrl = URL
-    mode = ViewController.listMode
     files = []
     if URL.path != nil {
       var baseUrlIsDir: ObjCBool = false
@@ -357,7 +349,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
       default:
         column.hidden = true
         for tag in tags {
-          if column.identifier == tag.name && mode != ViewController.listMode {
+          if column.identifier == tag.name {
             column.hidden = false
           }
         }
