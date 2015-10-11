@@ -310,7 +310,7 @@
                                                         </tableCellView>
                                                     </prototypeCellViews>
                                                 </tableColumn>
-                                                <tableColumn identifier="date" editable="NO" width="150" minWidth="40" maxWidth="150" id="GzK-uK-c6s">
+                                                <tableColumn identifier="date" editable="NO" width="150" minWidth="90" maxWidth="150" id="GzK-uK-c6s">
                                                     <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Date">
                                                         <font key="font" metaFont="smallSystem"/>
                                                         <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
