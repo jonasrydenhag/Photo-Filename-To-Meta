@@ -8,12 +8,11 @@
 
 import Foundation
 
-enum FileExceptions: ErrorType {
-  case NotAFile
-  case FileDoesNotExist
-}
+class Photo: File {
 
-class Photo {
+  enum PhotoExceptions: ErrorType {
+    case NotSupported
+  }
   
   enum WriteStatus {
     case Success
@@ -21,14 +20,6 @@ class Photo {
     case Unset
   }
   
-  private (set) var URL: NSURL
-  private (set) var baseURL: NSURL
-  var relativePath: String {
-    get {
-      return URL.path!.stringByReplacingOccurrencesOfString(baseURL.path! + "/", withString: "", options: NSStringCompareOptions.LiteralSearch, range: nil)
-    }
-  }
-  private (set) var valid: Bool = false
   private (set) var latestRunStatus = WriteStatus.Unset
   private (set) var tagValues: [String : String] = [String : String]()
   var fileName: String {
@@ -42,15 +33,12 @@ class Photo {
   var extractionFailed = Array<Tag>()
   
   init(fileURL: NSURL, baseURL: NSURL, runner: ExifToolRunner) throws {
-    self.URL = fileURL
-    self.baseURL = baseURL
     self.runner = runner
-    self.valid = self.fileTypeConformsTo(runner.supportedFileTypes)
+    try super.init(fileURL: fileURL, baseURL: baseURL)
     dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-    extractDate()
     
-    if self.URL.resourceSpecifier == NSURLFileResourceTypeDirectory {
-      throw FileExceptions.NotAFile
+    if !self.fileTypeConformsTo(runner.supportedFileTypes) {
+      throw PhotoExceptions.NotSupported
     }
   }
   

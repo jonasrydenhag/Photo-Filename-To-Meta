@@ -58,7 +58,12 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
       }
     }
   }
-  private var files: [Photo] = []
+  private var files: [File] = []
+  private var photos: [Photo] {
+    get {
+      return files.flatMap{ $0 as? Photo }
+    }
+  }
   private var selectedTags: [Tag] {
     get {
       var checkedTags = [Tag]()
@@ -173,6 +178,14 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     do {
       let file = try Photo(fileURL: URL, baseURL: baseURL, runner: exifToolRunner)
       files.append(file)
+      
+    } catch Photo.PhotoExceptions.NotSupported {
+      do {
+        let file = try File(fileURL: URL, baseURL: baseURL)
+        files.append(file)
+      } catch  {
+        // Ignore file
+      }
     } catch  {
       // Ignore file
     }
@@ -183,15 +196,13 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     toggleColumnVisibility(selectedTags)
     
     dispatch_async(dispatch_get_global_queue(Int(QOS_CLASS_USER_INITIATED.rawValue), 0)) {
-      for file in self.files {
+      for photo in self.photos {
         
         if self.cancelRun {
           break
         }
         
-        if file.valid {
-          file.read(tags)
-        }
+        photo.read(tags)
         
         dispatch_async(dispatch_get_main_queue()) {
           self.tableView.reloadData()
@@ -212,7 +223,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     if withSelected.count != 0 {
       runFiles = withSelected
     } else {
-      runFiles = files
+      runFiles = photos
     }
     var kept: [String: [Photo]] = [String : [Photo]]()
     toggleColumnVisibility(selectedTags)
@@ -227,40 +238,38 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
           break
         }
         if self.fileManager.fileExistsAtPath(targetFile.URL.path!) {
-          if targetFile.valid {
-            if self.sourceUrl.path != self.targetUrl.path {
-              do {
-                if let copiedFile = try self.copy(targetFile, toDir: self.targetUrl) {
-                  
-                  if withSelected.count != 0 {
-                    if let i = self.files.indexOf({$0 === targetFile}) {
-                      self.files[i] = copiedFile
-                    } else {
-                      self.files.append(copiedFile)
-                    }
+          if self.sourceUrl.path != self.targetUrl.path {
+            do {
+              if let copiedFile = try self.copy(targetFile, toDir: self.targetUrl) {
+                
+                if withSelected.count != 0 {
+                  if let i = self.files.indexOf({$0 === targetFile}) {
+                    self.files[i] = copiedFile
                   } else {
-                    self.files[index] = copiedFile
+                    self.files.append(copiedFile)
                   }
-                  
-                  targetFile = copiedFile
+                } else {
+                  self.files[index] = copiedFile
                 }
-              } catch {
-                break;
+                
+                targetFile = copiedFile
               }
+            } catch {
+              break;
             }
+          }
+          
+          if deleteTags {
+            targetFile.deleteValueFor(tags)
             
-            if deleteTags {
-              targetFile.deleteValueFor(tags)
-              
-            } else {
-              targetFile.write(tags, keepExistingTags: keepExistingTags)
-              if keepExistingTags && targetFile.kept.count > 0 {
-                for tag in targetFile.kept {
-                  if kept[tag.name] == nil {
-                    kept[tag.name] = []
-                  }
-                  kept[tag.name]!.append(targetFile)
+          } else {
+            targetFile.write(tags, keepExistingTags: keepExistingTags)
+            if keepExistingTags && targetFile.kept.count > 0 {
+              for tag in targetFile.kept {
+                if kept[tag.name] == nil {
+                  kept[tag.name] = []
                 }
+                kept[tag.name]!.append(targetFile)
               }
             }
           }
@@ -291,7 +300,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     }
   }
   
-  private func prepareCopyDestPath(file: Photo, toDir: NSURL) throws -> String {
+  private func prepareCopyDestPath(file: File, toDir: NSURL) throws -> String {
     var fromBaseDir: ObjCBool = false
     var destPath: String
     let relativeFilePath = file.relativePath
@@ -369,8 +378,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
   }
   
   func tableView(tableView: NSTableView, viewForTableColumn tableColumn: NSTableColumn?, row: Int) -> NSView? {
-    var cellView: NSTableCellView!
-    var text = ""
+    var cellView: NSTableCellView?
     let columnID: String
     
     if files.count < row {
@@ -386,46 +394,55 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     let file = files[row]
     
     if columnID == "enum" {
-      cellView = tableView.makeViewWithIdentifier("enumCell", owner: self) as! NSTableCellView
-      text = "\(row + 1)"
-      
-    } else if columnID == "status" {
-      cellView = tableView.makeViewWithIdentifier("statusCell", owner: self) as! NSTableCellView
-      cellView.textField?.hidden = false
-      
-      switch file.latestRunStatus {
-      case .Success:
-        cellView.textField?.backgroundColor = NSColor.greenColor()
-      case .Partially:
-        cellView.textField?.backgroundColor = NSColor.yellowColor()
-      default:
-        cellView.textField?.hidden = true
-      }
+      cellView = tableView.makeViewWithIdentifier("enumCell", owner: self) as? NSTableCellView
+      cellView?.textField?.stringValue = "\(row + 1)"
       
     } else if columnID == "path" {
-      cellView = tableView.makeViewWithIdentifier("pathCell", owner: self) as! NSTableCellView
-      text = file.relativePath
+      cellView = tableView.makeViewWithIdentifier("pathCell", owner: self) as? NSTableCellView
+      cellView?.textField?.stringValue = file.relativePath
+      
+    } else if let photo: Photo = file as? Photo {
+      cellView = renderPhoto(tableView, viewForTableColumnID: columnID, photo: photo)
+    }
+    
+    if !(file is Photo) {
+      cellView?.textField?.textColor = NSColor.grayColor()
+    }
+    
+    return cellView
+  }
+  
+  private func renderPhoto(tableView: NSTableView, viewForTableColumnID columnID: String, photo: Photo) -> NSTableCellView? {
+    var cellView: NSTableCellView?
+    var text = ""
+    
+    if columnID == "status" {
+      cellView = tableView.makeViewWithIdentifier("statusCell", owner: self) as? NSTableCellView
+      cellView?.textField?.hidden = false
+      
+      switch photo.latestRunStatus {
+      case .Success:
+        cellView?.textField?.backgroundColor = NSColor.greenColor()
+      case .Partially:
+        cellView?.textField?.backgroundColor = NSColor.yellowColor()
+      default:
+        cellView?.textField?.hidden = true
+      }
       
     } else if columnID == "date" {
-      cellView = tableView.makeViewWithIdentifier("dateCell", owner: self) as! NSTableCellView
-      if file.tagValues[Tag.DateTag] != nil {
-        text = file.tagValues[Tag.DateTag]!
+      cellView = tableView.makeViewWithIdentifier("dateCell", owner: self) as? NSTableCellView
+      if photo.tagValues[Tag.DateTag] != nil {
+        text = photo.tagValues[Tag.DateTag]!
       }
       
     } else if columnID == "title" {
-      cellView = tableView.makeViewWithIdentifier("titleCell", owner: self) as! NSTableCellView
-      if file.tagValues[Tag.TitleTag] != nil {
-        text = file.tagValues[Tag.TitleTag]!
+      cellView = tableView.makeViewWithIdentifier("titleCell", owner: self) as? NSTableCellView
+      if photo.tagValues[Tag.TitleTag] != nil {
+        text = photo.tagValues[Tag.TitleTag]!
       }
     }
     
-    cellView.textField?.stringValue = text
-    
-    if !file.valid {
-      cellView.textField?.textColor = NSColor.grayColor()
-    } else {
-      cellView.textField?.textColor = nil
-    }
+    cellView?.textField?.stringValue = text
     
     return cellView
   }
