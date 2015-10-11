@@ -108,6 +108,7 @@ class File {
     for tag in tags {
       tagValues[tag.name] = nil
     }
+    latestRunStatus = WriteStatus.Success
   }
   
   func read(tags: [Tag]) {
