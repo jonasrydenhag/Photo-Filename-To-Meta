@@ -8,10 +8,10 @@
 "Continue" = "Fortsätt";
 
 /* Tag Name in overwrite alert */
-"Date" = "Datum";
+"Date" = "datum";
 
 /* Overwrite alert */
-"Existing values for the %@ tag" = "Befintliga värden för %@ taggen";
+"Existing values for the %@ tag" = "Befintliga värden för %@-taggen";
 
 /* Overwrite alert */
 "No" = "Nej";
@@ -23,7 +23,7 @@
 "Since the source and target are the same, the file(s) will be overwritten" = "Eftersom källan och målet har samma sökväg, så kommer orginalfilerna att bli överskrivna";
 
 /* Tag Name in overwrite alert */
-"Title" = "Titel";
+"Title" = "titel";
 
 /* Overwrite alert */
 "Yes" = "Ja";
