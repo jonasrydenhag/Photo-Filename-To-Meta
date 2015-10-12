@@ -31,4 +31,10 @@ class File {
       throw FileExceptions.NotAFile
     }
   }
+  
+  func changeURL(fileURL: NSURL, baseURL: NSURL) -> File {
+    self.URL = fileURL
+    self.baseURL = baseURL
+    return self
+  }
 }

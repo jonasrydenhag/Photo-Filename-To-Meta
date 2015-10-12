@@ -41,7 +41,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
   }
   
   @IBAction func cancel(sender: AnyObject) {
-    cancelRun = true
+    photoManager?.cancelRun()
   }
   
   private let exifToolRunner = ExifToolRunner()
@@ -59,11 +59,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     }
   }
   private var files: [File] = []
-  private var photos: [Photo] {
-    get {
-      return files.flatMap{ $0 as? Photo }
-    }
-  }
+  private var photoManager: PhotoManager?
   private var selectedTags: [Tag] {
     get {
       var checkedTags = [Tag]()
@@ -76,8 +72,6 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
       return checkedTags
     }
   }
-  private var running = false
-  private var cancelRun = false
   
   override func viewDidAppear() {
     super.viewDidAppear()
@@ -103,7 +97,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
   }
   
   override func validateToolbarItem(theItem: NSToolbarItem) -> Bool {
-    if running && theItem.action != "cancel:" {
+    if photoManager?.running == true && theItem.action != "cancel:" {
       return false
     }
     
@@ -115,7 +109,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
         return false
       }
     case "cancel:":
-      if running {
+      if photoManager?.running == true {
         return true
       } else {
         return false
@@ -163,6 +157,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
         }
       }
     }
+    photoManager = PhotoManager(photos: files.flatMap{ $0 as? Photo }, runner: exifToolRunner, fileManager: self)
     toggleColumnVisibility()
     tableView.reloadData()
   }
@@ -192,25 +187,15 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
   }
   
   private func read(tags: [Tag]) {
-    running = true
     toggleColumnVisibility(selectedTags)
     
     dispatch_async(dispatch_get_global_queue(Int(QOS_CLASS_USER_INITIATED.rawValue), 0)) {
-      for photo in self.photos {
-        
-        if self.cancelRun {
-          break
-        }
-        
-        photo.read(tags)
-        
+      self.photoManager?.read(tags, afterEach: {
         dispatch_async(dispatch_get_main_queue()) {
           self.tableView.reloadData()
         }
-      }
+      })
       
-      self.running = false
-      self.cancelRun = false
       dispatch_async(dispatch_get_main_queue()) {
         self.view.window?.toolbar?.validateVisibleItems()
       }
@@ -218,85 +203,33 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
   }
   
   private func run(tags: [Tag], keepExistingTags: Bool = true, deleteTags: Bool = false, withSelected: [Photo] = []) {
-    running = true
-    var runFiles: [Photo]
-    if withSelected.count != 0 {
-      runFiles = withSelected
-    } else {
-      runFiles = photos
+    if photoManager == nil {
+      return
     }
-    var kept: [String: [Photo]] = [String : [Photo]]()
+    
     toggleColumnVisibility(selectedTags)
     
-    resetLatestRunStatus(runFiles)
-    
     dispatch_async(dispatch_get_global_queue(Int(QOS_CLASS_USER_INITIATED.rawValue), 0)) {
-      for (index, file) in runFiles.enumerate() {
-        var targetFile = file
-        
-        if self.cancelRun {
-          break
-        }
-        if self.fileManager.fileExistsAtPath(targetFile.URL.path!) {
-          if self.sourceUrl.path != self.targetUrl.path {
-            do {
-              if let copiedFile = try self.copy(targetFile, toDir: self.targetUrl) {
-                
-                if withSelected.count != 0 {
-                  if let i = self.files.indexOf({$0 === targetFile}) {
-                    self.files[i] = copiedFile
-                  } else {
-                    self.files.append(copiedFile)
-                  }
-                } else {
-                  self.files[index] = copiedFile
-                }
-                
-                targetFile = copiedFile
-              }
-            } catch {
-              break;
-            }
-          }
-          
-          if deleteTags {
-            targetFile.deleteValueFor(tags)
-            
-          } else {
-            targetFile.write(tags, keepExistingTags: keepExistingTags)
-            if keepExistingTags && targetFile.kept.count > 0 {
-              for tag in targetFile.kept {
-                if kept[tag.name] == nil {
-                  kept[tag.name] = []
-                }
-                kept[tag.name]!.append(targetFile)
-              }
-            }
-          }
-          
+      let afterEach = {
           dispatch_async(dispatch_get_main_queue()) {
             self.tableView.reloadData()
           }
-        }
+      }
+      if deleteTags {
+        self.photoManager?.delete(tags, afterEach: afterEach)
+      } else {
+        self.photoManager?.write(tags, keepExistingTags: keepExistingTags, withSelected: withSelected, afterEach: afterEach)
       }
       
-      for tagName in kept.keys {
+      for tagName in self.photoManager!.kept.keys {
         dispatch_async(dispatch_get_main_queue()) {
-          self.overwrite(kept[tagName]!, tag: Tag(name: tagName))
+          self.overwrite(self.photoManager!.kept[tagName]!, tag: Tag(name: tagName))
         }
       }
       
-      self.running = false
-      self.cancelRun = false
       dispatch_async(dispatch_get_main_queue()) {
         self.view.window?.toolbar?.validateVisibleItems()
       }
-    }
-  }
-  
-  private func resetLatestRunStatus(files: [Photo]) {
-    for file in files {
-      file.resetLatestRunStatus()
     }
   }
   
@@ -331,7 +264,16 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     return destPath
   }
   
-  private func copy(file: Photo, toDir: NSURL) throws -> Photo? {
+  func copyIfNeeded(file: Photo) throws {
+    if !fileManager.fileExistsAtPath(file.URL.path!) {
+      throw File.FileExceptions.FileDoesNotExist
+    }
+    if sourceUrl.path != targetUrl.path {
+      try copy(file, toDir: targetUrl)
+    }
+  }
+  
+  private func copy(file: File, toDir: NSURL) throws -> File? {
     var isDir: ObjCBool = false
     if !fileManager.fileExistsAtPath(toDir.path!, isDirectory:&isDir) || !isDir {
       throw PathExceptions.TargetURLNotDir
@@ -346,7 +288,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     try fileManager.copyItemAtPath(file.URL.path!, toPath: destPath)
     let URL = NSURL(fileURLWithFileSystemRepresentation: destPath, isDirectory: false, relativeToURL: targetUrl)
     
-    return try Photo(fileURL: URL, baseURL: toDir, runner: exifToolRunner)
+    return file.changeURL(URL, baseURL: toDir)
   }
   
   private func toggleColumnVisibility(tags: [Tag] = []) {
@@ -401,7 +343,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
       cellView = tableView.makeViewWithIdentifier("pathCell", owner: self) as? NSTableCellView
       cellView?.textField?.stringValue = file.relativePath
       
-    } else if let photo: Photo = file as? Photo {
+    } else if let photo = file as? Photo {
       cellView = renderPhoto(tableView, viewForTableColumnID: columnID, photo: photo)
     }
     
