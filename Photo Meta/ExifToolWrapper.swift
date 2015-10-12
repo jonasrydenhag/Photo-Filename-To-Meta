@@ -1,5 +1,5 @@
 //
-//  ExifToolRunner.swift
+//  ExifToolWrapper.swift
 //  Photo Meta
 //
 //  Created by Jonas Rydenhag on 2015-08-22.
@@ -8,7 +8,7 @@
 
 import Foundation
 
-class ExifToolRunner: MetaWriter {
+class ExifToolWrapper: MetaWriter {
   
   private let overwriteFile = true
   
