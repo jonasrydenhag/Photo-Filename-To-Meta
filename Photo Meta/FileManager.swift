@@ -8,13 +8,12 @@
 
 import Foundation
 
-class FileManager {
+class FileManager: NSFileManager {
 
   enum PathExceptions: ErrorType {
     case TargetURLNotDir
   }
   
-  private let nsFileManager = NSFileManager.defaultManager()
   let sourceURL: NSURL
   let targetURL: NSURL
   private (set) var files: [File] = []
@@ -22,6 +21,7 @@ class FileManager {
   init(sourceURL: NSURL, targetURL: NSURL) {
     self.sourceURL = sourceURL
     self.targetURL = targetURL
+    super.init()
     self.collectFiles()
   }
   
@@ -31,11 +31,11 @@ class FileManager {
     }
     
     var baseUrlIsDir: ObjCBool = false
-    if nsFileManager.fileExistsAtPath(sourceURL.path!, isDirectory:&baseUrlIsDir) && !baseUrlIsDir {
+    if fileExistsAtPath(sourceURL.path!, isDirectory:&baseUrlIsDir) && !baseUrlIsDir {
       addFileFrom(sourceURL.path!, baseURL: sourceURL.URLByDeletingLastPathComponent!)
       
     } else {
-      let enumerator: NSDirectoryEnumerator? = nsFileManager.enumeratorAtURL(sourceURL, includingPropertiesForKeys: nil, options: [], errorHandler: nil)
+      let enumerator: NSDirectoryEnumerator? = enumeratorAtURL(sourceURL, includingPropertiesForKeys: nil, options: [], errorHandler: nil)
       
       while let fileURL: NSURL = enumerator?.nextObject() as? NSURL {
         addFileFrom(fileURL.path!, baseURL: sourceURL)
@@ -53,7 +53,7 @@ class FileManager {
   }
   
   internal func copyIfNeeded(file: Photo) throws {
-    if !nsFileManager.fileExistsAtPath(file.URL.path!) {
+    if !fileExistsAtPath(file.URL.path!) {
       throw File.FileExceptions.FileDoesNotExist
     }
     if sourceURL.path != targetURL.path {
@@ -65,7 +65,7 @@ class FileManager {
     var isDir: ObjCBool = false
     let URL = NSURL(fileURLWithPath: path, isDirectory: false)
     
-    if !nsFileManager.fileExistsAtPath(path, isDirectory: &isDir) || isDir || URL.lastPathComponent == ".DS_Store"{
+    if !fileExistsAtPath(path, isDirectory: &isDir) || isDir || URL.lastPathComponent == ".DS_Store"{
       return
     }
     
@@ -80,7 +80,7 @@ class FileManager {
     let relativeFilePath = file.relativePath
     let relativeURL = NSURL(fileURLWithPath: relativeFilePath, isDirectory: false)
     
-    nsFileManager.fileExistsAtPath(file.URL.path!, isDirectory:&fromBaseDir)
+    fileExistsAtPath(file.URL.path!, isDirectory:&fromBaseDir)
     
     var targetPath = toDir.path! + "/"
     destPath = targetPath + relativeFilePath
@@ -90,16 +90,16 @@ class FileManager {
       
       if destPath != file.URL.path {
         var targetPathDir: ObjCBool = false
-        if nsFileManager.fileExistsAtPath(targetPath, isDirectory:&targetPathDir) && !targetPathDir {
-          try nsFileManager.removeItemAtPath(targetPath)
+        if fileExistsAtPath(targetPath, isDirectory:&targetPathDir) && !targetPathDir {
+          try removeItemAtPath(targetPath)
         }
         
-        try nsFileManager.createDirectoryAtPath(targetPath, withIntermediateDirectories: true, attributes: nil)
+        try createDirectoryAtPath(targetPath, withIntermediateDirectories: true, attributes: nil)
       }
     }
     
-    if destPath != file.URL.path && nsFileManager.fileExistsAtPath(destPath) {
-      try nsFileManager.removeItemAtPath(destPath)
+    if destPath != file.URL.path && fileExistsAtPath(destPath) {
+      try removeItemAtPath(destPath)
     }
     
     return destPath
@@ -107,7 +107,7 @@ class FileManager {
   
   private func copy(file: File, toDir: NSURL) throws -> File? {
     var isDir: ObjCBool = false
-    if !nsFileManager.fileExistsAtPath(toDir.path!, isDirectory:&isDir) || !isDir {
+    if !fileExistsAtPath(toDir.path!, isDirectory:&isDir) || !isDir {
       throw PathExceptions.TargetURLNotDir
     }
     
@@ -117,7 +117,7 @@ class FileManager {
       return nil
     }
     
-    try nsFileManager.copyItemAtPath(file.URL.path!, toPath: destPath)
+    try copyItemAtPath(file.URL.path!, toPath: destPath)
     let URL = NSURL(fileURLWithFileSystemRepresentation: destPath, isDirectory: false, relativeToURL: targetURL)
     
     return file.changeURL(URL, baseURL: toDir)
