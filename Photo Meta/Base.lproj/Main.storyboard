@@ -310,7 +310,7 @@
                                                         </tableCellView>
                                                     </prototypeCellViews>
                                                 </tableColumn>
-                                                <tableColumn identifier="date" editable="NO" width="150" minWidth="90" maxWidth="150" id="GzK-uK-c6s">
+                                                <tableColumn identifier="Date" editable="NO" width="150" minWidth="90" maxWidth="150" id="GzK-uK-c6s">
                                                     <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Date">
                                                         <font key="font" metaFont="smallSystem"/>
                                                         <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -349,7 +349,7 @@
                                                         </tableCellView>
                                                     </prototypeCellViews>
                                                 </tableColumn>
-                                                <tableColumn identifier="title" editable="NO" width="201" minWidth="40" maxWidth="1000" id="4gP-zj-xyZ">
+                                                <tableColumn identifier="Title" editable="NO" width="201" minWidth="40" maxWidth="1000" id="4gP-zj-xyZ">
                                                     <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Title">
                                                         <font key="font" metaFont="smallSystem"/>
                                                         <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>

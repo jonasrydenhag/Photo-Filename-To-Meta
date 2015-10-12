@@ -17,13 +17,11 @@ class ExifToolRunner: NSObject {
   let supportedFileTypes: [CFString!] = [kUTTypeJPEG, kUTTypeGIF, kUTTypeTIFF]
   
   func valueFor(tag: Tag, file: Photo) -> String {
-      switch tag.name {
-      case Tag.TitleTag:
+      switch tag{
+      case .Title:
         return titleFor(file)
-      case Tag.DateTag:
+      case .Date:
         return dateFor(file)
-      default:
-        return ""
       }
   }
   
@@ -41,7 +39,7 @@ class ExifToolRunner: NSObject {
     return run(file.URL, arguments: ["-dateTimeOriginal", "-s3"], synchronous: true).stringByReplacingOccurrencesOfString("\\n*", withString: "", options: .RegularExpressionSearch)
   }
   
-  func write(tags: [Tag], file: Photo, overwriteFile: Bool = true) {
+  func write(tagsValue: [Tag: String], file: Photo, overwriteFile: Bool = true) {
     var defaultArgs = Array<String>()
     var tagsArgs = Array<String>()
     
@@ -49,13 +47,12 @@ class ExifToolRunner: NSObject {
       defaultArgs.append("-overwrite_original")
     }
     
-    for tag in tags {
-      switch tag.name {
-      case Tag.TitleTag:
-        tagsArgs += writeTitleArgs(tag.value)
-      case Tag.DateTag:
-        tagsArgs += writeDateArgs(tag.value)
-      default: ()
+    for (tag, value) in tagsValue {
+      switch tag{
+      case .Title:
+        tagsArgs += writeTitleArgs(value)
+      case .Date:
+        tagsArgs += writeDateArgs(value)
       }
     }
     
@@ -65,10 +62,11 @@ class ExifToolRunner: NSObject {
   }
   
   func deleteValueFor(tags: [Tag], file: Photo, overwriteFile: Bool = true) {
+    var tagsValue: [Tag: String] = [Tag: String]()
     for tag in tags {
-      tag.value = ""
+      tagsValue[tag] = ""
     }
-    write(tags, file: file, overwriteFile: overwriteFile)
+    write(tagsValue, file: file, overwriteFile: overwriteFile)
   }
   
   private func writeTitleArgs(title: String) -> [String] {

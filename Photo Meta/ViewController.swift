@@ -30,10 +30,10 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     get {
       var checkedTags = [Tag]()
       if tagCheckTitle.state == NSOnState {
-        checkedTags.append(Tag(name: Tag.TitleTag))
+        checkedTags.append(Tag.Title)
       }
       if tagCheckDate.state == NSOnState {
-        checkedTags.append(Tag(name: Tag.DateTag))
+        checkedTags.append(Tag.Date)
       }
       return checkedTags
     }
@@ -154,9 +154,9 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
         self.photoManager?.write(tags, keepExistingTags: keepExistingTags, withSelected: withSelected, afterEach: afterEach)
       }
       
-      for tagName in self.photoManager!.kept.keys {
+      for tag in self.photoManager!.kept.keys {
         dispatch_async(dispatch_get_main_queue()) {
-          self.overwrite(self.photoManager!.kept[tagName]!, tag: Tag(name: tagName))
+          self.overwrite(self.photoManager!.kept[tag]!, tag: tag)
         }
       }
       
@@ -177,7 +177,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
       default:
         var tagFound = false
         for tag in tags {
-          if column.identifier == tag.name {
+          if column.identifier == tag.rawValue {
             tagFound = true
           }
         }
@@ -250,16 +250,16 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
         cellView?.textField?.hidden = true
       }
       
-    } else if columnID == "date" {
+    } else if columnID == "Date" {
       cellView = tableView.makeViewWithIdentifier("dateCell", owner: self) as? NSTableCellView
-      if photo.tagValues[Tag.DateTag] != nil {
-        text = photo.tagValues[Tag.DateTag]!
+      if photo.tagsValue[Tag.Date] != nil {
+        text = photo.tagsValue[Tag.Date]!
       }
       
-    } else if columnID == "title" {
+    } else if columnID == "Title" {
       cellView = tableView.makeViewWithIdentifier("titleCell", owner: self) as? NSTableCellView
-      if photo.tagValues[Tag.TitleTag] != nil {
-        text = photo.tagValues[Tag.TitleTag]!
+      if photo.tagsValue[Tag.Title] != nil {
+        text = photo.tagsValue[Tag.Title]!
       }
     }
     
@@ -274,7 +274,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     let alert = NSAlert()
     alert.addButtonWithTitle(NSLocalizedString("Yes", comment: "Overwrite alert"))
     alert.addButtonWithTitle(NSLocalizedString("No", comment: "Overwrite alert"))
-    alert.messageText = String(format: NSLocalizedString("Existing values for the %@ tag", comment: "Overwrite alert"), NSLocalizedString(tag.name, comment: "Overwrite alert"))
+    alert.messageText = String(format: NSLocalizedString("Existing values for the %@ tag", comment: "Overwrite alert"), NSLocalizedString(tag.rawValue, comment: "Overwrite alert"))
     let fileEnum = (files.count == 1) ? NSLocalizedString("file", comment: "Overwrite alert") :NSLocalizedString("files", comment: "Overwrite alert")
     alert.informativeText = String(format: NSLocalizedString("%1$d %2$@ already have values. Do you want to overwrite?", comment: "Overwrite alert"), files.count, fileEnum)
     alert.alertStyle = NSAlertStyle.InformationalAlertStyle

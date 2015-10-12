@@ -21,7 +21,7 @@ class Photo: File {
   }
   
   private (set) var latestRunStatus = WriteStatus.Unset
-  private (set) var tagValues: [String : String] = [String : String]()
+  private (set) var tagsValue: [Tag: String] = [Tag: String]()
   var fileName: String {
     get {
       return extractTitle()
@@ -30,7 +30,6 @@ class Photo: File {
   let dateFormatter = NSDateFormatter()
   var metaWriter: ExifToolRunner
   var kept = Array<Tag>()
-  var extractionFailed = Array<Tag>()
   
   init(fileURL: NSURL, baseURL: NSURL, metaWriter: ExifToolRunner) throws {
     self.metaWriter = metaWriter
@@ -43,9 +42,8 @@ class Photo: File {
   }
   
   func write(tags: [Tag], keepExistingTags: Bool = true) {
-    var writeTags = Array<Tag>()
+    var writeTags: [Tag: String] = [Tag: String]()
     kept = Array<Tag>()
-    extractionFailed = Array<Tag>()
     
     for tag in tags {
       if keepExistingTags && valueFor(tag) != "" {
@@ -53,27 +51,21 @@ class Photo: File {
         continue
       }
       
-      switch tag.name {
-      case Tag.TitleTag:
+      switch tag {
+      case .Title:
         let title = extractTitle()
         
         if title != "" {
-          tag.value = title
-          writeTags.append(tag)
-          valueFor(tag, value: tag.value)
-        } else {
-          extractionFailed.append(tag)
+          let value = title
+          writeTags[tag] = value
+          valueFor(tag, value: value)
         }
-      case Tag.DateTag:
+      case .Date:
         if let date = extractDate() {
-          tag.value = dateFormatter.stringFromDate(date)
-          writeTags.append(tag)
-          valueFor(tag, value: tag.value)
-        } else {
-          extractionFailed.append(tag)
+          let value = dateFormatter.stringFromDate(date)
+          writeTags[tag] = value
+          valueFor(tag, value: value)
         }
-      default:
-        continue
       }
     }
     
@@ -94,25 +86,25 @@ class Photo: File {
     kept = Array<Tag>()
     metaWriter.deleteValueFor(tags, file: self)
     for tag in tags {
-      tagValues[tag.name] = nil
+      tagsValue[tag] = nil
     }
     latestRunStatus = WriteStatus.Success
   }
   
   func read(tags: [Tag]) {
     for tag in tags {
-      tagValues[tag.name] = nil
+      tagsValue[tag] = nil
       valueFor(tag)
     }
   }
   
   private func valueFor(tag: Tag, value: String = "") -> String {
-    if tagValues[tag.name] == nil && value == "" {
-      tagValues[tag.name] = metaWriter.valueFor(tag, file: self)
+    if tagsValue[tag] == nil && value == "" {
+      tagsValue[tag] = metaWriter.valueFor(tag, file: self)
     } else if value != "" {
-      tagValues[tag.name] = value
+      tagsValue[tag] = value
     }
-    return tagValues[tag.name]!
+    return tagsValue[tag]!
   }
   
   private func extractTitle() -> String {
