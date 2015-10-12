@@ -38,8 +38,8 @@ class PhotoManager: FileManager {
     cancel = false
   }
   
-  func write(tags: [Tag], keepExistingTags: Bool = true, withSelected: [Photo] = [], afterEach: () -> Void) {
-    run(tags, keepExistingTags: keepExistingTags, withSelected: withSelected, afterEach: afterEach)
+  func write(tags: [Tag], overwriteValues: Bool = false, withSelected: [Photo] = [], afterEach: () -> Void) {
+    run(tags, overwriteValues: overwriteValues, withSelected: withSelected, afterEach: afterEach)
   }
   
   func delete(tags: [Tag], afterEach: () -> Void) {
@@ -63,7 +63,7 @@ class PhotoManager: FileManager {
     }
   }
   
-  private func run(tags: [Tag], keepExistingTags: Bool = true, deleteTags: Bool = false, withSelected: [Photo] = [], afterEach: () -> Void) {
+  private func run(tags: [Tag], overwriteValues: Bool = false, deleteTags: Bool = false, withSelected: [Photo] = [], afterEach: () -> Void) {
     running = true
     kept = [Tag: [Photo]]()
     let runPhotos: [Photo]
@@ -91,8 +91,8 @@ class PhotoManager: FileManager {
         photo.deleteValueFor(tags)
         
       } else {
-        photo.write(tags, keepExistingTags: keepExistingTags)
-        if keepExistingTags && photo.kept.count > 0 {
+        photo.write(tags, overwriteValues: overwriteValues)
+        if !overwriteValues && photo.kept.count > 0 {
           for tag in photo.kept {
             if kept[tag] == nil {
               kept[tag] = []

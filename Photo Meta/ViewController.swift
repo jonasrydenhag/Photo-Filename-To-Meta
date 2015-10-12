@@ -17,7 +17,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
   // MARK: - Outlets
   
   @IBOutlet weak var tableView: NSTableView!
-  @IBOutlet weak var keepCheckBtn: NSButton!
+  @IBOutlet weak var overwriteCheckBtn: NSButton!
   @IBOutlet weak var tagCheckTitle: NSButton!
   @IBOutlet weak var tagCheckDate: NSButton!
   @IBOutlet weak var sourcePath: NSPathCell!
@@ -123,18 +123,18 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
   }
   
   @IBAction func write(sender: AnyObject) {
-    run(selectedTags, keepExistingTags: (keepCheckBtn.state == NSOnState))
+    run(selectedTags, overwriteValues: (overwriteCheckBtn.state == NSOnState))
   }
   
   @IBAction func delete(sender: AnyObject) {
-    run(selectedTags, keepExistingTags: false, deleteTags: true)
+    run(selectedTags, deleteTags: true)
   }
   
   @IBAction func cancel(sender: AnyObject) {
     photoManager?.cancelRun()
   }
   
-  private func run(tags: [Tag], keepExistingTags: Bool = true, deleteTags: Bool = false, withSelected: [Photo] = []) {
+  private func run(tags: [Tag], overwriteValues: Bool = false, deleteTags: Bool = false, withSelected: [Photo] = []) {
     if photoManager == nil {
       return
     }
@@ -150,7 +150,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
       if deleteTags {
         self.photoManager?.delete(tags, afterEach: afterEach)
       } else {
-        self.photoManager?.write(tags, keepExistingTags: keepExistingTags, withSelected: withSelected, afterEach: afterEach)
+        self.photoManager?.write(tags, overwriteValues: overwriteValues, withSelected: withSelected, afterEach: afterEach)
       }
       
       for tag in self.photoManager!.kept.keys {
@@ -287,7 +287,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     
     let result = alert.runModal()
     if result == NSAlertFirstButtonReturn {
-      run([tag], keepExistingTags: false, withSelected: files)
+      run([tag], overwriteValues: true, withSelected: files)
     }
   }
 }

@@ -41,12 +41,12 @@ class Photo: File {
     }
   }
   
-  func write(tags: [Tag], keepExistingTags: Bool = true) {
+  func write(tags: [Tag], overwriteValues: Bool = false) {
     var writeTags: [Tag: String] = [Tag: String]()
     kept = Array<Tag>()
     
     for tag in tags {
-      if keepExistingTags && valueFor(tag) != "" {
+      if !overwriteValues && valueFor(tag) != "" {
         kept.append(tag)
         continue
       }
