@@ -59,6 +59,16 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     }
   }
   
+  // MARK: - Start
+  
+  func initProject(sourceURL: NSURL, targetURL: NSURL) {
+    sourcePath.URL = sourceURL
+    self.view.window?.setTitleWithRepresentedFilename(targetURL.path!)
+    photoManager = PhotoManager(sourceURL: sourceURL, targetURL: targetURL)
+    toggleColumnVisibility()
+    tableView.reloadData()
+  }
+  
   // MARK: - Action buttons
   
   override func validateToolbarItem(theItem: NSToolbarItem) -> Bool {
@@ -84,16 +94,6 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     default:
       return false
     }
-  }
-  
-  // MARK: - Start
-  
-  func initProject(sourceURL: NSURL, targetURL: NSURL) {
-    sourcePath.URL = sourceURL
-    self.view.window?.setTitleWithRepresentedFilename(targetURL.path!)
-    photoManager = PhotoManager(sourceURL: sourceURL, targetURL: targetURL)
-    toggleColumnVisibility()
-    tableView.reloadData()
   }
   
   // MARK: - Actions
