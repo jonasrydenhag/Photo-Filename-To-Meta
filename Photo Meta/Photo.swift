@@ -28,10 +28,10 @@ class Photo: File {
     }
   }
   let dateFormatter = NSDateFormatter()
-  var metaWriter: ExifToolRunner
+  var metaWriter: MetaWriter
   var kept = Array<Tag>()
   
-  init(fileURL: NSURL, baseURL: NSURL, metaWriter: ExifToolRunner) throws {
+  init(fileURL: NSURL, baseURL: NSURL, metaWriter: MetaWriter) throws {
     self.metaWriter = metaWriter
     try super.init(fileURL: fileURL, baseURL: baseURL)
     dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"

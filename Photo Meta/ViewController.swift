@@ -24,7 +24,6 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
   
   // MARK: - Vars
   
-  private let exifToolRunner = ExifToolRunner()
   private (set) var photoManager: PhotoManager?
   private var selectedTags: [Tag] {
     get {

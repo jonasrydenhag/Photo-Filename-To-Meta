@@ -8,15 +8,21 @@
 
 import Foundation
 
-class ExifToolRunner: NSObject {
+class ExifToolRunner: MetaWriter {
   
-  let exifToolPath: String
+  private let overwriteFile = true
   
-  let ignoreMinorErrors = true
+  private let exifToolPath: String
+  
+  private let ignoreMinorErrors = true
   
   let supportedFileTypes: [CFString!] = [kUTTypeJPEG, kUTTypeGIF, kUTTypeTIFF]
   
-  func valueFor(tag: Tag, file: Photo) -> String {
+  init() {
+    exifToolPath = NSBundle.mainBundle().pathForResource("exiftool", ofType: "")!
+  }
+  
+  func valueFor(tag: Tag, file: File) -> String {
       switch tag{
       case .Title:
         return titleFor(file)
@@ -25,21 +31,7 @@ class ExifToolRunner: NSObject {
       }
   }
   
-  override init() {
-    exifToolPath = NSBundle.mainBundle().pathForResource("exiftool", ofType: "")!
-    
-    super.init()
-  }
-  
-  func titleFor(file: Photo) -> String {
-    return run(file.URL, arguments: ["-title", "-s3"], synchronous: true).stringByReplacingOccurrencesOfString("\\n*", withString: "", options: .RegularExpressionSearch)
-  }
-  
-  func dateFor(file: Photo) -> String {
-    return run(file.URL, arguments: ["-dateTimeOriginal", "-s3"], synchronous: true).stringByReplacingOccurrencesOfString("\\n*", withString: "", options: .RegularExpressionSearch)
-  }
-  
-  func write(tagsValue: [Tag: String], file: Photo, overwriteFile: Bool = true) {
+  func write(tagsValue: [Tag: String], file: File) {
     var defaultArgs = Array<String>()
     var tagsArgs = Array<String>()
     
@@ -61,12 +53,20 @@ class ExifToolRunner: NSObject {
     }
   }
   
-  func deleteValueFor(tags: [Tag], file: Photo, overwriteFile: Bool = true) {
+  func deleteValueFor(tags: [Tag], file: File) {
     var tagsValue: [Tag: String] = [Tag: String]()
     for tag in tags {
       tagsValue[tag] = ""
     }
-    write(tagsValue, file: file, overwriteFile: overwriteFile)
+    write(tagsValue, file: file)
+  }
+  
+  private func titleFor(file: File) -> String {
+    return run(file.URL, arguments: ["-title", "-s3"], synchronous: true).stringByReplacingOccurrencesOfString("\\n*", withString: "", options: .RegularExpressionSearch)
+  }
+  
+  private func dateFor(file: File) -> String {
+    return run(file.URL, arguments: ["-dateTimeOriginal", "-s3"], synchronous: true).stringByReplacingOccurrencesOfString("\\n*", withString: "", options: .RegularExpressionSearch)
   }
   
   private func writeTitleArgs(title: String) -> [String] {

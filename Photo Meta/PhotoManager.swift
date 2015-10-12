@@ -10,7 +10,7 @@ import Foundation
 
 class PhotoManager: FileManager {
 
-  private let metaWriter = ExifToolRunner()
+  private let metaWriter: MetaWriter = ExifToolRunner()
   private var photos: [Photo] = []
   private (set) var running = false
   private var cancel = false
