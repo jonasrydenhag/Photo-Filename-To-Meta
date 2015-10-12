@@ -17,6 +17,7 @@ class Photo: File {
   enum WriteStatus {
     case Success
     case Partially
+    case Failed
     case Unset
   }
   
@@ -58,23 +59,30 @@ class Photo: File {
         if title != "" {
           let value = title
           writeTags[tag] = value
-          valueFor(tag, value: value)
         }
       case .Date:
         if let date = extractDate() {
           let value = dateFormatter.stringFromDate(date)
           writeTags[tag] = value
-          valueFor(tag, value: value)
         }
       }
     }
     
-    metaWriter.write(writeTags, file: self)
-    
-    if writeTags.count == tags.count {
-      latestRunStatus = WriteStatus.Success
-    } else if writeTags.count < tags.count {
-      latestRunStatus = WriteStatus.Partially
+    do {
+      try metaWriter.write(writeTags, file: self)
+      
+      for (tag, value) in writeTags {
+        valueFor(tag, value: value)
+      }
+      
+      if writeTags.count == tags.count {
+        latestRunStatus = WriteStatus.Success
+      } else if writeTags.count < tags.count {
+        latestRunStatus = WriteStatus.Partially
+      }
+      
+    } catch {
+      latestRunStatus = WriteStatus.Failed
     }
   }
   
@@ -83,12 +91,17 @@ class Photo: File {
   }
   
   func deleteValueFor(tags: [Tag]) {
-    kept = Array<Tag>()
-    metaWriter.deleteValueFor(tags, file: self)
-    for tag in tags {
-      tagsValue[tag] = nil
+    kept = [Tag]()
+    do {
+      try metaWriter.deleteValueFor(tags, file: self)
+      for tag in tags {
+        tagsValue[tag] = nil
+      }
+      latestRunStatus = WriteStatus.Success
+      
+    } catch {
+      latestRunStatus = WriteStatus.Failed
     }
-    latestRunStatus = WriteStatus.Success
   }
   
   func read(tags: [Tag]) {

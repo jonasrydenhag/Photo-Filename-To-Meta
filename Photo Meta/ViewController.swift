@@ -245,6 +245,8 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
         cellView?.textField?.backgroundColor = NSColor.greenColor()
       case .Partially:
         cellView?.textField?.backgroundColor = NSColor.yellowColor()
+      case .Failed:
+        cellView?.textField?.backgroundColor = NSColor.redColor()
       default:
         cellView?.textField?.hidden = true
       }

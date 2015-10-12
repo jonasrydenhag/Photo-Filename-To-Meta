@@ -31,42 +31,37 @@ class ExifToolWrapper: MetaWriter {
       }
   }
   
-  func write(tagsValue: [Tag: String], file: File) {
-    var defaultArgs = Array<String>()
-    var tagsArgs = Array<String>()
-    
-    if overwriteFile {
-      defaultArgs.append("-overwrite_original")
-    }
+  func write(tagsValue: [Tag: String], file: File) throws {
+    var tagsArgs = [Tag: [String]]()
     
     for (tag, value) in tagsValue {
       switch tag{
       case .Title:
-        tagsArgs += writeTitleArgs(value)
+        tagsArgs[tag] = writeTitleArgs(value)
       case .Date:
-        tagsArgs += writeDateArgs(value)
+        tagsArgs[tag] = writeDateArgs(value)
       }
     }
     
     if tagsArgs.count > 0 {
-      run(file.URL, arguments: tagsArgs + defaultArgs);
+      try write(file.URL, tagsArguments: tagsArgs);
     }
   }
   
-  func deleteValueFor(tags: [Tag], file: File) {
+  func deleteValueFor(tags: [Tag], file: File) throws {
     var tagsValue: [Tag: String] = [Tag: String]()
     for tag in tags {
       tagsValue[tag] = ""
     }
-    write(tagsValue, file: file)
+    try write(tagsValue, file: file)
   }
   
   private func titleFor(file: File) -> String {
-    return run(file.URL, arguments: ["-title", "-s3"]).stringByReplacingOccurrencesOfString("\\n*", withString: "", options: .RegularExpressionSearch)
+    return read(file.URL, arguments: ["-title", "-s3"]).stringByReplacingOccurrencesOfString("\\n*", withString: "", options: .RegularExpressionSearch)
   }
   
   private func dateFor(file: File) -> String {
-    return run(file.URL, arguments: ["-dateTimeOriginal", "-s3"]).stringByReplacingOccurrencesOfString("\\n*", withString: "", options: .RegularExpressionSearch)
+    return read(file.URL, arguments: ["-dateTimeOriginal", "-s3"]).stringByReplacingOccurrencesOfString("\\n*", withString: "", options: .RegularExpressionSearch)
   }
   
   private func writeTitleArgs(title: String) -> [String] {
@@ -87,7 +82,7 @@ class ExifToolWrapper: MetaWriter {
     }
   }
   
-  private func run(URL: NSURL, arguments: [String]) -> String {
+  private func read(URL: NSURL, arguments: [String]) -> String {
     var defaultArgs = Array<String>()
     
     if ignoreMinorErrors {
@@ -110,5 +105,63 @@ class ExifToolWrapper: MetaWriter {
     task.waitUntilExit()
     
     return NSString(data: data, encoding: NSUTF8StringEncoding) as! String
+  }
+  
+  private func write(URL: NSURL, tagsArguments: [Tag: [String]]) throws {
+    var arguments = [String]()
+    
+    for (_, tagArguments) in tagsArguments {
+      arguments += tagArguments
+    }
+    
+    // Run all tags
+    do {
+      try write(URL, arguments: arguments)
+      
+    } catch let error {
+      throw error
+    }
+  }
+  
+  private func write(URL: NSURL, arguments: [String]) throws {
+    var defaultArgs = [String]()
+    
+    if overwriteFile {
+      defaultArgs.append("-overwrite_original")
+    }
+    
+    if ignoreMinorErrors {
+      defaultArgs.append("-m")
+    }
+    
+    // Setup the task
+    let task = NSTask()
+    task.launchPath = exifToolPath
+    task.arguments = defaultArgs + arguments + [URL.path!]
+
+    // Pipe the standard out to an NSPipe
+    let pipe = NSPipe()
+    task.standardOutput = pipe
+    task.standardError = pipe
+    
+    task.launch()
+  
+    let data: NSData = pipe.fileHandleForReading.readDataToEndOfFile()
+    task.waitUntilExit()
+    
+    let output = NSString(data: data, encoding: NSUTF8StringEncoding) as! String
+    
+    let error = validateResult(output)
+    
+    if error != nil {
+      throw error!
+    }
+  }
+  
+  private func validateResult(output: String) -> ErrorType? {
+    if output.rangeOfString("1 image files updated") == nil{
+      return MetaWriteError.NotUpdated
+    }
+    return nil
   }
 }

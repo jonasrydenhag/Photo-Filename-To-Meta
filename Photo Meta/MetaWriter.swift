@@ -8,14 +8,18 @@
 
 import Foundation
 
+enum MetaWriteError: ErrorType {
+  case NotUpdated
+}
+
 protocol MetaWriter {
   
   var supportedFileTypes: [CFString!] { get }
   
   func valueFor(tag: Tag, file: File) -> String
   
-  func write(tagsValue: [Tag: String], file: File)
+  func write(tagsValue: [Tag: String], file: File) throws
   
-  func deleteValueFor(tags: [Tag], file: File)
+  func deleteValueFor(tags: [Tag], file: File) throws
   
 }
