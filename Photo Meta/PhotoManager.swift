@@ -8,19 +8,19 @@
 
 import Foundation
 
-class PhotoManager {
+class PhotoManager: FileManager {
 
-  private let fileManager: ViewController
   private let runner: ExifToolRunner
-  private let photos: [Photo]
+  private (set) var photos: [Photo] = []
   private (set) var running = false
-  private (set) var cancel = false
+  private var cancel = false
   var kept: [String: [Photo]] = [String : [Photo]]()
   
-  init(photos: [Photo], runner: ExifToolRunner, fileManager: ViewController) {
-    self.photos = photos
+  init(sourceURL: NSURL, targetURL: NSURL, runner: ExifToolRunner) {
     self.runner = runner
-    self.fileManager = fileManager
+    super.init(sourceURL: sourceURL, targetURL: targetURL)
+    self.collectFiles()
+    self.photos = self.files.flatMap{ $0 as? Photo }
   }
   
   func read(tags: [Tag], afterEach: () -> Void) {
@@ -52,6 +52,19 @@ class PhotoManager {
     cancel = true
   }
   
+  internal override func createFileFrom(URL: NSURL, baseURL: NSURL) -> File? {
+    do {
+      let file = try Photo(fileURL: URL, baseURL: baseURL, runner: runner)
+      return file
+      
+    } catch Photo.PhotoExceptions.NotSupported {
+      return super.createFileFrom(URL, baseURL: baseURL)
+      
+    } catch  {
+      return nil
+    }
+  }
+  
   private func run(tags: [Tag], keepExistingTags: Bool = true, deleteTags: Bool = false, withSelected: [Photo] = [], afterEach: () -> Void) {
     running = true
     kept = [String : [Photo]]()
@@ -71,7 +84,7 @@ class PhotoManager {
       }
       
       do {
-        try fileManager.copyIfNeeded(photo)
+        try copyIfNeeded(photo)
       } catch {
         continue
       }

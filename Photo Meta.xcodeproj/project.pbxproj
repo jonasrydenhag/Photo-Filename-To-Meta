@@ -16,6 +16,7 @@
 		DD67B6B11BB13E6200E64585 /* exiftool in Resources */ = {isa = PBXBuildFile; fileRef = DD67B6B01BB13E6200E64585 /* exiftool */; };
 		DD9099051BCA09EE00F4F8F8 /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD9099041BCA09EE00F4F8F8 /* File.swift */; settings = {ASSET_TAGS = (); }; };
 		DD9099091BCA1C4E00F4F8F8 /* PhotoManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD9099081BCA1C4E00F4F8F8 /* PhotoManager.swift */; settings = {ASSET_TAGS = (); }; };
+		DD90990D1BCB412900F4F8F8 /* FileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD90990C1BCB412900F4F8F8 /* FileManager.swift */; settings = {ASSET_TAGS = (); }; };
 		DDAD5B611BB7E3AF00728C57 /* PathsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDAD5B601BB7E3AF00728C57 /* PathsController.swift */; settings = {ASSET_TAGS = (); }; };
 		DDBA7A091B83E8B500CB49A3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDBA7A081B83E8B500CB49A3 /* AppDelegate.swift */; };
 		DDBA7A0B1B83E8B500CB49A3 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDBA7A0A1B83E8B500CB49A3 /* ViewController.swift */; };
@@ -46,6 +47,7 @@
 		DD67B6B01BB13E6200E64585 /* exiftool */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.perl; path = exiftool; sourceTree = "<group>"; };
 		DD9099041BCA09EE00F4F8F8 /* File.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = File.swift; sourceTree = "<group>"; };
 		DD9099081BCA1C4E00F4F8F8 /* PhotoManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotoManager.swift; sourceTree = "<group>"; };
+		DD90990C1BCB412900F4F8F8 /* FileManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileManager.swift; sourceTree = "<group>"; };
 		DDAD5B601BB7E3AF00728C57 /* PathsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PathsController.swift; sourceTree = "<group>"; };
 		DDBA7A031B83E8B500CB49A3 /* Photo Meta.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Photo Meta.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DDBA7A071B83E8B500CB49A3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -85,6 +87,7 @@
 				DDF7324A1B89B5BF002BE282 /* Tag.swift */,
 				DD9099041BCA09EE00F4F8F8 /* File.swift */,
 				DD9099081BCA1C4E00F4F8F8 /* PhotoManager.swift */,
+				DD90990C1BCB412900F4F8F8 /* FileManager.swift */,
 			);
 			name = Library;
 			sourceTree = "<group>";
@@ -280,6 +283,7 @@
 				DD9099051BCA09EE00F4F8F8 /* File.swift in Sources */,
 				DDAD5B611BB7E3AF00728C57 /* PathsController.swift in Sources */,
 				DDF7324B1B89B5BF002BE282 /* Tag.swift in Sources */,
+				DD90990D1BCB412900F4F8F8 /* FileManager.swift in Sources */,
 				DDBA7A0B1B83E8B500CB49A3 /* ViewController.swift in Sources */,
 				DDBA7A091B83E8B500CB49A3 /* AppDelegate.swift in Sources */,
 			);

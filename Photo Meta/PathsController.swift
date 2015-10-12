@@ -20,13 +20,13 @@ class PathsController: NSViewController, NSTableViewDataSource, NSTableViewDeleg
   
   @IBAction func selectSourceDialog(sender: AnyObject) {
     if let selectedPath = choosePath() {
-      sourceUrl = selectedPath
+      sourceURL = selectedPath
     }
   }
   
   @IBAction func selectTargetDialog(sender: AnyObject) {
     if let selectedPath = choosePath(false, canCreateDirectories: true) {
-      targetUrl = selectedPath
+      targetURL = selectedPath
     }
   }
   
@@ -35,18 +35,17 @@ class PathsController: NSViewController, NSTableViewDataSource, NSTableViewDeleg
   }
   
   @IBAction func okBtnClick(sender: AnyObject) {
-    if sourceUrl.path == nil || targetUrl.path == nil {
+    if sourceURL.path == nil || targetURL.path == nil {
       return
     }
     
-    if let caller = self.caller {
+    if let caller = caller {
       let closure = {
-        caller.collectFilesFrom(self.sourceUrl)
-        caller.targetUrl = self.targetUrl
+        caller.initProject(self.sourceURL, targetURL: self.targetURL)
         self.view.window?.close()
       }
       
-      if sourceUrl.path == targetUrl.path {
+      if sourceURL.path == targetURL.path {
         samePaths(closure)
       } else {
         closure()
@@ -57,17 +56,17 @@ class PathsController: NSViewController, NSTableViewDataSource, NSTableViewDeleg
   var caller: ViewController?
   
   private let fileManager = NSFileManager.defaultManager()
-  private var sourceUrl: NSURL = NSURL() {
+  var sourceURL: NSURL = NSURL() {
     didSet {
       setOutletsEnableState()
-      sourcePath.URL = sourceUrl
+      sourcePath.URL = sourceURL
     }
   }
   
-  private var targetUrl: NSURL = NSURL() {
+  var targetURL: NSURL = NSURL() {
     didSet {
       setOutletsEnableState()
-      targetPath.URL = targetUrl
+      targetPath.URL = targetURL
     }
   }
   
@@ -76,9 +75,9 @@ class PathsController: NSViewController, NSTableViewDataSource, NSTableViewDeleg
     
     setOutletsEnableState()
     
-    if caller != nil {
-      sourceUrl = caller!.sourceUrl
-      targetUrl = caller!.targetUrl
+    if caller?.photoManager != nil {
+      sourceURL = caller!.photoManager!.sourceURL
+      targetURL = caller!.photoManager!.targetURL
     }
   }
   
@@ -94,16 +93,10 @@ class PathsController: NSViewController, NSTableViewDataSource, NSTableViewDeleg
   }
   
   private func setOutletsEnableState() {
-    if sourceUrl.path != nil && targetUrl.path != nil {
-      okBtn.enabled = true
+    if sourceURL.path != nil && targetURL.path != nil {
+      okBtn?.enabled = true
     } else {
-      okBtn.enabled = false
-    }
-    
-    if caller?.sourceUrl.path != nil {
-      cancelBtn.hidden = false
-    } else {
-      cancelBtn.hidden = true
+      okBtn?.enabled = false
     }
   }
 

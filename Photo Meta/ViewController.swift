@@ -45,21 +45,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
   }
   
   private let exifToolRunner = ExifToolRunner()
-  private let fileManager = NSFileManager.defaultManager()
-  private (set) var sourceUrl: NSURL = NSURL() {
-    didSet {
-      sourcePath.URL = sourceUrl
-    }
-  }
-  var targetUrl: NSURL = NSURL() {
-    didSet {
-      if targetUrl.path != nil {
-        self.view.window?.setTitleWithRepresentedFilename(targetUrl.path!)
-      }
-    }
-  }
-  private var files: [File] = []
-  private var photoManager: PhotoManager?
+  private (set) var photoManager: PhotoManager?
   private var selectedTags: [Tag] {
     get {
       var checkedTags = [Tag]()
@@ -75,7 +61,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
   
   override func viewDidAppear() {
     super.viewDidAppear()
-    if sourceUrl.path == nil {
+    if photoManager == nil {
       openSelectPaths()
     }
   }
@@ -103,7 +89,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     
     switch theItem.action {
     case "read:", "write:", "delete:":
-      if sourceUrl.path != nil && targetUrl.path != nil && selectedTags.count > 0 {
+      if photoManager != nil && selectedTags.count > 0 {
         return true
       } else {
         return false
@@ -120,70 +106,13 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
       return false
     }
   }
-
-  func choosePath(canChooseFiles: Bool = true, canCreateDirectories: Bool = false) -> NSURL? {
-    let myOpenDialog: NSOpenPanel = NSOpenPanel()
-    myOpenDialog.canChooseDirectories = true
-    myOpenDialog.canChooseFiles = canChooseFiles
-    myOpenDialog.canCreateDirectories = canCreateDirectories
-    let clickedBtn = myOpenDialog.runModal()
-    
-    if clickedBtn == NSFileHandlingPanelOKButton {
-      // Make sure that a path was chosen
-      if let selectedPath: NSURL = myOpenDialog.URL {
-        let err = NSError?()
-        
-        if !(err != nil) {
-          return selectedPath
-        }
-      }
-    }
-    return nil
-  }
   
-  func collectFilesFrom(URL: NSURL) {
-    sourceUrl = URL
-    files = []
-    if URL.path != nil {
-      var baseUrlIsDir: ObjCBool = false
-      if fileManager.fileExistsAtPath(URL.path!, isDirectory:&baseUrlIsDir) && !baseUrlIsDir {
-        addFileIn(URL.path!, baseURL: URL.URLByDeletingLastPathComponent!)
-        
-      } else {
-        let enumerator: NSDirectoryEnumerator? = fileManager.enumeratorAtURL(URL, includingPropertiesForKeys: nil, options: [], errorHandler: nil)
-        
-        while let fileURL: NSURL = enumerator?.nextObject() as? NSURL {
-          addFileIn(fileURL.path!, baseURL: URL)
-        }
-      }
-    }
-    photoManager = PhotoManager(photos: files.flatMap{ $0 as? Photo }, runner: exifToolRunner, fileManager: self)
+  func initProject(sourceURL: NSURL, targetURL: NSURL) {
+    sourcePath.URL = sourceURL
+    self.view.window?.setTitleWithRepresentedFilename(targetURL.path!)
+    photoManager = PhotoManager(sourceURL: sourceURL, targetURL: targetURL, runner: exifToolRunner)
     toggleColumnVisibility()
     tableView.reloadData()
-  }
-  
-  private func addFileIn(path: String, baseURL: NSURL) {
-    var isDir: ObjCBool = false
-    let URL = NSURL(fileURLWithPath: path, isDirectory: false)
-    
-    if !fileManager.fileExistsAtPath(path, isDirectory: &isDir) || isDir || URL.lastPathComponent == ".DS_Store"{
-      return
-    }
-    
-    do {
-      let file = try Photo(fileURL: URL, baseURL: baseURL, runner: exifToolRunner)
-      files.append(file)
-      
-    } catch Photo.PhotoExceptions.NotSupported {
-      do {
-        let file = try File(fileURL: URL, baseURL: baseURL)
-        files.append(file)
-      } catch  {
-        // Ignore file
-      }
-    } catch  {
-      // Ignore file
-    }
   }
   
   private func read(tags: [Tag]) {
@@ -233,64 +162,6 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     }
   }
   
-  private func prepareCopyDestPath(file: File, toDir: NSURL) throws -> String {
-    var fromBaseDir: ObjCBool = false
-    var destPath: String
-    let relativeFilePath = file.relativePath
-    let relativeURL = NSURL(fileURLWithPath: relativeFilePath, isDirectory: false)
-    
-    fileManager.fileExistsAtPath(file.URL.path!, isDirectory:&fromBaseDir)
-    
-    var targetPath = toDir.path! + "/"
-    destPath = targetPath + relativeFilePath
-    
-    if relativeURL.URLByDeletingLastPathComponent?.relativePath != "." {
-      targetPath += relativeURL.URLByDeletingLastPathComponent!.relativePath! + "/"
-      
-      if destPath != file.URL.path {
-        var targetPathDir: ObjCBool = false
-        if fileManager.fileExistsAtPath(targetPath, isDirectory:&targetPathDir) && !targetPathDir {
-          try fileManager.removeItemAtPath(targetPath)
-        }
-        
-        try fileManager.createDirectoryAtPath(targetPath, withIntermediateDirectories: true, attributes: nil)
-      }
-    }
-    
-    if destPath != file.URL.path && fileManager.fileExistsAtPath(destPath) {
-      try fileManager.removeItemAtPath(destPath)
-    }
-    
-    return destPath
-  }
-  
-  func copyIfNeeded(file: Photo) throws {
-    if !fileManager.fileExistsAtPath(file.URL.path!) {
-      throw File.FileExceptions.FileDoesNotExist
-    }
-    if sourceUrl.path != targetUrl.path {
-      try copy(file, toDir: targetUrl)
-    }
-  }
-  
-  private func copy(file: File, toDir: NSURL) throws -> File? {
-    var isDir: ObjCBool = false
-    if !fileManager.fileExistsAtPath(toDir.path!, isDirectory:&isDir) || !isDir {
-      throw PathExceptions.TargetURLNotDir
-    }
-    
-    let destPath = try prepareCopyDestPath(file, toDir: targetUrl)
-  
-    if destPath == file.URL.path {
-      return nil
-    }
-    
-    try fileManager.copyItemAtPath(file.URL.path!, toPath: destPath)
-    let URL = NSURL(fileURLWithFileSystemRepresentation: destPath, isDirectory: false, relativeToURL: targetUrl)
-    
-    return file.changeURL(URL, baseURL: toDir)
-  }
-  
   private func toggleColumnVisibility(tags: [Tag] = []) {
     for column in tableView.tableColumns {
       switch column.identifier {
@@ -316,14 +187,18 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
   // MARK: - Table View
   
   func numberOfRowsInTableView(tableView: NSTableView) -> Int {
-    return files.count
+    return photoManager?.files.count ?? 0
   }
   
   func tableView(tableView: NSTableView, viewForTableColumn tableColumn: NSTableColumn?, row: Int) -> NSView? {
     var cellView: NSTableCellView?
     let columnID: String
     
-    if files.count < row {
+    if photoManager == nil {
+      return cellView
+    }
+    
+    if photoManager!.files.count < row {
       return cellView
     }
     
@@ -333,7 +208,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
       return cellView
     }
     
-    let file = files[row]
+    let file = photoManager!.files[row]
     
     if columnID == "enum" {
       cellView = tableView.makeViewWithIdentifier("enumCell", owner: self) as? NSTableCellView
