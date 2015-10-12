@@ -49,7 +49,7 @@ class ExifToolRunner: MetaWriter {
     }
     
     if tagsArgs.count > 0 {
-      run(file.URL, arguments: tagsArgs + defaultArgs, synchronous: true);
+      run(file.URL, arguments: tagsArgs + defaultArgs);
     }
   }
   
@@ -62,11 +62,11 @@ class ExifToolRunner: MetaWriter {
   }
   
   private func titleFor(file: File) -> String {
-    return run(file.URL, arguments: ["-title", "-s3"], synchronous: true).stringByReplacingOccurrencesOfString("\\n*", withString: "", options: .RegularExpressionSearch)
+    return run(file.URL, arguments: ["-title", "-s3"]).stringByReplacingOccurrencesOfString("\\n*", withString: "", options: .RegularExpressionSearch)
   }
   
   private func dateFor(file: File) -> String {
-    return run(file.URL, arguments: ["-dateTimeOriginal", "-s3"], synchronous: true).stringByReplacingOccurrencesOfString("\\n*", withString: "", options: .RegularExpressionSearch)
+    return run(file.URL, arguments: ["-dateTimeOriginal", "-s3"]).stringByReplacingOccurrencesOfString("\\n*", withString: "", options: .RegularExpressionSearch)
   }
   
   private func writeTitleArgs(title: String) -> [String] {
@@ -87,7 +87,7 @@ class ExifToolRunner: MetaWriter {
     }
   }
   
-  private func run(URL: NSURL, arguments: [String], synchronous: Bool = false) -> String {
+  private func run(URL: NSURL, arguments: [String]) -> String {
     var defaultArgs = Array<String>()
     
     if ignoreMinorErrors {
@@ -104,45 +104,11 @@ class ExifToolRunner: MetaWriter {
     task.standardOutput = pipe
     task.standardError = pipe
     
-    if synchronous {
-      return runSynchronous(task, pipe: pipe)
-      
-    } else {
-      runAsynchronous(task, pipe: pipe, observer: self, selector: "receivedData:")
-      return ""
-    }
-  }
-  
-  private func runSynchronous(task: NSTask, pipe: NSPipe) -> String {
     task.launch()
   
     let data: NSData = pipe.fileHandleForReading.readDataToEndOfFile()
     task.waitUntilExit()
     
     return NSString(data: data, encoding: NSUTF8StringEncoding) as! String
-  }
-  
-  private func runAsynchronous(task: NSTask, pipe: NSPipe, observer: AnyObject, selector: Selector) {
-    let fh = pipe.fileHandleForReading
-    fh.waitForDataInBackgroundAndNotify()
-    
-    // Set up the observer function
-    NSNotificationCenter.defaultCenter().addObserver(observer, selector: selector, name:"NSFileHandleDataAvailableNotification", object: fh)
-    
-    task.launch()
-  }
-
-  func receivedData(notification: NSNotification) {
-    // Unpack the FileHandle from the notification
-    let fh:NSFileHandle = notification.object as! NSFileHandle
-    // Get the data from the FileHandle
-    let data = fh.availableData
-    // Only deal with the data if it actually exists
-    if data.length > 1 {
-      // Since we just got the notification from fh, we must tell it to notify us again when it gets more data
-      fh.waitForDataInBackgroundAndNotify()
-      // Convert the data into a string
-      _ = NSString(data: data, encoding: NSASCIIStringEncoding)
-    }
   }
 }
