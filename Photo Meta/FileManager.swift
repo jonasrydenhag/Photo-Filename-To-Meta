@@ -22,6 +22,7 @@ class FileManager {
   init(sourceURL: NSURL, targetURL: NSURL) {
     self.sourceURL = sourceURL
     self.targetURL = targetURL
+    self.collectFiles()
   }
   
   internal func collectFiles() {

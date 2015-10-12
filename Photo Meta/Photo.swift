@@ -28,16 +28,16 @@ class Photo: File {
     }
   }
   let dateFormatter = NSDateFormatter()
-  var runner: ExifToolRunner
+  var metaWriter: ExifToolRunner
   var kept = Array<Tag>()
   var extractionFailed = Array<Tag>()
   
-  init(fileURL: NSURL, baseURL: NSURL, runner: ExifToolRunner) throws {
-    self.runner = runner
+  init(fileURL: NSURL, baseURL: NSURL, metaWriter: ExifToolRunner) throws {
+    self.metaWriter = metaWriter
     try super.init(fileURL: fileURL, baseURL: baseURL)
     dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
     
-    if !self.fileTypeConformsTo(runner.supportedFileTypes) {
+    if !self.fileTypeConformsTo(metaWriter.supportedFileTypes) {
       throw PhotoExceptions.NotSupported
     }
   }
@@ -77,7 +77,7 @@ class Photo: File {
       }
     }
     
-    runner.write(writeTags, file: self)
+    metaWriter.write(writeTags, file: self)
     
     if writeTags.count == tags.count {
       latestRunStatus = WriteStatus.Success
@@ -92,7 +92,7 @@ class Photo: File {
   
   func deleteValueFor(tags: [Tag]) {
     kept = Array<Tag>()
-    runner.deleteValueFor(tags, file: self)
+    metaWriter.deleteValueFor(tags, file: self)
     for tag in tags {
       tagValues[tag.name] = nil
     }
@@ -108,7 +108,7 @@ class Photo: File {
   
   private func valueFor(tag: Tag, value: String = "") -> String {
     if tagValues[tag.name] == nil && value == "" {
-      tagValues[tag.name] = runner.valueFor(tag, file: self)
+      tagValues[tag.name] = metaWriter.valueFor(tag, file: self)
     } else if value != "" {
       tagValues[tag.name] = value
     }

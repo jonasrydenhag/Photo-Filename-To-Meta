@@ -10,16 +10,14 @@ import Foundation
 
 class PhotoManager: FileManager {
 
-  private let runner: ExifToolRunner
-  private (set) var photos: [Photo] = []
+  private let metaWriter = ExifToolRunner()
+  private var photos: [Photo] = []
   private (set) var running = false
   private var cancel = false
   var kept: [String: [Photo]] = [String : [Photo]]()
   
-  init(sourceURL: NSURL, targetURL: NSURL, runner: ExifToolRunner) {
-    self.runner = runner
-    super.init(sourceURL: sourceURL, targetURL: targetURL)
-    self.collectFiles()
+  override func collectFiles() {
+    super.collectFiles();
     self.photos = self.files.flatMap{ $0 as? Photo }
   }
   
@@ -54,7 +52,7 @@ class PhotoManager: FileManager {
   
   internal override func createFileFrom(URL: NSURL, baseURL: NSURL) -> File? {
     do {
-      let file = try Photo(fileURL: URL, baseURL: baseURL, runner: runner)
+      let file = try Photo(fileURL: URL, baseURL: baseURL, metaWriter: metaWriter)
       return file
       
     } catch Photo.PhotoExceptions.NotSupported {

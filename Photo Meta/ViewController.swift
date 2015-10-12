@@ -14,35 +14,15 @@ enum PathExceptions: ErrorType {
 
 class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelegate {
 
+  // MARK: - Outlets
+  
   @IBOutlet weak var tableView: NSTableView!
   @IBOutlet weak var keepCheckBtn: NSButton!
   @IBOutlet weak var tagCheckTitle: NSButton!
   @IBOutlet weak var tagCheckDate: NSButton!
-  
   @IBOutlet weak var sourcePath: NSPathCell!
-  @IBAction func tagCheckClick(sender: NSButton) {
-    toggleColumnVisibility(selectedTags)
-  }
   
-  @IBAction func open(sender: AnyObject) {
-    openSelectPaths()
-  }
-  
-  @IBAction func read(sender: AnyObject) {
-    read(selectedTags)
-  }
-  
-  @IBAction func write(sender: AnyObject) {
-    run(selectedTags, keepExistingTags: (keepCheckBtn.state == NSOnState))
-  }
-  
-  @IBAction func delete(sender: AnyObject) {
-    run(selectedTags, keepExistingTags: false, deleteTags: true)
-  }
-  
-  @IBAction func cancel(sender: AnyObject) {
-    photoManager?.cancelRun()
-  }
+  // MARK: - Vars
   
   private let exifToolRunner = ExifToolRunner()
   private (set) var photoManager: PhotoManager?
@@ -59,12 +39,16 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     }
   }
   
+  // MARK: - ViewControlller
+  
   override func viewDidAppear() {
     super.viewDidAppear()
     if photoManager == nil {
       openSelectPaths()
     }
   }
+  
+  // MARK: - Source and Target chooser
   
   private func openSelectPaths() {
     self.performSegueWithIdentifier("selectPaths", sender: self)
@@ -76,11 +60,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     }
   }
   
-  override var representedObject: AnyObject? {
-    didSet {
-      // Update the view, if already loaded.
-    }
-  }
+  // MARK: - Action buttons
   
   override func validateToolbarItem(theItem: NSToolbarItem) -> Bool {
     if photoManager?.running == true && theItem.action != "cancel:" {
@@ -107,19 +87,31 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     }
   }
   
+  // MARK: - Start
+  
   func initProject(sourceURL: NSURL, targetURL: NSURL) {
     sourcePath.URL = sourceURL
     self.view.window?.setTitleWithRepresentedFilename(targetURL.path!)
-    photoManager = PhotoManager(sourceURL: sourceURL, targetURL: targetURL, runner: exifToolRunner)
+    photoManager = PhotoManager(sourceURL: sourceURL, targetURL: targetURL)
     toggleColumnVisibility()
     tableView.reloadData()
   }
   
-  private func read(tags: [Tag]) {
+  // MARK: - Actions
+  
+  @IBAction func tagCheckClick(sender: NSButton) {
+    toggleColumnVisibility(selectedTags)
+  }
+  
+  @IBAction func open(sender: AnyObject) {
+    openSelectPaths()
+  }
+  
+  @IBAction func read(sender: AnyObject) {
     toggleColumnVisibility(selectedTags)
     
     dispatch_async(dispatch_get_global_queue(Int(QOS_CLASS_USER_INITIATED.rawValue), 0)) {
-      self.photoManager?.read(tags, afterEach: {
+      self.photoManager?.read(self.selectedTags, afterEach: {
         dispatch_async(dispatch_get_main_queue()) {
           self.tableView.reloadData()
         }
@@ -129,6 +121,18 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
         self.view.window?.toolbar?.validateVisibleItems()
       }
     }
+  }
+  
+  @IBAction func write(sender: AnyObject) {
+    run(selectedTags, keepExistingTags: (keepCheckBtn.state == NSOnState))
+  }
+  
+  @IBAction func delete(sender: AnyObject) {
+    run(selectedTags, keepExistingTags: false, deleteTags: true)
+  }
+  
+  @IBAction func cancel(sender: AnyObject) {
+    photoManager?.cancelRun()
   }
   
   private func run(tags: [Tag], keepExistingTags: Bool = true, deleteTags: Bool = false, withSelected: [Photo] = []) {
@@ -162,6 +166,8 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     }
   }
   
+  // MARK: - Table View
+  
   private func toggleColumnVisibility(tags: [Tag] = []) {
     for column in tableView.tableColumns {
       switch column.identifier {
@@ -183,8 +189,6 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
       }
     }
   }
-  
-  // MARK: - Table View
   
   func numberOfRowsInTableView(tableView: NSTableView) -> Int {
     return photoManager?.files.count ?? 0

@@ -82,12 +82,10 @@
 		DD11F4B21B89829B008B14B3 /* Library */ = {
 			isa = PBXGroup;
 			children = (
-				DD2118A41B884E4E0030745C /* ExifToolRunner.swift */,
-				DD11F4B31B89830F008B14B3 /* Photo.swift */,
-				DDF7324A1B89B5BF002BE282 /* Tag.swift */,
-				DD9099041BCA09EE00F4F8F8 /* File.swift */,
-				DD9099081BCA1C4E00F4F8F8 /* PhotoManager.swift */,
-				DD90990C1BCB412900F4F8F8 /* FileManager.swift */,
+				DD9099101BCB610200F4F8F8 /* File */,
+				DD90990F1BCB60AF00F4F8F8 /* MetaWriters */,
+				DD90990E1BCB60A000F4F8F8 /* Photo */,
+				DD9099111BCB610E00F4F8F8 /* Tag */,
 			);
 			name = Library;
 			sourceTree = "<group>";
@@ -108,6 +106,49 @@
 				DD67B6B01BB13E6200E64585 /* exiftool */,
 			);
 			name = ExifTool;
+			sourceTree = "<group>";
+		};
+		DD90990E1BCB60A000F4F8F8 /* Photo */ = {
+			isa = PBXGroup;
+			children = (
+				DD11F4B31B89830F008B14B3 /* Photo.swift */,
+				DD9099081BCA1C4E00F4F8F8 /* PhotoManager.swift */,
+			);
+			name = Photo;
+			sourceTree = "<group>";
+		};
+		DD90990F1BCB60AF00F4F8F8 /* MetaWriters */ = {
+			isa = PBXGroup;
+			children = (
+				DD2118A41B884E4E0030745C /* ExifToolRunner.swift */,
+			);
+			name = MetaWriters;
+			sourceTree = "<group>";
+		};
+		DD9099101BCB610200F4F8F8 /* File */ = {
+			isa = PBXGroup;
+			children = (
+				DD9099041BCA09EE00F4F8F8 /* File.swift */,
+				DD90990C1BCB412900F4F8F8 /* FileManager.swift */,
+			);
+			name = File;
+			sourceTree = "<group>";
+		};
+		DD9099111BCB610E00F4F8F8 /* Tag */ = {
+			isa = PBXGroup;
+			children = (
+				DDF7324A1B89B5BF002BE282 /* Tag.swift */,
+			);
+			name = Tag;
+			sourceTree = "<group>";
+		};
+		DD9099121BCB61D000F4F8F8 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				DDBA7A0A1B83E8B500CB49A3 /* ViewController.swift */,
+				DDAD5B601BB7E3AF00728C57 /* PathsController.swift */,
+			);
+			name = Controllers;
 			sourceTree = "<group>";
 		};
 		DDBA79FA1B83E8B500CB49A3 = {
@@ -132,8 +173,7 @@
 			isa = PBXGroup;
 			children = (
 				DDBA7A081B83E8B500CB49A3 /* AppDelegate.swift */,
-				DDBA7A0A1B83E8B500CB49A3 /* ViewController.swift */,
-				DDAD5B601BB7E3AF00728C57 /* PathsController.swift */,
+				DD9099121BCB61D000F4F8F8 /* Controllers */,
 				DDBA7A0C1B83E8B500CB49A3 /* Images.xcassets */,
 				DDBA7A0E1B83E8B500CB49A3 /* Main.storyboard */,
 				DD11F4B21B89829B008B14B3 /* Library */,
