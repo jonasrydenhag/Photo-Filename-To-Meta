@@ -134,7 +134,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     photoManager?.cancelRun()
   }
   
-  private func run(tags: [Tag], overwriteValues: Bool = false, deleteTags: Bool = false, withSelected: [Photo] = []) {
+  private func run(tags: [Tag], overwriteValues: Bool = false, deleteTags: Bool = false) {
     if photoManager == nil {
       return
     }
@@ -152,7 +152,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
         self.photoManager?.delete(tags, afterEach: afterEach)
         
       } else {
-        self.photoManager?.write(tags, overwriteValues: overwriteValues, withSelected: withSelected, afterEach: afterEach)
+        self.photoManager?.write(tags, overwriteValues: overwriteValues, afterEach: afterEach)
       }
       
       dispatch_async(dispatch_get_main_queue()) {
