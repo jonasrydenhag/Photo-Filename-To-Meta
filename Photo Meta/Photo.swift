@@ -79,7 +79,7 @@ class Photo: File {
       }
       
     } catch {
-      latestRunStatus = WriteStatus.Failed
+      handleWriteErrorFor(writeTags)
     }
   }
   
@@ -96,7 +96,7 @@ class Photo: File {
       latestRunStatus = WriteStatus.Success
       
     } catch {
-      latestRunStatus = WriteStatus.Failed
+      handleDeleteErrorFor(tags)
     }
   }
   
@@ -104,6 +104,34 @@ class Photo: File {
     for tag in tags {
       tagsValue[tag] = nil
       valueFor(tag)
+    }
+  }
+  
+  private func handleWriteErrorFor(tags: [Tag: String]) {
+    // Update with current values
+    read(Array(tags.keys))
+    
+    for (tag, value) in tags {
+      if value == valueFor(tag) {
+        latestRunStatus = WriteStatus.Partially
+        break
+      } else {
+        latestRunStatus = WriteStatus.Failed
+      }
+    }
+  }
+  
+  private func handleDeleteErrorFor(tags: [Tag]) {
+    // Update with current values
+    read(tags)
+    
+    for tag in tags {
+      if valueFor(tag) != "" {
+        latestRunStatus = WriteStatus.Partially
+        break
+      } else {
+        latestRunStatus = WriteStatus.Failed
+      }
     }
   }
   
