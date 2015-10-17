@@ -1,5 +1,5 @@
 /* Class = "NSMenuItem"; title = "Photo Meta"; ObjectID = "1Xt-HY-uBw"; */
-"1Xt-HY-uBw.title" = "Fotometa";
+"1Xt-HY-uBw.title" = "Photo Meta";
 
 /* Class = "NSTextFieldCell"; title = "Source:"; ObjectID = "1uf-kP-ozJ"; */
 "1uf-kP-ozJ.title" = "Källa:";
@@ -11,13 +11,13 @@
 "4gP-zj-xyZ.headerCell.title" = "Titel";
 
 /* Class = "NSMenuItem"; title = "Quit Photo Meta"; ObjectID = "4sb-4s-VLi"; */
-"4sb-4s-VLi.title" = "Avsluta Fotometa";
+"4sb-4s-VLi.title" = "Avsluta Photo Meta";
 
 /* Class = "NSTextFieldCell"; title = "1998-01-24-01 Title.jpg"; ObjectID = "5HL-6H-7N2"; */
 "5HL-6H-7N2.title" = "1998-01-24-01 Titel.jpg";
 
 /* Class = "NSMenuItem"; title = "About Photo Meta"; ObjectID = "5kV-Vb-QxS"; */
-"5kV-Vb-QxS.title" = "Om Fotometa";
+"5kV-Vb-QxS.title" = "Om Photo Meta";
 
 /* Class = "NSTextFieldCell"; title = "Update:"; ObjectID = "ANx-mO-aqg"; */
 "ANx-mO-aqg.title" = "Uppdatera:";
@@ -44,7 +44,7 @@
 "GzK-uK-c6s.headerCell.title" = "Datum";
 
 /* Class = "NSWindow"; title = "Photo Meta"; ObjectID = "IQv-IB-iLA"; */
-"IQv-IB-iLA.title" = "Fotometa";
+"IQv-IB-iLA.title" = "Photo Meta";
 
 /* Class = "NSToolbarItem"; label = "Erase"; ObjectID = "ISr-KU-Qaa"; */
 "ISr-KU-Qaa.label" = "Radera";
@@ -68,7 +68,7 @@
 "OY7-WF-poV.title" = "Minimera";
 
 /* Class = "NSMenuItem"; title = "Hide Photo Meta"; ObjectID = "Olw-nP-bQN"; */
-"Olw-nP-bQN.title" = "Göm Fotometa";
+"Olw-nP-bQN.title" = "Göm Photo Meta";
 
 /* Class = "NSToolbarItem"; label = "Select"; ObjectID = "P4x-k0-ZNr"; */
 "P4x-k0-ZNr.label" = "Välj";
@@ -155,7 +155,7 @@
 "uBv-xS-YLw.title" = "Textcell";
 
 /* Class = "NSMenu"; title = "Photo Meta"; ObjectID = "uQy-DD-JDr"; */
-"uQy-DD-JDr.title" = "Fotometa";
+"uQy-DD-JDr.title" = "Photo Meta";
 
 /* Class = "NSButtonCell"; title = "Select"; ObjectID = "vQQ-YZ-Khk"; */
 "vQQ-YZ-Khk.title" = "Välj";
