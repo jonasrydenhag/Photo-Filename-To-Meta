@@ -86,28 +86,7 @@ class ExifToolWrapper: MetaWriter {
   }
   
   private func read(URL: NSURL, arguments: [String]) -> String {
-    var defaultArgs = Array<String>()
-    
-    if ignoreMinorErrors {
-      defaultArgs.append("-m")
-    }
-    
-    // Setup the task
-    let task = NSTask()
-    task.launchPath = exifToolPath
-    task.arguments = defaultArgs + arguments + [URL.path!]
-
-    // Pipe the standard out to an NSPipe
-    let pipe = NSPipe()
-    task.standardOutput = pipe
-    task.standardError = pipe
-    
-    task.launch()
-  
-    let data: NSData = pipe.fileHandleForReading.readDataToEndOfFile()
-    task.waitUntilExit()
-    
-    return NSString(data: data, encoding: NSUTF8StringEncoding) as! String
+    return execute(URL, arguments: arguments)
   }
   
   private func writeTags(URL: NSURL, tagsArguments: [Tag: [String]]) throws {
@@ -145,6 +124,25 @@ class ExifToolWrapper: MetaWriter {
       defaultArgs.append("-overwrite_original")
     }
     
+    let output = execute(URL, arguments: defaultArgs + arguments)
+    
+    let error = validateWriteResult(output)
+    
+    if error != nil {
+      throw error!
+    }
+  }
+  
+  private func validateWriteResult(output: String) -> MetaWriteError? {
+    if output.rangeOfString("1 image files updated") == nil{
+      return MetaWriteError.NotUpdated
+    }
+    return nil
+  }
+  
+  private func execute(URL: NSURL, arguments: [String]) -> String {
+    var defaultArgs = [String]()
+    
     if ignoreMinorErrors {
       defaultArgs.append("-m")
     }
@@ -164,19 +162,6 @@ class ExifToolWrapper: MetaWriter {
     let data: NSData = pipe.fileHandleForReading.readDataToEndOfFile()
     task.waitUntilExit()
     
-    let output = NSString(data: data, encoding: NSUTF8StringEncoding) as! String
-    
-    let error = validateResult(output)
-    
-    if error != nil {
-      throw error!
-    }
-  }
-  
-  private func validateResult(output: String) -> ErrorType? {
-    if output.rangeOfString("1 image files updated") == nil{
-      return MetaWriteError.NotUpdated
-    }
-    return nil
+    return NSString(data: data, encoding: NSUTF8StringEncoding) as! String
   }
 }
