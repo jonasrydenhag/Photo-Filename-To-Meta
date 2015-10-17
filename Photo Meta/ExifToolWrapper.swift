@@ -118,6 +118,18 @@ class ExifToolWrapper: MetaWriter {
     do {
       try write(URL, arguments: arguments)
       
+    } catch MetaWriteError.NotUpdated {
+      // Retry tag by tag
+      for (_, tagArguments) in tagsArguments {
+        do {
+          try write(URL, arguments: tagArguments)
+        } catch {
+          // Ignore
+        }
+      }
+      
+      throw MetaWriteError.NotUpdated
+      
     } catch let error {
       throw error
     }
