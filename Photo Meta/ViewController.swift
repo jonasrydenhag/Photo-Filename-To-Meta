@@ -223,6 +223,8 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     
     if !(file is Photo) {
       cellView?.textField?.textColor = NSColor.grayColor()
+    } else {
+      cellView?.textField?.textColor = nil
     }
     
     return cellView
