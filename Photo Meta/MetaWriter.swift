@@ -16,6 +16,8 @@ protocol MetaWriter {
   
   var supportedFileTypes: [CFString!] { get }
   
+  var dateFormatter: NSDateFormatter { get }
+  
   func valueFor(tag: Tag, file: File) -> String
   
   func write(tagsValue: [Tag: String], file: File) throws

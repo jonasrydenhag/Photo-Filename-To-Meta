@@ -16,10 +16,13 @@ class ExifToolWrapper: MetaWriter {
   
   private let ignoreMinorErrors = true
   
+  let dateFormatter = NSDateFormatter()
+  
   let supportedFileTypes: [CFString!] = [kUTTypeJPEG, kUTTypeGIF, kUTTypeTIFF]
   
   init() {
     exifToolPath = NSBundle.mainBundle().pathForResource("exiftool", ofType: "")!
+    dateFormatter.dateFormat = "yyyy:MM:dd HH:mm:ss"
   }
   
   func valueFor(tag: Tag, file: File) -> String {

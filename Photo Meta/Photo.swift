@@ -137,7 +137,16 @@ class Photo: File {
   
   private func valueFor(tag: Tag, value: String = "") -> String {
     if tagsValue[tag] == nil && value == "" {
-      tagsValue[tag] = metaWriter.valueFor(tag, file: self)
+      var tagValue = metaWriter.valueFor(tag, file: self)
+      
+      if tag == Tag.Date {
+        if let date = metaWriter.dateFormatter.dateFromString(tagValue) {
+          tagValue = dateFormatter.stringFromDate(date)
+        }
+      }
+      
+      tagsValue[tag] = tagValue
+      
     } else if value != "" {
       tagsValue[tag] = value
     }
