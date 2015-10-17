@@ -18,6 +18,7 @@
 		DD9099181BCBAD0000F4F8F8 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = DD90991A1BCBAD0000F4F8F8 /* InfoPlist.strings */; };
 		DD90991D1BCBAD0000F4F8F8 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = DD90991F1BCBAD0000F4F8F8 /* Localizable.strings */; };
 		DD9099221BCBAD0100F4F8F8 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = DD9099241BCBAD0100F4F8F8 /* InfoPlist.strings */; };
+		DDAA67971BD2259500E39CA7 /* icon.pxm in Resources */ = {isa = PBXBuildFile; fileRef = DDAA67961BD2259500E39CA7 /* icon.pxm */; settings = {ASSET_TAGS = (); }; };
 		DDAD5B611BB7E3AF00728C57 /* PathsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDAD5B601BB7E3AF00728C57 /* PathsController.swift */; settings = {ASSET_TAGS = (); }; };
 		DDBA7A091B83E8B500CB49A3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDBA7A081B83E8B500CB49A3 /* AppDelegate.swift */; };
 		DDBA7A0B1B83E8B500CB49A3 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDBA7A0A1B83E8B500CB49A3 /* ViewController.swift */; };
@@ -50,6 +51,7 @@
 		DD9099191BCBAD0000F4F8F8 /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		DD90991E1BCBAD0000F4F8F8 /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/Localizable.strings; sourceTree = "<group>"; };
 		DD9099231BCBAD0100F4F8F8 /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		DDAA67961BD2259500E39CA7 /* icon.pxm */ = {isa = PBXFileReference; lastKnownFileType = file; path = icon.pxm; sourceTree = "<group>"; };
 		DDAD5B601BB7E3AF00728C57 /* PathsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PathsController.swift; sourceTree = "<group>"; };
 		DDBA7A031B83E8B500CB49A3 /* Photo Meta.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Photo Meta.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DDBA7A071B83E8B500CB49A3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -95,6 +97,7 @@
 		DD67B6AA1BB13CC000E64585 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				DDAA67961BD2259500E39CA7 /* icon.pxm */,
 				DD67B6AB1BB13CFE00E64585 /* ExifTool */,
 			);
 			name = Resources;
@@ -297,6 +300,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				DD90991D1BCBAD0000F4F8F8 /* Localizable.strings in Resources */,
+				DDAA67971BD2259500E39CA7 /* icon.pxm in Resources */,
 				DD9099221BCBAD0100F4F8F8 /* InfoPlist.strings in Resources */,
 				DD67B6B11BB13E6200E64585 /* exiftool in Resources */,
 				DD67B6AD1BB13D2000E64585 /* lib in Resources */,
