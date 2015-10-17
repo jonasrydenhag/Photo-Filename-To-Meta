@@ -102,11 +102,13 @@ class ExifToolWrapper: MetaWriter {
       
     } catch MetaWriteError.NotUpdated {
       // Retry tag by tag
-      for (_, tagArguments) in tagsArguments {
-        do {
-          try write(URL, arguments: tagArguments)
-        } catch {
-          // Ignore
+      if tagsArguments.count > 1 {
+        for (_, tagArguments) in tagsArguments {
+          do {
+            try write(URL, arguments: tagArguments)
+          } catch {
+            // Ignore
+          }
         }
       }
       
