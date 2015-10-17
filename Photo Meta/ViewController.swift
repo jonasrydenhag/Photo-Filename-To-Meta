@@ -147,16 +147,12 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
             self.tableView.reloadData()
           }
       }
+      
       if deleteTags {
         self.photoManager?.delete(tags, afterEach: afterEach)
+        
       } else {
         self.photoManager?.write(tags, overwriteValues: overwriteValues, withSelected: withSelected, afterEach: afterEach)
-      }
-      
-      for tag in self.photoManager!.kept.keys {
-        dispatch_async(dispatch_get_main_queue()) {
-          self.overwrite(self.photoManager!.kept[tag]!, tag: tag)
-        }
       }
       
       dispatch_async(dispatch_get_main_queue()) {
@@ -267,29 +263,5 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     cellView?.textField?.stringValue = text
     
     return cellView
-  }
-  
-  // MARK: - Alert
-  
-  func overwrite(files: [Photo], tag: Tag) {
-    let alert = NSAlert()
-    let tagName: String
-    switch tag {
-    case .Title:
-      tagName = NSLocalizedString("Title", comment: "Tag Name in overwrite alert")
-    case .Date:
-      tagName = NSLocalizedString("Date", comment: "Tag Name in overwrite alert")
-    }
-    alert.addButtonWithTitle(NSLocalizedString("Yes", comment: "Overwrite alert"))
-    alert.addButtonWithTitle(NSLocalizedString("No", comment: "Overwrite alert"))
-    alert.messageText = String(format: NSLocalizedString("Existing values for the %@ tag", comment: "Overwrite alert"), tagName)
-    let fileEnum = (files.count == 1) ? NSLocalizedString("file", comment: "Overwrite alert") :NSLocalizedString("files", comment: "Overwrite alert")
-    alert.informativeText = String(format: NSLocalizedString("%1$d %2$@ already have values. Do you want to overwrite?", comment: "Overwrite alert"), files.count, fileEnum)
-    alert.alertStyle = NSAlertStyle.InformationalAlertStyle
-    
-    let result = alert.runModal()
-    if result == NSAlertFirstButtonReturn {
-      run([tag], overwriteValues: true, withSelected: files)
-    }
   }
 }

@@ -1,36 +1,11 @@
-/* Overwrite alert */
-"%1$d %2$@ already have values. Do you want to overwrite?" = "%1$d %2$@ har redan värden. Vill du skriva över?";
-
 /* Same paths alert */
 "Cancel" = "Avbryt";
 
 /* Same paths alert */
 "Continue" = "Fortsätt";
 
-/* Tag Name in overwrite alert */
-"Date" = "datum";
-
-/* Overwrite alert */
-"Existing values for the %@ tag" = "Befintliga värden för %@-taggen";
-
-/* Overwrite alert */
-"No" = "Nej";
-
 /* Same paths alert */
 "Overwrite file(s)?" = "Skriv över fil(er)?";
 
 /* Same paths alert */
 "Since the source and target are the same, the file(s) will be overwritten" = "Eftersom källan och målet har samma sökväg, så kommer orginalfilerna att bli överskrivna";
-
-/* Tag Name in overwrite alert */
-"Title" = "titel";
-
-/* Overwrite alert */
-"Yes" = "Ja";
-
-/* Overwrite alert */
-"file" = "fil";
-
-/* Overwrite alert */
-"files" = "filer";
-

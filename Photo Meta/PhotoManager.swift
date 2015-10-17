@@ -14,7 +14,6 @@ class PhotoManager: FileManager {
   private var photos: [Photo] = []
   private (set) var running = false
   private var cancel = false
-  var kept: [Tag: [Photo]] = [Tag: [Photo]]()
   
   override func collectFiles() {
     super.collectFiles();
@@ -22,6 +21,8 @@ class PhotoManager: FileManager {
   }
   
   func read(tags: [Tag], afterEach: () -> Void) {
+    resetLatestRunStatus(photos)
+    
     running = true
     
     for photo in photos {
@@ -65,7 +66,6 @@ class PhotoManager: FileManager {
   
   private func run(tags: [Tag], overwriteValues: Bool = false, deleteTags: Bool = false, withSelected: [Photo] = [], afterEach: () -> Void) {
     running = true
-    kept = [Tag: [Photo]]()
     let runPhotos: [Photo]
     
     if withSelected.count > 0 {
@@ -92,14 +92,6 @@ class PhotoManager: FileManager {
         
       } else {
         photo.write(tags, overwriteValues: overwriteValues)
-        if !overwriteValues && photo.kept.count > 0 {
-          for tag in photo.kept {
-            if kept[tag] == nil {
-              kept[tag] = []
-            }
-            kept[tag]!.append(photo)
-          }
-        }
       }
       
       afterEach()

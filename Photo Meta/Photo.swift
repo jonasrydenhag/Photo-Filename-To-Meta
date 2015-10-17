@@ -30,7 +30,6 @@ class Photo: File {
   }
   let dateFormatter = NSDateFormatter()
   var metaWriter: MetaWriter
-  var kept = Array<Tag>()
   
   init(fileURL: NSURL, baseURL: NSURL, metaWriter: MetaWriter) throws {
     self.metaWriter = metaWriter
@@ -44,11 +43,9 @@ class Photo: File {
   
   func write(tags: [Tag], overwriteValues: Bool = false) {
     var writeTags: [Tag: String] = [Tag: String]()
-    kept = Array<Tag>()
     
     for tag in tags {
       if !overwriteValues && valueFor(tag) != "" {
-        kept.append(tag)
         continue
       }
       
@@ -91,7 +88,6 @@ class Photo: File {
   }
   
   func deleteValueFor(tags: [Tag]) {
-    kept = [Tag]()
     do {
       try metaWriter.deleteValueFor(tags, file: self)
       for tag in tags {
