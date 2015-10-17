@@ -19,7 +19,7 @@ The first case is pretty straight forward. In case number two, the application w
 The supported file types are ".jpg", ".tiff" and ".gif". Note that although the meta data will be written to the ".gif" files the OS X Photos app will currently ignore those meta data tags.
 
 ## OS X App
-The first version of the app supports OS X 10.10 (Yosemite) and OS X 10.11 (El Capitan) and can be downloaded here, https://github.com/jonasrydenhag/Photo-Filename-To-Meta/releases/download/v0.1-beta/Photo.Meta.app.zip.
+The app supports OS X 10.10 (Yosemite) and OS X 10.11 (El Capitan) and can be downloaded here, https://github.com/jonasrydenhag/Photo-Filename-To-Meta/releases/download/v1.0.0/Photo.Meta.app.zip.
 
 ## Bash script
 This application is based on a bash script that I created. It can be found here, https://github.com/jonasrydenhag/Photo-Filename-To-Meta-Bash
