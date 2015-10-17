@@ -25,12 +25,12 @@ class ExifToolWrapper: MetaWriter {
     dateFormatter.dateFormat = "yyyy:MM:dd HH:mm:ss"
   }
   
-  func valueFor(tag: Tag, file: File) -> String {
+  func valueFor(tag: Tag, file: File) throws -> String {
       switch tag{
       case .Title:
-        return titleFor(file)
+        return try titleFor(file)
       case .Date:
-        return dateFor(file)
+        return try dateFor(file)
       }
   }
   
@@ -59,12 +59,12 @@ class ExifToolWrapper: MetaWriter {
     try write(tagsValue, file: file)
   }
   
-  private func titleFor(file: File) -> String {
-    return read(file.URL, arguments: ["-title", "-s3"]).stringByReplacingOccurrencesOfString("\\n*", withString: "", options: .RegularExpressionSearch)
+  private func titleFor(file: File) throws -> String {
+    return try read(file.URL, arguments: ["-title", "-s3"]).stringByReplacingOccurrencesOfString("\\n*", withString: "", options: .RegularExpressionSearch)
   }
   
-  private func dateFor(file: File) -> String {
-    return read(file.URL, arguments: ["-dateTimeOriginal", "-s3"]).stringByReplacingOccurrencesOfString("\\n*", withString: "", options: .RegularExpressionSearch)
+  private func dateFor(file: File) throws -> String {
+    return try read(file.URL, arguments: ["-dateTimeOriginal", "-s3"]).stringByReplacingOccurrencesOfString("\\n*", withString: "", options: .RegularExpressionSearch)
   }
   
   private func writeTitleArgs(title: String) -> [String] {
@@ -85,8 +85,14 @@ class ExifToolWrapper: MetaWriter {
     }
   }
   
-  private func read(URL: NSURL, arguments: [String]) -> String {
-    return execute(URL, arguments: arguments)
+  private func read(URL: NSURL, arguments: [String]) throws -> String {
+    let output = execute(URL, arguments: arguments)
+    
+    if let error = validateReadResult(output) {
+      throw error
+    }
+    
+    return output
   }
   
   private func writeTags(URL: NSURL, tagsArguments: [Tag: [String]]) throws {
@@ -128,11 +134,17 @@ class ExifToolWrapper: MetaWriter {
     
     let output = execute(URL, arguments: defaultArgs + arguments)
     
-    let error = validateWriteResult(output)
-    
-    if error != nil {
-      throw error!
+    if let error = validateWriteResult(output) {
+      throw error
     }
+  }
+  
+  private func validateReadResult(output: String) -> MetaWriteError? {
+    let error = "Warning: Invalid EXIF text encoding for UserComment"
+    if output.rangeOfString(error) != nil {
+      return MetaWriteError.CannotRead
+    }
+    return nil
   }
   
   private func validateWriteResult(output: String) -> MetaWriteError? {

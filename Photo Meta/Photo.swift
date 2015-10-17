@@ -135,22 +135,26 @@ class Photo: File {
     }
   }
   
-  private func valueFor(tag: Tag, value: String = "") -> String {
+  private func valueFor(tag: Tag, value: String = "") -> String? {
     if tagsValue[tag] == nil && value == "" {
-      var tagValue = metaWriter.valueFor(tag, file: self)
-      
-      if tag == Tag.Date {
-        if let date = metaWriter.dateFormatter.dateFromString(tagValue) {
-          tagValue = dateFormatter.stringFromDate(date)
+      do {
+        var tagValue = try metaWriter.valueFor(tag, file: self)
+        
+        if tag == Tag.Date {
+          if let date = metaWriter.dateFormatter.dateFromString(tagValue) {
+            tagValue = dateFormatter.stringFromDate(date)
+          }
         }
+        
+        tagsValue[tag] = tagValue
+      } catch {
+        // Ignore value
       }
-      
-      tagsValue[tag] = tagValue
       
     } else if value != "" {
       tagsValue[tag] = value
     }
-    return tagsValue[tag]!
+    return tagsValue[tag]
   }
   
   private func extractTitle() -> String {

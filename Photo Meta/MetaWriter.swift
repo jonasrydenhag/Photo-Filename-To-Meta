@@ -10,6 +10,7 @@ import Foundation
 
 enum MetaWriteError: ErrorType {
   case NotUpdated
+  case CannotRead
 }
 
 protocol MetaWriter {
@@ -18,7 +19,7 @@ protocol MetaWriter {
   
   var dateFormatter: NSDateFormatter { get }
   
-  func valueFor(tag: Tag, file: File) -> String
+  func valueFor(tag: Tag, file: File) throws -> String
   
   func write(tagsValue: [Tag: String], file: File) throws
   
