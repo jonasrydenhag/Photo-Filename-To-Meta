@@ -47,7 +47,7 @@ class ExifToolWrapper: MetaWriter {
     }
     
     if tagsArgs.count > 0 {
-      try write(file.URL, tagsArguments: tagsArgs);
+      try writeTags(file.URL, tagsArguments: tagsArgs);
     }
   }
   
@@ -110,7 +110,7 @@ class ExifToolWrapper: MetaWriter {
     return NSString(data: data, encoding: NSUTF8StringEncoding) as! String
   }
   
-  private func write(URL: NSURL, tagsArguments: [Tag: [String]]) throws {
+  private func writeTags(URL: NSURL, tagsArguments: [Tag: [String]]) throws {
     var arguments = [String]()
     
     for (_, tagArguments) in tagsArguments {
