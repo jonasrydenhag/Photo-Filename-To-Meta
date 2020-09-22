@@ -2,6 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "self:Photo Meta.xcodeproj">
+      location = "self:PhotoMeta.xcodeproj">
    </FileRef>
 </Workspace>

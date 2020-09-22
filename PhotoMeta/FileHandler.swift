@@ -1,5 +1,5 @@
 //
-//  FileManager.swift
+//  FileHandler.swift
 //  Photo Meta
 //
 //  Created by Jonas Rydenhag on 2015-10-12.
@@ -8,9 +8,9 @@
 
 import Foundation
 
-class FileManager: NSFileManager {
+class FileHandler: FileManager {
 
-  enum PathExceptions: ErrorType {
+  enum PathExceptions: Error {
     case TargetURLNotDir
   }
   
@@ -31,14 +31,14 @@ class FileManager: NSFileManager {
     }
     
     var baseUrlIsDir: ObjCBool = false
-    if fileExistsAtPath(sourceURL.path!, isDirectory:&baseUrlIsDir) && !baseUrlIsDir {
-      addFileFrom(sourceURL.path!, baseURL: sourceURL.URLByDeletingLastPathComponent!)
+    if fileExists(atPath: sourceURL.path!, isDirectory: &baseUrlIsDir) && baseUrlIsDir.boolValue == false {
+      addFileFrom(path: sourceURL.path!, baseURL: sourceURL.deletingLastPathComponent! as NSURL)
       
     } else {
-      let enumerator: NSDirectoryEnumerator? = enumeratorAtURL(sourceURL, includingPropertiesForKeys: nil, options: [], errorHandler: nil)
+      let enumerator: FileManager.DirectoryEnumerator? = __enumerator(at: sourceURL as URL, includingPropertiesForKeys: nil, options: [], errorHandler: nil)
       
       while let fileURL: NSURL = enumerator?.nextObject() as? NSURL {
-        addFileFrom(fileURL.path!, baseURL: sourceURL)
+        addFileFrom(path: fileURL.path!, baseURL: sourceURL)
       }
     }
   }
@@ -53,11 +53,11 @@ class FileManager: NSFileManager {
   }
   
   internal func copyIfNeeded(file: Photo) throws {
-    if !fileExistsAtPath(file.URL.path!) {
+    if !fileExists(atPath: file.URL.path!) {
       throw File.FileExceptions.FileDoesNotExist
     }
     if sourceURL.path != targetURL.path {
-      try copy(file, toDir: targetURL)
+      try copy(file: file, toDir: targetURL)
     }
   }
   
@@ -65,11 +65,11 @@ class FileManager: NSFileManager {
     var isDir: ObjCBool = false
     let URL = NSURL(fileURLWithPath: path, isDirectory: false)
     
-    if !fileExistsAtPath(path, isDirectory: &isDir) || isDir || URL.lastPathComponent == ".DS_Store"{
+    if !fileExists(atPath: path, isDirectory: &isDir) || isDir.boolValue || URL.lastPathComponent == ".DS_Store"{
       return
     }
     
-    if let file = createFileFrom(URL, baseURL: baseURL) {
+    if let file = createFileFrom(URL: URL, baseURL: baseURL) {
       files.append(file)
     }
   }
@@ -80,46 +80,46 @@ class FileManager: NSFileManager {
     let relativeFilePath = file.relativePath
     let relativeURL = NSURL(fileURLWithPath: relativeFilePath, isDirectory: false)
     
-    fileExistsAtPath(file.URL.path!, isDirectory:&fromBaseDir)
+    fileExists(atPath: file.URL.path!, isDirectory:&fromBaseDir)
     
     var targetPath = toDir.path! + "/"
     destPath = targetPath + relativeFilePath
     
-    if relativeURL.URLByDeletingLastPathComponent?.relativePath != "." {
-      targetPath += relativeURL.URLByDeletingLastPathComponent!.relativePath! + "/"
+    if relativeURL.deletingLastPathComponent?.relativePath != "." {
+      targetPath += relativeURL.deletingLastPathComponent!.relativePath + "/"
       
       if destPath != file.URL.path {
         var targetPathDir: ObjCBool = false
-        if fileExistsAtPath(targetPath, isDirectory:&targetPathDir) && !targetPathDir {
-          try removeItemAtPath(targetPath)
+        if fileExists(atPath: targetPath, isDirectory: &targetPathDir) && targetPathDir.boolValue == false {
+          try removeItem(atPath: targetPath)
         }
         
-        try createDirectoryAtPath(targetPath, withIntermediateDirectories: true, attributes: nil)
+        try createDirectory(atPath: targetPath, withIntermediateDirectories: true, attributes: nil)
       }
     }
     
-    if destPath != file.URL.path && fileExistsAtPath(destPath) {
-      try removeItemAtPath(destPath)
+    if destPath != file.URL.path && fileExists(atPath: destPath) {
+      try removeItem(atPath: destPath)
     }
     
     return destPath
   }
   
-  private func copy(file: File, toDir: NSURL) throws -> File? {
+  @discardableResult private func copy(file: File, toDir: NSURL) throws -> File? {
     var isDir: ObjCBool = false
-    if !fileExistsAtPath(toDir.path!, isDirectory:&isDir) || !isDir {
+    if !fileExists(atPath: toDir.path!, isDirectory:&isDir) || isDir.boolValue == false {
       throw PathExceptions.TargetURLNotDir
     }
     
-    let destPath = try prepareCopyDestPath(file, toDir: targetURL)
+    let destPath = try prepareCopyDestPath(file: file, toDir: targetURL)
   
     if destPath == file.URL.path {
       return nil
     }
     
-    try copyItemAtPath(file.URL.path!, toPath: destPath)
-    let URL = NSURL(fileURLWithFileSystemRepresentation: destPath, isDirectory: false, relativeToURL: targetURL)
+    try copyItem(atPath: file.URL.path!, toPath: destPath)
+    let URL = NSURL(fileURLWithFileSystemRepresentation: destPath, isDirectory: false, relativeTo: targetURL as URL)
     
-    return file.changeURL(URL, baseURL: toDir)
+    return file.changeURL(fileURL: URL, baseURL: toDir)
   }
 }

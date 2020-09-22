@@ -8,16 +8,16 @@
 
 import Foundation
 
-enum MetaWriteError: ErrorType {
+enum MetaWriteError: Error {
   case NotUpdated
   case CannotRead
 }
 
 protocol MetaWriter {
   
-  var supportedFileTypes: [CFString!] { get }
+  var supportedFileTypes: [CFString?] { get }
   
-  var dateFormatter: NSDateFormatter { get }
+  var dateFormatter: DateFormatter { get }
   
   func valueFor(tag: Tag, file: File) throws -> String
   

@@ -16,21 +16,21 @@ class ExifToolWrapper: MetaWriter {
   
   private let ignoreMinorErrors = true
   
-  let dateFormatter = NSDateFormatter()
+  let dateFormatter = DateFormatter()
   
-  let supportedFileTypes: [CFString!] = [kUTTypeJPEG, kUTTypeGIF, kUTTypeTIFF]
+  let supportedFileTypes: [CFString?] = [kUTTypeJPEG, kUTTypeGIF, kUTTypeTIFF]
   
   init() {
-    exifToolPath = NSBundle.mainBundle().pathForResource("exiftool", ofType: "")!
+    exifToolPath = Bundle.main.path(forResource: "exiftool", ofType: "")!
     dateFormatter.dateFormat = "yyyy:MM:dd HH:mm:ss"
   }
   
   func valueFor(tag: Tag, file: File) throws -> String {
       switch tag{
       case .Title:
-        return try titleFor(file)
+        return try titleFor(file: file)
       case .Date:
-        return try dateFor(file)
+        return try dateFor(file: file)
       }
   }
   
@@ -40,14 +40,14 @@ class ExifToolWrapper: MetaWriter {
     for (tag, value) in tagsValue {
       switch tag{
       case .Title:
-        tagsArgs[tag] = writeTitleArgs(value)
+        tagsArgs[tag] = writeTitleArgs(title: value)
       case .Date:
-        tagsArgs[tag] = writeDateArgs(value)
+        tagsArgs[tag] = writeDateArgs(date: value)
       }
     }
     
     if tagsArgs.count > 0 {
-      try writeTags(file.URL, tagsArguments: tagsArgs);
+      try writeTags(URL: file.URL, tagsArguments: tagsArgs);
     }
   }
   
@@ -56,15 +56,15 @@ class ExifToolWrapper: MetaWriter {
     for tag in tags {
       tagsValue[tag] = ""
     }
-    try write(tagsValue, file: file)
+    try write(tagsValue: tagsValue, file: file)
   }
   
   private func titleFor(file: File) throws -> String {
-    return try read(file.URL, arguments: ["-title", "-s3"]).stringByReplacingOccurrencesOfString("\\n*", withString: "", options: .RegularExpressionSearch)
+    return try read(URL: file.URL, arguments: ["-title", "-s3"]).replacingOccurrences(of: "\\n*", with: "", options: .regularExpression)
   }
   
   private func dateFor(file: File) throws -> String {
-    return try read(file.URL, arguments: ["-dateTimeOriginal", "-s3"]).stringByReplacingOccurrencesOfString("\\n*", withString: "", options: .RegularExpressionSearch)
+    return try read(URL: file.URL, arguments: ["-dateTimeOriginal", "-s3"]).replacingOccurrences(of: "\\n*", with: "", options: .regularExpression)
   }
   
   private func writeTitleArgs(title: String) -> [String] {
@@ -86,9 +86,9 @@ class ExifToolWrapper: MetaWriter {
   }
   
   private func read(URL: NSURL, arguments: [String]) throws -> String {
-    let output = execute(URL, arguments: arguments)
+    let output = execute(URL: URL, arguments: arguments)
     
-    if let error = validateReadResult(output) {
+    if let error = validateReadResult(output: output) {
       throw error
     }
     
@@ -104,14 +104,14 @@ class ExifToolWrapper: MetaWriter {
     
     // Run all tags
     do {
-      try write(URL, arguments: arguments)
+      try write(URL: URL, arguments: arguments)
       
     } catch MetaWriteError.NotUpdated {
       // Retry tag by tag
       if tagsArguments.count > 1 {
         for (_, tagArguments) in tagsArguments {
           do {
-            try write(URL, arguments: tagArguments)
+            try write(URL: URL, arguments: tagArguments)
           } catch {
             // Ignore
           }
@@ -132,23 +132,23 @@ class ExifToolWrapper: MetaWriter {
       defaultArgs.append("-overwrite_original")
     }
     
-    let output = execute(URL, arguments: defaultArgs + arguments)
+    let output = execute(URL: URL, arguments: defaultArgs + arguments)
     
-    if let error = validateWriteResult(output) {
+    if let error = validateWriteResult(output: output) {
       throw error
     }
   }
   
   private func validateReadResult(output: String) -> MetaWriteError? {
     let error = "Warning: Invalid EXIF text encoding for UserComment"
-    if output.rangeOfString(error) != nil {
+    if output.range(of: error) != nil {
       return MetaWriteError.CannotRead
     }
     return nil
   }
   
   private func validateWriteResult(output: String) -> MetaWriteError? {
-    if output.rangeOfString("1 image files updated") == nil{
+    if output.range(of: "1 image files updated") == nil{
       return MetaWriteError.NotUpdated
     }
     return nil
@@ -162,20 +162,20 @@ class ExifToolWrapper: MetaWriter {
     }
     
     // Setup the task
-    let task = NSTask()
+    let task = Process()
     task.launchPath = exifToolPath
     task.arguments = defaultArgs + arguments + [URL.path!]
 
     // Pipe the standard out to an NSPipe
-    let pipe = NSPipe()
+    let pipe = Pipe()
     task.standardOutput = pipe
     task.standardError = pipe
     
     task.launch()
   
-    let data: NSData = pipe.fileHandleForReading.readDataToEndOfFile()
+    let data: NSData = pipe.fileHandleForReading.readDataToEndOfFile() as NSData
     task.waitUntilExit()
     
-    return NSString(data: data, encoding: NSUTF8StringEncoding) as! String
+    return NSString(data: data as Data, encoding: String.Encoding.utf8.rawValue)! as String
   }
 }

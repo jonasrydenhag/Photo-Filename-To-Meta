@@ -18,35 +18,35 @@ class PathsController: NSViewController, NSTableViewDataSource, NSTableViewDeleg
   @IBOutlet weak var cancelBtn: NSButton!
   @IBOutlet weak var okBtn: NSButton!
   
-  @IBAction func selectSourceDialog(sender: AnyObject) {
+  @IBAction func selectSourceDialog(_ sender: Any) {
     if let selectedPath = choosePath() {
-      sourceURL = selectedPath
+      sourceURL = selectedPath as NSURL
     }
   }
-  
-  @IBAction func selectTargetDialog(sender: AnyObject) {
-    if let selectedPath = choosePath(false, canCreateDirectories: true) {
-      targetURL = selectedPath
+
+  @IBAction func selectTargetDialog(_ sender: Any) {
+    if let selectedPath = choosePath(canChooseFiles: false, canCreateDirectories: true) {
+      targetURL = selectedPath as NSURL
     }
   }
-  
-  @IBAction func cancelBtnClick(sender: AnyObject) {
+
+  @IBAction func cancelBtnClick(_ sender: Any) {
     self.view.window?.close()
   }
-  
-  @IBAction func okBtnClick(sender: AnyObject) {
+
+  @IBAction func okBtnClick(_ sender: Any) {
     if sourceURL.path == nil || targetURL.path == nil {
       return
     }
     
     if let caller = caller {
       let closure = {
-        caller.initProject(self.sourceURL, targetURL: self.targetURL)
+        caller.initProject(sourceURL: self.sourceURL, targetURL: self.targetURL)
         self.view.window?.close()
       }
       
       if sourceURL.path == targetURL.path {
-        samePaths(closure)
+        samePaths(closure: closure)
       } else {
         closure()
       }
@@ -55,18 +55,18 @@ class PathsController: NSViewController, NSTableViewDataSource, NSTableViewDeleg
   
   var caller: ViewController?
   
-  private let fileManager = NSFileManager.defaultManager()
+  private let fileManager = FileHandler.default
   var sourceURL: NSURL = NSURL() {
     didSet {
       setOutletsEnableState()
-      sourcePath.URL = sourceURL
+      sourcePath.url = sourceURL as URL
     }
   }
   
   var targetURL: NSURL = NSURL() {
     didSet {
       setOutletsEnableState()
-      targetPath.URL = targetURL
+      targetPath.url = targetURL as URL
     }
   }
   
@@ -86,7 +86,7 @@ class PathsController: NSViewController, NSTableViewDataSource, NSTableViewDeleg
     self.view.window?.preventsApplicationTerminationWhenModal = false
   }
   
-  override var representedObject: AnyObject? {
+  override var representedObject: Any? {
     didSet {
       // Update the view, if already loaded.
     }
@@ -94,27 +94,23 @@ class PathsController: NSViewController, NSTableViewDataSource, NSTableViewDeleg
   
   private func setOutletsEnableState() {
     if sourceURL.path != nil && targetURL.path != nil {
-      okBtn?.enabled = true
+      okBtn?.isEnabled = true
     } else {
-      okBtn?.enabled = false
+      okBtn?.isEnabled = false
     }
   }
 
-  func choosePath(canChooseFiles: Bool = true, canCreateDirectories: Bool = false) -> NSURL? {
+  func choosePath(canChooseFiles: Bool = true, canCreateDirectories: Bool = false) -> URL? {
     let myOpenDialog: NSOpenPanel = NSOpenPanel()
     myOpenDialog.canChooseDirectories = true
     myOpenDialog.canChooseFiles = canChooseFiles
     myOpenDialog.canCreateDirectories = canCreateDirectories
     let clickedBtn = myOpenDialog.runModal()
     
-    if clickedBtn == NSFileHandlingPanelOKButton {
+    if clickedBtn.rawValue == NSFileHandlingPanelOKButton {
       // Make sure that a path was chosen
-      if let selectedPath: NSURL = myOpenDialog.URL {
-        let err = NSError?()
-        
-        if !(err != nil) {
+      if let selectedPath = myOpenDialog.url {
           return selectedPath
-        }
       }
     }
     return nil
@@ -124,14 +120,14 @@ class PathsController: NSViewController, NSTableViewDataSource, NSTableViewDeleg
   
   func samePaths(closure: () -> Void) {
     let alert = NSAlert()
-    alert.addButtonWithTitle(NSLocalizedString("Continue", comment: "Same paths alert"))
-    alert.addButtonWithTitle(NSLocalizedString("Cancel", comment: "Same paths alert"))
+    alert.addButton(withTitle: NSLocalizedString("Continue", comment: "Same paths alert"))
+    alert.addButton(withTitle: NSLocalizedString("Cancel", comment: "Same paths alert"))
     alert.messageText = String(format: NSLocalizedString("Overwrite file(s)?", comment: "Same paths alert"))
     alert.informativeText = String(format: NSLocalizedString("Since the source and target are the same, the file(s) will be overwritten", comment: "Same paths alert"))
-    alert.alertStyle = NSAlertStyle.InformationalAlertStyle
-    
+    alert.alertStyle = NSAlert.Style.informational
+
     let result = alert.runModal()
-    if result == NSAlertFirstButtonReturn {
+    if result == NSApplication.ModalResponse.alertFirstButtonReturn {
       closure()
     }
   }

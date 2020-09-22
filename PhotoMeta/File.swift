@@ -10,7 +10,7 @@ import Foundation
 
 class File {
 
-  enum FileExceptions: ErrorType {
+  enum FileExceptions: Error {
     case NotAFile
     case FileDoesNotExist
   }
@@ -19,15 +19,15 @@ class File {
   private (set) var baseURL: NSURL
   var relativePath: String {
     get {
-      return URL.path!.stringByReplacingOccurrencesOfString(baseURL.path! + "/", withString: "", options: NSStringCompareOptions.LiteralSearch, range: nil)
+      return URL.path!.replacingOccurrences(of: baseURL.path! + "/", with: "", options: NSString.CompareOptions.literal, range: nil)
     }
   }
   
   init(fileURL: NSURL, baseURL: NSURL) throws {
     self.URL = fileURL
     self.baseURL = baseURL
-    
-    if self.URL.resourceSpecifier == NSURLFileResourceTypeDirectory {
+
+    if self.URL.resourceSpecifier == URLFileResourceType.directory.rawValue {
       throw FileExceptions.NotAFile
     }
   }

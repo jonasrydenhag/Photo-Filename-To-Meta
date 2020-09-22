@@ -8,7 +8,7 @@
 
 import Foundation
 
-class PhotoManager: FileManager {
+class PhotoManager: FileHandler {
 
   private let metaWriter: MetaWriter = ExifToolWrapper()
   private var photos: [Photo] = []
@@ -17,11 +17,11 @@ class PhotoManager: FileManager {
   
   override func collectFiles() {
     super.collectFiles();
-    self.photos = self.files.flatMap{ $0 as? Photo }
+    self.photos = self.files.compactMap{ $0 as? Photo }
   }
   
   func read(tags: [Tag], afterEach: () -> Void) {
-    resetLatestRunStatus(photos)
+    resetLatestRunStatus(files: photos)
     
     running = true
     
@@ -30,7 +30,7 @@ class PhotoManager: FileManager {
         break
       }
       
-      photo.read(tags)
+      photo.read(tags: tags)
       
       afterEach()
     }
@@ -40,11 +40,11 @@ class PhotoManager: FileManager {
   }
   
   func write(tags: [Tag], overwriteValues: Bool = false, withSelected: [Photo] = [], afterEach: () -> Void) {
-    run(tags, overwriteValues: overwriteValues, withSelected: withSelected, afterEach: afterEach)
+    run(tags: tags, overwriteValues: overwriteValues, withSelected: withSelected, afterEach: afterEach)
   }
   
   func delete(tags: [Tag], afterEach: () -> Void) {
-    run(tags, deleteTags: true, afterEach: afterEach)
+    run(tags: tags, deleteTags: true, afterEach: afterEach)
   }
   
   func cancelRun() {
@@ -57,7 +57,7 @@ class PhotoManager: FileManager {
       return file
       
     } catch Photo.PhotoExceptions.NotSupported {
-      return super.createFileFrom(URL, baseURL: baseURL)
+      return super.createFileFrom(URL: URL, baseURL: baseURL)
       
     } catch  {
       return nil
@@ -74,7 +74,7 @@ class PhotoManager: FileManager {
       runPhotos = photos
     }
     
-    resetLatestRunStatus(runPhotos)
+    resetLatestRunStatus(files: runPhotos)
     
     for photo in runPhotos {
       if cancel {
@@ -82,16 +82,16 @@ class PhotoManager: FileManager {
       }
       
       do {
-        try copyIfNeeded(photo)
+        try copyIfNeeded(file: photo)
       } catch {
         continue
       }
         
       if deleteTags {
-        photo.deleteValueFor(tags)
+        photo.deleteValueFor(tags: tags)
         
       } else {
-        photo.write(tags, overwriteValues: overwriteValues)
+        photo.write(tags: tags, overwriteValues: overwriteValues)
       }
       
       afterEach()
