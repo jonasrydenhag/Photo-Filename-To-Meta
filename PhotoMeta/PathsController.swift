@@ -107,7 +107,7 @@ class PathsController: NSViewController, NSTableViewDataSource, NSTableViewDeleg
     myOpenDialog.canCreateDirectories = canCreateDirectories
     let clickedBtn = myOpenDialog.runModal()
     
-    if clickedBtn.rawValue == NSFileHandlingPanelOKButton {
+    if clickedBtn.rawValue == NSApplication.ModalResponse.OK.rawValue {
       // Make sure that a path was chosen
       if let selectedPath = myOpenDialog.url {
           return selectedPath
