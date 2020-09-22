@@ -27,10 +27,12 @@ class ExifToolWrapper: MetaWriter {
   
   func valueFor(tag: Tag, file: File) throws -> String {
       switch tag{
-      case .Title:
-        return try titleFor(file: file)
       case .Date:
         return try dateFor(file: file)
+      case .Description:
+        return try descriptionFor(file: file)
+      case .Title:
+        return try titleFor(file: file)
       }
   }
   
@@ -39,10 +41,12 @@ class ExifToolWrapper: MetaWriter {
     
     for (tag, value) in tagsValue {
       switch tag{
-      case .Title:
-        tagsArgs[tag] = writeTitleArgs(title: value)
       case .Date:
         tagsArgs[tag] = writeDateArgs(date: value)
+      case .Description:
+        tagsArgs[tag] = writeDescriptionArgs(description: value)
+      case .Title:
+        tagsArgs[tag] = writeTitleArgs(title: value)
       }
     }
     
@@ -58,30 +62,43 @@ class ExifToolWrapper: MetaWriter {
     }
     try write(tagsValue: tagsValue, file: file)
   }
+
+  private func dateFor(file: File) throws -> String {
+    return try read(URL: file.URL, arguments: ["-dateTimeOriginal", "-s3"]).replacingOccurrences(of: "\\n*", with: "", options: .regularExpression)
+  }
+
+  private func descriptionFor(file: File) throws -> String {
+    return try read(URL: file.URL, arguments: ["-description", "-s3"]).replacingOccurrences(of: "\\n*", with: "", options: .regularExpression)
+  }
   
   private func titleFor(file: File) throws -> String {
     return try read(URL: file.URL, arguments: ["-title", "-s3"]).replacingOccurrences(of: "\\n*", with: "", options: .regularExpression)
   }
-  
-  private func dateFor(file: File) throws -> String {
-    return try read(URL: file.URL, arguments: ["-dateTimeOriginal", "-s3"]).replacingOccurrences(of: "\\n*", with: "", options: .regularExpression)
-  }
-  
-  private func writeTitleArgs(title: String) -> [String] {
-    let tag = "-title"
-    if title == "" {
-      return ["\(tag)="]
-    } else {
-      return ["\(tag)=\(title)"]
-    }
-  }
-  
+
   private func writeDateArgs(date: String) -> [String] {
     let tag = "-dateTimeOriginal"
     if date == "" {
       return ["\(tag)="]
     } else {
       return ["\(tag)=\(date)"]
+    }
+  }
+
+  private func writeDescriptionArgs(description: String) -> [String] {
+    let tag = "-description"
+    if description == "" {
+      return ["\(tag)="]
+    } else {
+      return ["\(tag)=\(description)"]
+    }
+  }
+
+  private func writeTitleArgs(title: String) -> [String] {
+    let tag = "-title"
+    if title == "" {
+      return ["\(tag)="]
+    } else {
+      return ["\(tag)=\(title)"]
     }
   }
   

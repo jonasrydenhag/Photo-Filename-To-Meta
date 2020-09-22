@@ -9,3 +9,4 @@
 
 /* Same paths alert */
 "Since the source and target are the same, the file(s) will be overwritten" = "Eftersom källan och målet har samma sökväg, så kommer orginalfilerna att bli överskrivna";
+

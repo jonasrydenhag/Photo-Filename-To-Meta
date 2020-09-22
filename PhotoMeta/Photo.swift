@@ -50,16 +50,16 @@ class Photo: File {
       }
       
       switch tag {
-      case .Title:
+      case .Date:
+        if let date = extractDate() {
+          let value = dateFormatter.string(from: date as Date)
+          writeTags[tag] = value
+        }
+      case .Description, .Title:
         let title = extractTitle()
         
         if title != "" {
           let value = title
-          writeTags[tag] = value
-        }
-      case .Date:
-        if let date = extractDate() {
-          let value = dateFormatter.string(from: date as Date)
           writeTags[tag] = value
         }
       }
@@ -156,11 +156,11 @@ class Photo: File {
     }
     return tagsValue[tag]
   }
-  
+
   private func extractTitle() -> String {
     return URL.deletingPathExtension!.lastPathComponent
   }
-  
+
   private func extractDate() -> Date? {
     let regex = try! NSRegularExpression(pattern:"[0-9][0-9?][0-9?][0-9?]-[0-1?][0-9?]-[0-3?][0-9?]-*[0-9]*[0-9]*", options:[])
     
@@ -182,7 +182,7 @@ class Photo: File {
     }
 
   }
-  
+
   private func formatYear(fullDate: String) -> String {
     let yearCand = (fullDate as NSString).substring(with: NSRange(location: 0, length: 4))
     var year = ""

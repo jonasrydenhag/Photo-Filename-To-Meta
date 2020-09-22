@@ -1,8 +1,8 @@
-/* Class = "NSMenuItem"; title = "Photo Meta"; ObjectID = "1Xt-HY-uBw"; */
-"1Xt-HY-uBw.title" = "Photo Meta";
-
 /* Class = "NSTextFieldCell"; title = "Source:"; ObjectID = "1uf-kP-ozJ"; */
 "1uf-kP-ozJ.title" = "Källa:";
+
+/* Class = "NSMenuItem"; title = "PhotoMeta"; ObjectID = "1Xt-HY-uBw"; */
+"1Xt-HY-uBw.title" = "Photo Meta";
 
 /* Class = "NSButtonCell"; title = "Cancel"; ObjectID = "2Yv-Rs-BFl"; */
 "2Yv-Rs-BFl.title" = "Avbryt";
@@ -10,29 +10,50 @@
 /* Class = "NSTableColumn"; headerCell.title = "Title"; ObjectID = "4gP-zj-xyZ"; */
 "4gP-zj-xyZ.headerCell.title" = "Titel";
 
-/* Class = "NSMenuItem"; title = "Quit Photo Meta"; ObjectID = "4sb-4s-VLi"; */
+/* Class = "NSMenuItem"; title = "Quit PhotoMeta"; ObjectID = "4sb-4s-VLi"; */
 "4sb-4s-VLi.title" = "Avsluta Photo Meta";
 
 /* Class = "NSTextFieldCell"; title = "1998-01-24-01 Title.jpg"; ObjectID = "5HL-6H-7N2"; */
 "5HL-6H-7N2.title" = "1998-01-24-01 Titel.jpg";
 
-/* Class = "NSMenuItem"; title = "About Photo Meta"; ObjectID = "5kV-Vb-QxS"; */
+/* Class = "NSMenuItem"; title = "About PhotoMeta"; ObjectID = "5kV-Vb-QxS"; */
 "5kV-Vb-QxS.title" = "Om Photo Meta";
+
+/* Class = "NSMenuItem"; title = "Select Paths..."; ObjectID = "aNQ-Xz-gm9"; */
+"aNQ-Xz-gm9.title" = "Välj sökvägar...";
 
 /* Class = "NSTextFieldCell"; title = "Update:"; ObjectID = "ANx-mO-aqg"; */
 "ANx-mO-aqg.title" = "Uppdatera:";
 
-/* Class = "NSMenu"; title = "Main Menu"; ObjectID = "AYu-sK-qS6"; */
-"AYu-sK-qS6.title" = "Meny";
+/* Class = "NSButtonCell"; title = "Select"; ObjectID = "at1-Zp-C46"; */
+"at1-Zp-C46.title" = "Välj";
+
+/* Class = "NSMenuItem"; title = "Window"; ObjectID = "aUF-d1-5bR"; */
+"aUF-d1-5bR.title" = "Fönster";
 
 /* Class = "NSTextFieldCell"; title = "Target:"; ObjectID = "Axb-qq-wlz"; */
 "Axb-qq-wlz.title" = "Mål:";
+
+/* Class = "NSMenu"; title = "Main Menu"; ObjectID = "AYu-sK-qS6"; */
+"AYu-sK-qS6.title" = "Meny";
+
+/* Class = "NSMenu"; title = "File"; ObjectID = "bib-Uj-vzu"; */
+"bib-Uj-vzu.title" = "Arkiv";
 
 /* Class = "NSTextFieldCell"; title = "100"; ObjectID = "BO3-fm-SpD"; */
 "BO3-fm-SpD.title" = "100";
 
 /* Class = "NSMenuItem"; title = "Preferences…"; ObjectID = "BOF-NM-1cW"; */
 "BOF-NM-1cW.title" = "Inställningar…";
+
+/* Class = "NSTableColumn"; headerCell.title = "Description"; ObjectID = "DCF-rB-zv0"; */
+"DCF-rB-zv0.headerCell.title" = "Beskrivning";
+
+/* Class = "NSMenuItem"; title = "File"; ObjectID = "dMs-cI-mzQ"; */
+"dMs-cI-mzQ.title" = "Arkiv";
+
+/* Class = "NSTextFieldCell"; title = "Text Cell"; ObjectID = "dZB-gV-TbX"; */
+"dZB-gV-TbX.title" = "Textcell";
 
 /* Class = "NSTextFieldCell"; title = "Text Cell"; ObjectID = "Etz-lv-UvH"; */
 "Etz-lv-UvH.title" = "Textcell";
@@ -43,7 +64,7 @@
 /* Class = "NSTableColumn"; headerCell.title = "Date"; ObjectID = "GzK-uK-c6s"; */
 "GzK-uK-c6s.headerCell.title" = "Datum";
 
-/* Class = "NSWindow"; title = "Photo Meta"; ObjectID = "IQv-IB-iLA"; */
+/* Class = "NSWindow"; title = "PhotoMeta"; ObjectID = "IQv-IB-iLA"; */
 "IQv-IB-iLA.title" = "Photo Meta";
 
 /* Class = "NSToolbarItem"; label = "Erase"; ObjectID = "ISr-KU-Qaa"; */
@@ -55,6 +76,12 @@
 /* Class = "NSTextFieldCell"; title = "1998-01-24 03:00:00"; ObjectID = "Iwp-Jd-6JR"; */
 "Iwp-Jd-6JR.title" = "1998-01-24 03:00:00";
 
+/* Class = "NSTextFieldCell"; title = "Text Cell"; ObjectID = "jhf-Ne-Nns"; */
+"jhf-Ne-Nns.title" = "Textcell";
+
+/* Class = "NSTextFieldCell"; title = "Text Cell"; ObjectID = "juj-G7-VSe"; */
+"juj-G7-VSe.title" = "Textcell";
+
 /* Class = "NSMenuItem"; title = "Show All"; ObjectID = "Kd2-mp-pUS"; */
 "Kd2-mp-pUS.title" = "Visa alla";
 
@@ -64,17 +91,32 @@
 /* Class = "NSPathCell"; placeholderString = "Not selected"; ObjectID = "MH1-Ru-5fb"; */
 "MH1-Ru-5fb.placeholderString" = "Inte vald";
 
+/* Class = "NSMenuItem"; title = "Close Window"; ObjectID = "mL8-L1-dn2"; */
+"mL8-L1-dn2.title" = "Stäng fönster";
+
+/* Class = "NSButtonCell"; title = "Description"; ObjectID = "n5y-px-1gS"; */
+"n5y-px-1gS.title" = "Beskrivning";
+
+/* Class = "NSToolbarItem"; label = "Read"; ObjectID = "n6k-cJ-Oda"; */
+"n6k-cJ-Oda.label" = "Läs";
+
+/* Class = "NSToolbarItem"; paletteLabel = "Read"; ObjectID = "n6k-cJ-Oda"; */
+"n6k-cJ-Oda.paletteLabel" = "Läs";
+
+/* Class = "NSMenuItem"; title = "Hide PhotoMeta"; ObjectID = "Olw-nP-bQN"; */
+"Olw-nP-bQN.title" = "Göm Photo Meta";
+
 /* Class = "NSMenuItem"; title = "Minimize"; ObjectID = "OY7-WF-poV"; */
 "OY7-WF-poV.title" = "Minimera";
-
-/* Class = "NSMenuItem"; title = "Hide Photo Meta"; ObjectID = "Olw-nP-bQN"; */
-"Olw-nP-bQN.title" = "Göm Photo Meta";
 
 /* Class = "NSToolbarItem"; label = "Select"; ObjectID = "P4x-k0-ZNr"; */
 "P4x-k0-ZNr.label" = "Välj";
 
 /* Class = "NSToolbarItem"; paletteLabel = "Select"; ObjectID = "P4x-k0-ZNr"; */
 "P4x-k0-ZNr.paletteLabel" = "Välj";
+
+/* Class = "NSPathCell"; placeholderString = "Not selected"; ObjectID = "qsJ-6z-fOa"; */
+"qsJ-6z-fOa.placeholderString" = "Inte vald";
 
 /* Class = "NSMenuItem"; title = "Zoom"; ObjectID = "R4o-n2-Eq4"; */
 "R4o-n2-Eq4.title" = "Zooma";
@@ -88,6 +130,9 @@
 /* Class = "NSTextFieldCell"; title = "Original source:"; ObjectID = "Rrb-SE-ciJ"; */
 "Rrb-SE-ciJ.title" = "Ursprunglig källa:";
 
+/* Class = "NSTableColumn"; headerCell.title = "File"; ObjectID = "sMU-bZ-wiz"; */
+"sMU-bZ-wiz.headerCell.title" = "Fil";
+
 /* Class = "NSToolbarItem"; label = "Write"; ObjectID = "T4f-St-B3X"; */
 "T4f-St-B3X.label" = "Skriv";
 
@@ -97,68 +142,29 @@
 /* Class = "NSMenu"; title = "Window"; ObjectID = "Td7-aD-5lo"; */
 "Td7-aD-5lo.title" = "Fönster";
 
+/* Class = "NSTextFieldCell"; title = "Text Cell"; ObjectID = "uBv-xS-YLw"; */
+"uBv-xS-YLw.title" = "Textcell";
+
 /* Class = "NSButtonCell"; title = "Title"; ObjectID = "UcB-YD-ri5"; */
 "UcB-YD-ri5.title" = "Titel";
 
 /* Class = "NSButtonCell"; title = "Date"; ObjectID = "Uk4-NQ-b4P"; */
 "Uk4-NQ-b4P.title" = "Datum";
 
+/* Class = "NSMenu"; title = "PhotoMeta"; ObjectID = "uQy-DD-JDr"; */
+"uQy-DD-JDr.title" = "Photo Meta";
+
 /* Class = "NSMenuItem"; title = "Hide Others"; ObjectID = "Vdr-fp-XzO"; */
 "Vdr-fp-XzO.title" = "Göm övriga";
+
+/* Class = "NSButtonCell"; title = "Select"; ObjectID = "vQQ-YZ-Khk"; */
+"vQQ-YZ-Khk.title" = "Välj";
 
 /* Class = "NSPathCell"; placeholderString = "Not selected"; ObjectID = "VqT-Tz-1WL"; */
 "VqT-Tz-1WL.placeholderString" = "Inte vald";
 
 /* Class = "NSMenuItem"; title = "New Window"; ObjectID = "Was-JA-tGl"; */
 "Was-JA-tGl.title" = "Nytt fönster";
-
-/* Class = "NSMenuItem"; title = "Select Paths..."; ObjectID = "aNQ-Xz-gm9"; */
-"aNQ-Xz-gm9.title" = "Välj sökvägar...";
-
-/* Class = "NSMenuItem"; title = "Window"; ObjectID = "aUF-d1-5bR"; */
-"aUF-d1-5bR.title" = "Fönster";
-
-/* Class = "NSButtonCell"; title = "Select"; ObjectID = "at1-Zp-C46"; */
-"at1-Zp-C46.title" = "Välj";
-
-/* Class = "NSMenu"; title = "File"; ObjectID = "bib-Uj-vzu"; */
-"bib-Uj-vzu.title" = "Arkiv";
-
-/* Class = "NSMenuItem"; title = "File"; ObjectID = "dMs-cI-mzQ"; */
-"dMs-cI-mzQ.title" = "Arkiv";
-
-/* Class = "NSTextFieldCell"; title = "Text Cell"; ObjectID = "dZB-gV-TbX"; */
-"dZB-gV-TbX.title" = "Textcell";
-
-/* Class = "NSTextFieldCell"; title = "Text Cell"; ObjectID = "jhf-Ne-Nns"; */
-"jhf-Ne-Nns.title" = "Textcell";
-
-/* Class = "NSTextFieldCell"; title = "Text Cell"; ObjectID = "juj-G7-VSe"; */
-"juj-G7-VSe.title" = "Textcell";
-
-/* Class = "NSMenuItem"; title = "Close Window"; ObjectID = "mL8-L1-dn2"; */
-"mL8-L1-dn2.title" = "Stäng fönster";
-
-/* Class = "NSToolbarItem"; label = "Read"; ObjectID = "n6k-cJ-Oda"; */
-"n6k-cJ-Oda.label" = "Läs";
-
-/* Class = "NSToolbarItem"; paletteLabel = "Read"; ObjectID = "n6k-cJ-Oda"; */
-"n6k-cJ-Oda.paletteLabel" = "Läs";
-
-/* Class = "NSPathCell"; placeholderString = "Not selected"; ObjectID = "qsJ-6z-fOa"; */
-"qsJ-6z-fOa.placeholderString" = "Inte vald";
-
-/* Class = "NSTableColumn"; headerCell.title = "File"; ObjectID = "sMU-bZ-wiz"; */
-"sMU-bZ-wiz.headerCell.title" = "Fil";
-
-/* Class = "NSTextFieldCell"; title = "Text Cell"; ObjectID = "uBv-xS-YLw"; */
-"uBv-xS-YLw.title" = "Textcell";
-
-/* Class = "NSMenu"; title = "Photo Meta"; ObjectID = "uQy-DD-JDr"; */
-"uQy-DD-JDr.title" = "Photo Meta";
-
-/* Class = "NSButtonCell"; title = "Select"; ObjectID = "vQQ-YZ-Khk"; */
-"vQQ-YZ-Khk.title" = "Välj";
 
 /* Class = "NSButtonCell"; title = "Ok"; ObjectID = "wpc-nX-wGb"; */
 "wpc-nX-wGb.title" = "Ok";

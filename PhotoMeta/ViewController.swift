@@ -18,8 +18,9 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
   
   @IBOutlet weak var tableView: NSTableView!
   @IBOutlet weak var overwriteCheckBtn: NSButton!
-  @IBOutlet weak var tagCheckTitle: NSButton!
   @IBOutlet weak var tagCheckDate: NSButton!
+  @IBOutlet weak var tagCheckDescription: NSButton!
+  @IBOutlet weak var tagCheckTitle: NSButton!
   @IBOutlet weak var sourcePath: NSPathCell!
   
   // MARK: - Vars
@@ -28,11 +29,14 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
   private var selectedTags: [Tag] {
     get {
       var checkedTags = [Tag]()
-      if tagCheckTitle.state == NSControl.StateValue.on {
-        checkedTags.append(Tag.Title)
-      }
       if tagCheckDate.state == NSControl.StateValue.on {
         checkedTags.append(Tag.Date)
+      }
+      if tagCheckDescription.state == NSControl.StateValue.on {
+        checkedTags.append(Tag.Description)
+      }
+      if tagCheckTitle.state == NSControl.StateValue.on {
+        checkedTags.append(Tag.Title)
       }
       return checkedTags
     }
@@ -254,7 +258,11 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
       if photo.tagsValue[Tag.Date] != nil {
         text = photo.tagsValue[Tag.Date]!
       }
-      
+    } else if columnID == "Description" {
+      cellView = tableView.makeView(withIdentifier: NSUserInterfaceItemIdentifier(rawValue: "descriptionCell"), owner: self) as? NSTableCellView
+      if photo.tagsValue[Tag.Description] != nil {
+        text = photo.tagsValue[Tag.Description]!
+      }
     } else if columnID == "Title" {
       cellView = tableView.makeView(withIdentifier: NSUserInterfaceItemIdentifier(rawValue: "titleCell"), owner: self) as? NSTableCellView
       if photo.tagsValue[Tag.Title] != nil {

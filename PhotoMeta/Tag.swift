@@ -7,6 +7,7 @@
 //
 
 enum Tag: String {
-  case Title
   case Date
+  case Description
+  case Title
 }
