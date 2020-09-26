@@ -16,7 +16,7 @@ use vars qw($VERSION);
 use Image::ExifTool qw(:DataAccess :Utils);
 use Image::ExifTool::Sigma;
 
-$VERSION = '1.24';
+$VERSION = '1.27';
 
 sub ProcessX3FHeader($$$);
 sub ProcessX3FDirectory($$$);
@@ -226,9 +226,11 @@ sub ProcessX3FProperties($$$);
     LENSFRANGE  => 'LensFocalRange',
     LENSMODEL   => {
         Name => 'LensType',
-        ValueConvInv => '$val=~s/\.\d+$//; $val', # (truncate decimal part)
-        PrintConv => \%Image::ExifTool::Sigma::sigmaLensTypes,
+        ValueConv => '$val =~ /^[0-9a-f]+$/i ? hex($val) : $val',
+        ValueConvInv => '$val=~s/\.\d+$//; IsInt($val) ? sprintf("%x",$val) : $val', # (truncate decimal part)
         SeparateTable => 'Sigma LensType',
+        PrintHex => 1,
+        PrintConv => \%Image::ExifTool::Sigma::sigmaLensTypes,
     },
     PMODE => {
         Name => 'ExposureProgram',
@@ -298,12 +300,7 @@ sub ProcessX3FHeader($$$)
         my $verbose = $et->Options('Verbose');
         if ($verbose) {
             $et->VerboseDir('X3F HeaderExt', 32);
-            HexDump($dataPt, undef,
-                MaxLen => $verbose > 3 ? 1024 : 96,
-                Out    => $et->Options('TextOut'),
-                Prefix => $$et{INDENT},
-                Start  => $hdrLen,
-            ) if $verbose > 2;
+            $et->VerboseDump($dataPt, Start => $hdrLen);
         }
         $tagTablePtr = GetTagTable('Image::ExifTool::SigmaRaw::HeaderExt');
         my @tags = unpack("x${hdrLen}C32", $$dataPt);
@@ -430,36 +427,43 @@ sub WriteX3F($$)
             $len -= 28;
 
             # only rewrite full-sized JpgFromRaw (version 2.0, type 2, format 18)
-            if ($buff =~ /^SECi\0\0\x02\0\x02\0\0\0\x12\0\0\0/ and
-                $$et{ImageWidth} == unpack('x16V', $buff))
-            {
+            if ($buff =~ /^SECi\0\0\x02\0\x02\0\0\0\x12\0\0\0/) {
                 $raf->Read($buff, $len) == $len or return 'Error reading JpgFromRaw';
-                # use same write directories as JPEG
-                $et->InitWriteDirs('JPEG');
-                # rewrite the embedded JPEG in memory
-                my $newData;
-                my %jpegInfo = (
-                    Parent  => 'X3F',
-                    RAF     => new File::RandomAccess(\$buff),
-                    OutFile => \$newData,
-                );
-                $$et{FILE_TYPE} = 'JPEG';
-                my $success = $et->WriteJPEG(\%jpegInfo);
-                $$et{FILE_TYPE} = 'X3F';
-                SetByteOrder('II');
-                return 'Error writing X3F JpgFromRaw' unless $success and $newData;
-                return -1 if $success < 0;
-                # write new data if anything changed, otherwise copy old image
-                my $outPt = $$et{CHANGED} ? \$newData : \$buff;
-                Write($outfile, $$outPt) or return -1;
-                # set $len to the total subsection data length
-                $len = length($$outPt) + 28;
-                $didContain = 1;
+                if ($buff =~ /^\xff\xd8\xff\xe1/) { # does this preview contain EXIF?
+                    # use same write directories as JPEG
+                    $et->InitWriteDirs('JPEG');
+                    # make sure we don't add APP0 JFIF because it would mess up our preview identification
+                    delete $$et{ADD_DIRS}{APP0};
+                    delete $$et{ADD_DIRS}{JFIF};
+                    # rewrite the embedded JPEG in memory
+                    my $newData;
+                    my %jpegInfo = (
+                        Parent  => 'X3F',
+                        RAF     => new File::RandomAccess(\$buff),
+                        OutFile => \$newData,
+                    );
+                    $$et{FILE_TYPE} = 'JPEG';
+                    my $success = $et->WriteJPEG(\%jpegInfo);
+                    $$et{FILE_TYPE} = 'X3F';
+                    SetByteOrder('II');
+                    return 'Error writing X3F JpgFromRaw' unless $success and $newData;
+                    return -1 if $success < 0;
+                    # (this shouldn't happen unless someone tries to delete the EXIF...)
+                    return 'EXIF segment must come first in X3F JpgFromRaw' unless $newData =~ /^\xff\xd8\xff\xe1/;
+                    # write new data if anything changed, otherwise copy old image
+                    my $outPt = $$et{CHANGED} ? \$newData : \$buff;
+                    Write($outfile, $$outPt) or return -1;
+                    # set $len to the total subsection data length
+                    $len = length($$outPt);
+                    $didContain = 1;
+                } else {
+                    Write($outfile, $buff) or return -1;
+                }
             } else {
                 # copy original image data
                 Image::ExifTool::CopyBlock($raf, $outfile, $len) or return 'Corrupted X3F image';
-                $len += 28;
             }
+            $len += 28;     # add back header length
         } else {
             # copy data for this subsection
             Image::ExifTool::CopyBlock($raf, $outfile, $len) or return 'Corrupted X3F directory';
@@ -519,16 +523,18 @@ sub ProcessX3FDirectory($$$)
             $raf->Read($buff, 28) == 28 or return 'Error reading PreviewImage header';
             # ignore all image data but JPEG compressed (version 2.0, type 2, format 18)
             next unless $buff =~ /^SECi\0\0\x02\0\x02\0\0\0\x12\0\0\0/;
-            # check preview image size and extract full-sized preview as JpgFromRaw
-            if ($$et{ImageWidth} == unpack('x16V', $buff)) {
+            $offset += 28;
+            $len -= 28;
+            $raf->Read($buff, $len) == $len or return "Error reading PreviewImage data";
+            # check fore EXIF segment, and extract this image as the JpgFromRaw
+            if ($buff =~ /^\xff\xd8\xff\xe1/) {
                 $$et{IsJpgFromRaw} = 1;
                 $tagInfo = $et->GetTagInfo($tagTablePtr, $tag);
                 delete $$et{IsJpgFromRaw};
             }
-            $offset += 28;
-            $len -= 28;
+        } else {
+            $raf->Read($buff, $len) == $len or return "Error reading $$tagInfo{Name} data";
         }
-        $raf->Read($buff, $len) == $len or return "Error reading $$tagInfo{Name} data";
         my $subdir = $$tagInfo{SubDirectory};
         if ($subdir) {
             my %dirInfo = ( DataPt => \$buff );
@@ -594,8 +600,6 @@ sub ProcessX3F($$)
         $buff .= $buf2;
     }
     my ($widPos, $hdrType) = $ver < 4 ? (28, 'Header') : (40, 'Header4');
-    # extract ImageWidth for later
-    $$et{ImageWidth} = Get32u(\$buff, $widPos);
     # process header information
     my $tagTablePtr = GetTagTable('Image::ExifTool::SigmaRaw::Main');
     unless ($outfile) {
@@ -646,7 +650,7 @@ Sigma and Foveon X3F images.
 
 =head1 AUTHOR
 
-Copyright 2003-2015, Phil Harvey (phil at owl.phy.queensu.ca)
+Copyright 2003-2020, Phil Harvey (philharvey66 at gmail.com)
 
 This library is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.

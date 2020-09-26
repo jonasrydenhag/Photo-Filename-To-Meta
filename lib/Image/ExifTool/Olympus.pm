@@ -9,8 +9,8 @@
 # References:   1) http://park2.wakwak.com/~tsuruzoh/Computer/Digicams/exif-e.html
 #               2) http://www.cybercom.net/~dcoffin/dcraw/
 #               3) http://www.ozhiker.com/electronics/pjmt/jpeg_info/olympus_mn.html
-#               4) Markku HŠnninen private communication (tests with E-1)
-#               5) RŽmi Guyomarch from http://forums.dpreview.com/forums/read.asp?forum=1022&message=12790396
+#               4) Markku Hanninen private communication (tests with E-1)
+#               5) Remi Guyomarch from http://forums.dpreview.com/forums/read.asp?forum=1022&message=12790396
 #               6) Frank Ledwon private communication (tests with E/C-series cameras)
 #               7) Michael Meissner private communication
 #               8) Shingo Noguchi, PhotoXP (http://www.daifukuya.com/photoxp/)
@@ -21,13 +21,15 @@
 #              13) Chris Shaw private communication (E-3)
 #              14) Viktor Lushnikov private communication (E-400)
 #              15) Yrjo Rauste private communication (E-30)
-#              16) Godfrey DiGiorgi private communcation (E-P1) + http://forums.dpreview.com/forums/read.asp?message=33187567
+#              16) Godfrey DiGiorgi private communication (E-P1) + http://forums.dpreview.com/forums/read.asp?message=33187567
 #              17) Martin Hibers private communication
 #              18) Tomasz Kawecki private communication
 #              19) Brad Grier private communication
-#              20) Niels Kristian Bech Jensen private communication
-#              21) Iliah Borg private communication (LibRaw)
 #              22) Herbert Kauer private communication
+#              23) Daniel Pollock private communication (PEN-F)
+#              24) Sebastian private communication (E-M1 Mark III)
+#              IB) Iliah Borg private communication (LibRaw)
+#              NJ) Niels Kristian Bech Jensen private communication
 #------------------------------------------------------------------------------
 
 package Image::ExifTool::Olympus;
@@ -38,7 +40,7 @@ use Image::ExifTool qw(:DataAccess :Utils);
 use Image::ExifTool::Exif;
 use Image::ExifTool::APP12;
 
-$VERSION = '2.34';
+$VERSION = '2.68';
 
 sub PrintLensInfo($$$);
 
@@ -59,7 +61,7 @@ my %olympusLensTypes = (
     '0 02 00' => 'Olympus Zuiko Digital ED 150mm F2.0',
     '0 02 10' => 'Olympus M.Zuiko Digital 17mm F2.8 Pancake', #PH (E-P1 pre-production)
     '0 03 00' => 'Olympus Zuiko Digital ED 300mm F2.8',
-    '0 03 10' => 'Olympus M.Zuiko Digital ED 14-150mm F4.0-5.6 [II]', #11 (The second version of this lens seems to have the same lens ID number as the first version #20)
+    '0 03 10' => 'Olympus M.Zuiko Digital ED 14-150mm F4.0-5.6 [II]', #11 (The second version of this lens seems to have the same lens ID number as the first version #NJ)
     '0 04 10' => 'Olympus M.Zuiko Digital ED 9-18mm F4.0-5.6', #11
     '0 05 00' => 'Olympus Zuiko Digital 14-54mm F2.8-3.5',
     '0 05 01' => 'Olympus Zuiko Digital Pro ED 90-250mm F2.8', #9
@@ -73,50 +75,60 @@ my %olympusLensTypes = (
     '0 08 01' => 'Olympus Zuiko Digital 70-300mm F4.0-5.6', #7 (seen as release 1 - PH)
     '0 08 10' => 'Olympus M.Zuiko Digital ED 75-300mm F4.8-6.7', #PH
     '0 09 10' => 'Olympus M.Zuiko Digital 14-42mm F3.5-5.6 II', #PH (E-PL2)
-    '0 10 01' => 'Kenko Tokina Reflex 300mm F6.3 MF Macro', #20
+    '0 10 01' => 'Kenko Tokina Reflex 300mm F6.3 MF Macro', #NJ
     '0 10 10' => 'Olympus M.Zuiko Digital ED 12-50mm F3.5-6.3 EZ', #PH
     '0 11 10' => 'Olympus M.Zuiko Digital 45mm F1.8', #17
-    '0 12 10' => 'Olympus M.Zuiko Digital ED 60mm F2.8 Macro', #20
-    '0 13 10' => 'Olympus M.Zuiko Digital 14-42mm F3.5-5.6 II R', #PH/20
+    '0 12 10' => 'Olympus M.Zuiko Digital ED 60mm F2.8 Macro', #NJ
+    '0 13 10' => 'Olympus M.Zuiko Digital 14-42mm F3.5-5.6 II R', #PH/NJ
     '0 14 10' => 'Olympus M.Zuiko Digital ED 40-150mm F4.0-5.6 R', #19
-  # '0 14 10.1' => 'Olympus M.Zuiko Digital ED 14-150mm F4.0-5.6 II', #11 (questionable & unconfirmed)
+  # '0 14 10.1' => 'Olympus M.Zuiko Digital ED 14-150mm F4.0-5.6 II', #11 (questionable & unconfirmed -- all samples I can find are '0 3 10' - PH)
     '0 15 00' => 'Olympus Zuiko Digital ED 7-14mm F4.0',
     '0 15 10' => 'Olympus M.Zuiko Digital ED 75mm F1.8', #PH
-    '0 16 10' => 'Olympus M.Zuiko Digital 17mm F1.8', #20
+    '0 16 10' => 'Olympus M.Zuiko Digital 17mm F1.8', #NJ
     '0 17 00' => 'Olympus Zuiko Digital Pro ED 35-100mm F2.0', #7
     '0 18 00' => 'Olympus Zuiko Digital 14-45mm F3.5-5.6',
-    '0 18 10' => 'Olympus M.Zuiko Digital ED 75-300mm F4.8-6.7 II', #20
+    '0 18 10' => 'Olympus M.Zuiko Digital ED 75-300mm F4.8-6.7 II', #NJ
     '0 19 10' => 'Olympus M.Zuiko Digital ED 12-40mm F2.8 Pro', #PH
     '0 20 00' => 'Olympus Zuiko Digital 35mm F3.5 Macro', #9
-    '0 20 10' => 'Olympus M.Zuiko Digital ED 40-150mm F2.8 Pro', #20
-    '0 21 10' => 'Olympus M.Zuiko Digital ED 14-42mm F3.5-5.6 EZ', #20
+    '0 20 10' => 'Olympus M.Zuiko Digital ED 40-150mm F2.8 Pro', #NJ
+    '0 21 10' => 'Olympus M.Zuiko Digital ED 14-42mm F3.5-5.6 EZ', #NJ
     '0 22 00' => 'Olympus Zuiko Digital 17.5-45mm F3.5-5.6', #9
-    '0 22 10' => 'Olympus M.Zuiko Digital 25mm F1.8', #20
+    '0 22 10' => 'Olympus M.Zuiko Digital 25mm F1.8', #NJ
     '0 23 00' => 'Olympus Zuiko Digital ED 14-42mm F3.5-5.6', #PH
-    '0 23 10' => 'Olympus M.Zuiko Digital ED 7-14mm F2.8 Pro', #20
+    '0 23 10' => 'Olympus M.Zuiko Digital ED 7-14mm F2.8 Pro', #NJ
     '0 24 00' => 'Olympus Zuiko Digital ED 40-150mm F4.0-5.6', #PH
-    '0 25 10' => 'Olympus M.Zuiko Digital ED 8mm F1.8 Fisheye Pro', #20
+    '0 24 10' => 'Olympus M.Zuiko Digital ED 300mm F4.0 IS Pro', #NJ
+    '0 25 10' => 'Olympus M.Zuiko Digital ED 8mm F1.8 Fisheye Pro', #NJ
+    '0 26 10' => 'Olympus M.Zuiko Digital ED 12-100mm F4.0 IS Pro', #IB/NJ
+    '0 27 10' => 'Olympus M.Zuiko Digital ED 30mm F3.5 Macro', #IB/NJ
+    '0 28 10' => 'Olympus M.Zuiko Digital ED 25mm F1.2 Pro', #IB/NJ
+    '0 29 10' => 'Olympus M.Zuiko Digital ED 17mm F1.2 Pro', #IB
     '0 30 00' => 'Olympus Zuiko Digital ED 50-200mm F2.8-3.5 SWD', #7
+    '0 30 10' => 'Olympus M.Zuiko Digital ED 45mm F1.2 Pro', #IB
     '0 31 00' => 'Olympus Zuiko Digital ED 12-60mm F2.8-4.0 SWD', #7
     '0 32 00' => 'Olympus Zuiko Digital ED 14-35mm F2.0 SWD', #PH
+    '0 32 10' => 'Olympus M.Zuiko Digital ED 12-200mm F3.5-6.3', #IB
     '0 33 00' => 'Olympus Zuiko Digital 25mm F2.8', #PH
     '0 34 00' => 'Olympus Zuiko Digital ED 9-18mm F4.0-5.6', #7
+    '0 34 10' => 'Olympus M.Zuiko Digital ED 12-45mm F4.0 Pro', #IB
     '0 35 00' => 'Olympus Zuiko Digital 14-54mm F2.8-3.5 II', #PH
     # Sigma lenses
     '1 01 00' => 'Sigma 18-50mm F3.5-5.6 DC', #8
-    '1 01 10' => 'Sigma 30mm F2.8 EX DN', #20
+    '1 01 10' => 'Sigma 30mm F2.8 EX DN', #NJ
     '1 02 00' => 'Sigma 55-200mm F4.0-5.6 DC',
-    '1 02 10' => 'Sigma 19mm F2.8 EX DN', #20
+    '1 02 10' => 'Sigma 19mm F2.8 EX DN', #NJ
     '1 03 00' => 'Sigma 18-125mm F3.5-5.6 DC',
-    '1 03 10' => 'Sigma 30mm F2.8 DN | A', #20
+    '1 03 10' => 'Sigma 30mm F2.8 DN | A', #NJ
     '1 04 00' => 'Sigma 18-125mm F3.5-5.6 DC', #7
-    '1 04 10' => 'Sigma 19mm F2.8 DN | A', #20
+    '1 04 10' => 'Sigma 19mm F2.8 DN | A', #NJ
     '1 05 00' => 'Sigma 30mm F1.4 EX DC HSM', #10
-    '1 05 10' => 'Sigma 60mm F2.8 DN | A', #20
+    '1 05 10' => 'Sigma 60mm F2.8 DN | A', #NJ
     '1 06 00' => 'Sigma APO 50-500mm F4.0-6.3 EX DG HSM', #6
+    '1 06 10' => 'Sigma 30mm F1.4 DC DN | C', #NJ
     '1 07 00' => 'Sigma Macro 105mm F2.8 EX DG', #PH
+    '1 07 10' => 'Sigma 16mm F1.4 DC DN | C (017)', #IB
     '1 08 00' => 'Sigma APO Macro 150mm F2.8 EX DG HSM', #PH
-    '1 09 00' => 'Sigma 18-50mm F2.8 EX DC Macro', #20
+    '1 09 00' => 'Sigma 18-50mm F2.8 EX DC Macro', #NJ
     '1 10 00' => 'Sigma 24mm F1.8 EX DG Aspherical Macro', #PH
     '1 11 00' => 'Sigma APO 135-400mm F4.5-5.6 DG', #11
     '1 12 00' => 'Sigma APO 300-800mm F5.6 EX DG HSM', #11
@@ -137,29 +149,45 @@ my %olympusLensTypes = (
     '2 04 10' => 'Lumix G Vario 7-14mm F4.0 Asph.', #PH (E-P1 pre-production)
     '2 05 10' => 'Lumix G 20mm F1.7 Asph.', #16
     '2 06 10' => 'Leica DG Macro-Elmarit 45mm F2.8 Asph. Mega OIS', #PH
-    '2 07 10' => 'Lumix G Vario 14-42mm F3.5-5.6 Asph. Mega OIS', #20
+    '2 07 10' => 'Lumix G Vario 14-42mm F3.5-5.6 Asph. Mega OIS', #NJ
     '2 08 10' => 'Lumix G Fisheye 8mm F3.5', #PH
     '2 09 10' => 'Lumix G Vario 100-300mm F4.0-5.6 Mega OIS', #11
     '2 10 10' => 'Lumix G 14mm F2.5 Asph.', #17
-    '2 11 10' => 'Lumix G 12.5mm F12 3D', #20 (H-FT012)
-    '2 12 10' => 'Leica DG Summilux 25mm F1.4 Asph.', #20
-    '2 13 10' => 'Lumix G X Vario PZ 45-175mm F4.0-5.6 Asph. Power OIS', #20
-    '2 14 10' => 'Lumix G X Vario PZ 14-42mm F3.5-5.6 Asph. Power OIS', #20
+    '2 11 10' => 'Lumix G 12.5mm F12 3D', #NJ (H-FT012)
+    '2 12 10' => 'Leica DG Summilux 25mm F1.4 Asph.', #NJ
+    '2 13 10' => 'Lumix G X Vario PZ 45-175mm F4.0-5.6 Asph. Power OIS', #NJ
+    '2 14 10' => 'Lumix G X Vario PZ 14-42mm F3.5-5.6 Asph. Power OIS', #NJ
     '2 15 10' => 'Lumix G X Vario 12-35mm F2.8 Asph. Power OIS', #PH
-    '2 16 10' => 'Lumix G Vario 45-150mm F4.0-5.6 Asph. Mega OIS', #20
+    '2 16 10' => 'Lumix G Vario 45-150mm F4.0-5.6 Asph. Mega OIS', #NJ
     '2 17 10' => 'Lumix G X Vario 35-100mm F2.8 Power OIS', #PH
-    '2 18 10' => 'Lumix G Vario 14-42mm F3.5-5.6 II Asph. Mega OIS', #20
-    '2 19 10' => 'Lumix G Vario 14-140mm F3.5-5.6 Asph. Power OIS', #20
-    '2 20 10' => 'Lumix G Vario 12-32mm F3.5-5.6 Asph. Mega OIS', #20
-    '2 21 10' => 'Leica DG Nocticron 42.5mm F1.2 Asph. Power OIS', #20
-    '2 22 10' => 'Leica DG Summilux 15mm F1.7 Asph.', #20
-  # '2 23 10' => 'Lumix G Vario 35-100mm F4.0-5.6 Asph. Mega OIS', #20 (guess)
-    '2 24 10' => 'Lumix G Macro 30mm F2.8 Asph. Mega OIS', #20
-    '2 25 10' => 'Lumix G 42.5mm F1.7 Asph. Power OIS', #20
+    '2 18 10' => 'Lumix G Vario 14-42mm F3.5-5.6 II Asph. Mega OIS', #NJ
+    '2 19 10' => 'Lumix G Vario 14-140mm F3.5-5.6 Asph. Power OIS', #NJ
+    '2 20 10' => 'Lumix G Vario 12-32mm F3.5-5.6 Asph. Mega OIS', #NJ
+    '2 21 10' => 'Leica DG Nocticron 42.5mm F1.2 Asph. Power OIS', #NJ
+    '2 22 10' => 'Leica DG Summilux 15mm F1.7 Asph.', #NJ
+    '2 23 10' => 'Lumix G Vario 35-100mm F4.0-5.6 Asph. Mega OIS', #NJ
+    '2 24 10' => 'Lumix G Macro 30mm F2.8 Asph. Mega OIS', #NJ
+    '2 25 10' => 'Lumix G 42.5mm F1.7 Asph. Power OIS', #NJ
+    '2 26 10' => 'Lumix G 25mm F1.7 Asph.', #NJ
+    '2 27 10' => 'Leica DG Vario-Elmar 100-400mm F4.0-6.3 Asph. Power OIS', #NJ
+    '2 28 10' => 'Lumix G Vario 12-60mm F3.5-5.6 Asph. Power OIS', #NJ
+    '2 29 10' => 'Leica DG Summilux 12mm F1.4 Asph.', #IB
+    '2 30 10' => 'Leica DG Vario-Elmarit 12-60mm F2.8-4 Asph. Power OIS', #IB
+    '2 31 10' => 'Lumix G Vario 45-200mm F4.0-5.6 II', #forum3833
+    '2 32 10' => 'Lumix G Vario 100-300mm F4.0-5.6 II', #PH
+    '2 33 10' => 'Lumix G X Vario 12-35mm F2.8 II Asph. Power OIS', #IB
+    '2 34 10' => 'Lumix G Vario 35-100mm F2.8 II', #forum3833
+    '2 35 10' => 'Leica DG Vario-Elmarit 8-18mm F2.8-4 Asph.', #IB
+    '2 36 10' => 'Leica DG Elmarit 200mm F2.8 Power OIS', #IB
+    '2 37 10' => 'Leica DG Vario-Elmarit 50-200mm F2.8-4 Asph. Power OIS', #IB
+    '2 38 10' => 'Leica DG Vario-Summilux 10-25mm F1.7 Asph.', #IB
     '3 01 00' => 'Leica D Vario Elmarit 14-50mm F2.8-3.5 Asph.', #11
     '3 02 00' => 'Leica D Summilux 25mm F1.4 Asph.', #11
     # Tamron lenses
-    '5 01 10' => 'Tamron 14-150mm F3.5-5.8 Di III', #20 (model C001)
+    '5 01 10' => 'Tamron 14-150mm F3.5-5.8 Di III', #NJ (model C001)
+  # '65535 07 40' - Seen for LUMIX S 16-35/F4 on Panasonic DC-S1H (ref PH)
+    # Other makes
+    '24 01 10' => 'Venus Optics Laowa 50mm F2.8 2x Macro', #DonKomarechka
 );
 
 # lookup for Olympus camera types (ref PH)
@@ -331,7 +359,7 @@ my %olympusCameraTypes = (
     D4538 => 'VG160,X990,D745',
     D4541 => 'SZ-12',
     D4545 => 'VH410',
-    D4546 => 'XZ-10', #21
+    D4546 => 'XZ-10', #IB
     D4547 => 'TG-2',
     D4548 => 'TG-830',
     D4549 => 'TG-630',
@@ -346,13 +374,16 @@ my %olympusCameraTypes = (
     D4580 => 'SH-60',
     D4581 => 'SH-1',
     D4582 => 'TG-835',
-    D4585 => 'SH-2',
+    D4585 => 'SH-2 / SH-3',
     D4586 => 'TG-4',
+    D4587 => 'TG-860',
+    D4591 => 'TG-870',
+    D4593 => 'TG-5', #IB
+    D4603 => 'TG-6', #IB
     D4809 => 'C2500L',
     D4842 => 'E-10',
     D4856 => 'C-1',
     D4857 => 'C-1Z,D-150Z',
-    D4587 => 'TG-860',
     DCHC => 'D500L',
     DCHT => 'D600L / D620L',
     K0055 => 'AIR-A01',
@@ -382,11 +413,20 @@ my %olympusCameraTypes = (
     S0043 => 'E-PM2',
     S0044 => 'E-P5',
     S0045 => 'E-PL6',
-    S0046 => 'E-PL7', #21
+    S0046 => 'E-PL7', #IB
     S0047 => 'E-M1',
     S0051 => 'E-M10',
-    S0052 => 'E-M5MarkII', #21
+    S0052 => 'E-M5MarkII', #IB
     S0059 => 'E-M10MarkII',
+    S0061 => 'PEN-F', #forum7005
+    S0065 => 'E-PL8',
+    S0067 => 'E-M1MarkII',
+    S0068 => 'E-M10MarkIII',
+    S0076 => 'E-PL9', #IB
+    S0080 => 'E-M1X', #IB
+    S0085 => 'E-PL10', #IB
+    S0089 => 'E-M5MarkIII',
+    S0092 => 'E-M1MarkIII', #IB
     SR45 => 'D220',
     SR55 => 'D320L',
     SR83 => 'D340L',
@@ -521,6 +561,13 @@ my %filters = (
     39 => 'Partial Color', #forum6269
     40 => 'Partial Color II', #forum6269
     41 => 'Partial Color III', #forum6269
+);
+
+my %toneLevelType = (
+    0 => '0',
+    -31999 => 'Highlights',
+    -31998 => 'Shadows',
+    -31997 => 'Midtones',
 );
 
 # tag information for WAV "Index" tags
@@ -704,8 +751,8 @@ my %indexInfo = (
         Name => 'CameraID',
         Format => 'string', # this really should have been a string
     },
-    0x020b => { Name => 'EpsonImageWidth',  Writable => 'int16u' }, #PH
-    0x020c => { Name => 'EpsonImageHeight', Writable => 'int16u' }, #PH
+    0x020b => { Name => 'EpsonImageWidth',  Writable => 'int32u' }, #PH
+    0x020c => { Name => 'EpsonImageHeight', Writable => 'int32u' }, #PH
     0x020d => { Name => 'EpsonSoftware',    Writable => 'string' }, #PH
     0x0280 => { #PH
         %Image::ExifTool::previewImageTagInfo,
@@ -728,13 +775,22 @@ my %indexInfo = (
     0x0303 => { Name => 'WhiteBalanceBracket',  Writable => 'int16u' }, #11
     0x0304 => { Name => 'WhiteBalanceBias',     Writable => 'int16u' }, #11
    # 0x0305 => 'PrintMatching', ? #11
-    0x0401 => { #21
+    0x0400 => { #IB
+        Name => 'SensorArea',
+        Condition => '$$self{TIFF_TYPE} eq "ERF"',
+        Writable => 'undef',
+        Format => 'int16u',
+        Count => 4,
+        Notes => 'found in Epson ERF images',
+    },
+    0x0401 => { #IB
         Name => 'BlackLevel',
-        Condition => '$format eq "int32u" and $count == 4',
+        Condition => '$$self{TIFF_TYPE} eq "ERF"',
         Writable => 'int32u',
         Count => 4,
         Notes => 'found in Epson ERF images',
     },
+    # 0x0402 - BitCodedAutoFocus (ref 11)
     0x0403 => { #11
         Name => 'SceneMode',
         Writable => 'int16u',
@@ -784,7 +840,7 @@ my %indexInfo = (
     },
     0x0404 => { Name => 'SerialNumber', Writable => 'string' }, #PH (D595Z, C7070WZ)
     0x0405 => { Name => 'Firmware',     Writable => 'string' }, #11
-    0x0e00 => {
+    0x0e00 => { # (AFFieldCoord for models XZ-2 and XZ-10, ref 11)
         Name => 'PrintIM',
         Description => 'Print Image Matching',
         Writable => 0,
@@ -792,6 +848,7 @@ my %indexInfo = (
             TagTable => 'Image::ExifTool::PrintIM::Main',
         },
     },
+    # 0x0e80 - undef[256] - offset 0x30: uint16[2] WB_RGBLevels = val[0]*561,65536,val[1]*431 (ref IB)
     0x0f00 => {
         Name => 'DataDump',
         Writable => 0,
@@ -1027,6 +1084,7 @@ my %indexInfo = (
     0x1035 => { #6
         Name => 'PreviewImageValid',
         Writable => 'int32u',
+        DelValue => 0,
         PrintConv => { 0 => 'No', 1 => 'Yes' },
     },
     0x1036 => { #6
@@ -1035,6 +1093,7 @@ my %indexInfo = (
         OffsetPair => 0x1037, # point to associated byte count
         DataTag => 'PreviewImage',
         Writable => 'int32u',
+        WriteGroup => 'MakerNotes',
         Protected => 2,
     },
     0x1037 => { #6
@@ -1043,6 +1102,7 @@ my %indexInfo = (
         OffsetPair => 0x1036, # point to associated offset
         DataTag => 'PreviewImage',
         Writable => 'int32u',
+        WriteGroup => 'MakerNotes',
         Protected => 2,
     },
     0x1038 => { Name => 'AFResult',             Writable => 'int16u' }, #11
@@ -1547,14 +1607,14 @@ my %indexInfo = (
         Writable => 'int8u',
         Count => 6,
         Notes => q{
-            6 numbers: 0. Make, 1. Unknown, 2. Model, 3. Sub-model, 4-5. Unknown.  Only
+            6 numbers: 1. Make, 2. Unknown, 3. Model, 4. Sub-model, 5-6. Unknown.  Only
             the Make, Model and Sub-model are used to identify the lens type
         },
         SeparateTable => 'LensType',
         # Have seen these values for the unknown numbers:
-        # 1: 0
-        # 4: 0, 2(Olympus lenses for which I have also seen 0 for this number)
-        # 5: 0, 16(new Lumix lenses)
+        # 2: 0
+        # 5: 0, 2(Olympus lenses for which I have also seen 0 for this number)
+        # 6: 0, 16(new Lumix lenses)
         ValueConv => 'my @a=split(" ",$val); sprintf("%x %.2x %.2x",@a[0,2,3])',
         # set unknown values to zero when writing
         ValueConvInv => 'my @a=split(" ",$val); hex($a[0])." 0 ".hex($a[1])." ".hex($a[2])." 0 0"',
@@ -1619,7 +1679,7 @@ my %indexInfo = (
         Writable => 'int8u',
         Count => 6,
         Notes => q{
-            6 numbers: 0. Make, 1. Unknown, 2. Model, 3. Sub-model, 4-5. Unknown.  Only
+            6 numbers: 1. Make, 2. Unknown, 3. Model, 4. Sub-model, 5-6. Unknown.  Only
             the Make and Model are used to identify the extender
         },
         ValueConv => 'my @a=split(" ",$val); sprintf("%x %.2x",@a[0,2])',
@@ -1651,6 +1711,7 @@ my %indexInfo = (
             0 => 'None',
             2 => 'Simple E-System',
             3 => 'E-System',
+            4 => 'E-System (body powered)', #forum9740
         },
     },
     0x1001 => { #6
@@ -1666,7 +1727,10 @@ my %indexInfo = (
             5 => 'FL-36',
             6 => 'FL-50R', #11 (or Metz mecablitz digital)
             7 => 'FL-36R', #11
-            # have seen value of 9 - PH
+            9 => 'FL-14', #11
+            11 => 'FL-600R', #11
+            13 => 'FL-LM3', #forum9740
+            15 => 'FL-900R', #7
         },
     },
     0x1002 => { #6
@@ -1701,6 +1765,7 @@ my %indexInfo = (
         OffsetPair => 0x102,
         DataTag => 'PreviewImage',
         Writable => 'int32u',
+        WriteGroup => 'MakerNotes',
         Protected => 2,
     },
     0x102 => { #PH
@@ -1708,6 +1773,7 @@ my %indexInfo = (
         OffsetPair => 0x101,
         DataTag => 'PreviewImage',
         Writable => 'int32u',
+        WriteGroup => 'MakerNotes',
         Protected => 2,
     },
     0x200 => { #4
@@ -1774,6 +1840,7 @@ my %indexInfo = (
                 6 => 'Imager AF',
                 7 => 'Live View Magnification Frame',
                 8 => 'AF sensor',
+                9 => 'Starry Sky AF', #24
             },
         }],
     },
@@ -1831,8 +1898,12 @@ my %indexInfo = (
     },
     0x307 => { #15
         Name => 'AFFineTuneAdj',
-        Format => 'int16s',
+        Writable => 'int16s',
         Count => 3, # not sure what the 3 values mean
+    },
+    0x308 => { #forum11578
+        Name => 'FocusBracketStepSize',
+        Writable => 'int8u',
     },
     0x400 => { #6
         Name => 'FlashMode',
@@ -1911,28 +1982,28 @@ my %indexInfo = (
         Writable => 'int16u',
         PrintConv => {
             0 => 'Auto',
-            1 => 'Auto (Keep Warm Color Off)', #21
+            1 => 'Auto (Keep Warm Color Off)', #IB
             16 => '7500K (Fine Weather with Shade)',
             17 => '6000K (Cloudy)',
             18 => '5300K (Fine Weather)',
             20 => '3000K (Tungsten light)',
             21 => '3600K (Tungsten light-like)',
-            22 => 'Auto Setup', #21
-            23 => '5500K (Flash)', #21
+            22 => 'Auto Setup', #IB
+            23 => '5500K (Flash)', #IB
             33 => '6600K (Daylight fluorescent)',
             34 => '4500K (Neutral white fluorescent)',
             35 => '4000K (Cool white fluorescent)',
-            36 => 'White Fluorescent', #21
+            36 => 'White Fluorescent', #IB
             48 => '3600K (Tungsten light-like)',
-            67 => 'Underwater', #21
-            256 => 'One Touch WB 1', #21
-            257 => 'One Touch WB 2', #21
-            258 => 'One Touch WB 3', #21
-            259 => 'One Touch WB 4', #21
-            512 => 'Custom WB 1', #21
-            513 => 'Custom WB 2', #21
-            514 => 'Custom WB 3', #21
-            515 => 'Custom WB 4', #21
+            67 => 'Underwater', #IB
+            256 => 'One Touch WB 1', #IB
+            257 => 'One Touch WB 2', #IB
+            258 => 'One Touch WB 3', #IB
+            259 => 'One Touch WB 4', #IB
+            512 => 'Custom WB 1', #IB
+            513 => 'Custom WB 2', #IB
+            514 => 'Custom WB 3', #IB
+            515 => 'Custom WB 4', #IB
         },
     },
     0x501 => { #PH/4
@@ -2111,6 +2182,14 @@ my %indexInfo = (
             3 => 'Muted',
             4 => 'Portrait',
             5 => 'i-Enhance', #11
+            6 => 'e-Portrait', #23
+            7 => 'Color Creator', #23
+            9 => 'Color Profile 1', #23
+            10 => 'Color Profile 2', #23
+            11 => 'Color Profile 3', #23
+            12 => 'Monochrome Profile 1', #23
+            13 => 'Monochrome Profile 2', #23
+            14 => 'Monochrome Profile 3', #23
             256 => 'Monotone',
             512 => 'Sepia',
         }],
@@ -2212,14 +2291,34 @@ my %indexInfo = (
     0x52e => { #11/PH
         Name => 'ToneLevel',
         PrintConv => [
-            undef, # ?
-            '"Highlights $val"',
+            \%toneLevelType,
+            undef, # (highlights value)
             undef, # (highlights min)
             undef, # (highlights max)
-            undef, # ?
-            '"Shadows $val"',
+            \%toneLevelType,
+            undef, # (shadows value)
             undef, # (shadows min)
             undef, # (shadows max)
+            \%toneLevelType,
+            undef, # (midtones value)
+            undef, # (midtones min)
+            undef, # (midtones max)
+            \%toneLevelType,
+            undef,
+            undef,
+            undef,
+            \%toneLevelType,
+            undef,
+            undef,
+            undef,
+            \%toneLevelType,
+            undef,
+            undef,
+            undef,
+            \%toneLevelType,
+            undef,
+            undef,
+            undef,
         ]
     },
     0x52f => { #PH
@@ -2229,7 +2328,10 @@ my %indexInfo = (
         PrintHex => 1,
         PrintConvColumns => 2,
         PrintConv => [
-            \%filters, undef, undef, undef,
+            \%filters,
+            undef,
+            undef,
+            '"Partial Color $val"', #23
             {   # there are 5 available art filter effects for the E-PL3...
                 0x0000 => 'No Effect',
                 0x8010 => 'Star Light',
@@ -2238,24 +2340,126 @@ my %indexInfo = (
                 0x8040 => 'Soft Focus',
                 0x8050 => 'White Edge',
                 0x8060 => 'B&W', # (NC - E-PL2 with "Grainy Film" filter)
+                0x8080 => 'Blur Top and Bottom', #23
+                0x8081 => 'Blur Left and Right', #23
                 # (E-PL2 also has "Pict. Tone" effect)
+            },
+            undef,
+            { #23
+                0 => 'No Color Filter',
+                1 => 'Yellow Color Filter',
+                2 => 'Orange Color Filter',
+                3 => 'Red Color Filter',
+                4 => 'Green Color Filter',
             },
         ],
     },
-    0x600 => { #PH/4
+    0x532 => { #23
+        Name => 'ColorCreatorEffect',
+        Writable => 'int16s',
+        Count => 6,
+        PrintConv => [
+            '"Color $val"',
+            undef, # (Color min)
+            undef, # (Color max)
+            '"Strength $val"',
+            undef, # (Strength min)
+            undef, # (Strength max)
+        ],
+    },
+    0x537 => { #23
+        Name => 'MonochromeProfileSettings',
+        Writable => 'int16s',
+        Count => 6,
+        PrintConv => [
+            {
+                0 => 'No Filter',
+                1 => 'Yellow Filter',
+                2 => 'Orange Filter',
+                3 => 'Red Filter',
+                4 => 'Magenta Filter',
+                5 => 'Blue Filter',
+                6 => 'Cyan Filter',
+                7 => 'Green Filter',
+                8 => 'Yellow-green Filter',
+            },
+            undef, # (Filter number min)
+            undef, # (Filter number max)
+            '"Strength $val"',
+            undef, # (Strength min)
+            undef, # (Strength max)
+        ],
+    },
+    0x538 => { #23
+        Name => 'FilmGrainEffect',
+        Writable => 'int16s',
+        PrintConv => {
+            0 => 'Off',
+            1 => 'Low',
+            2 => 'Medium',
+            3 => 'High',
+        },
+    },
+    0x539 => { #23
+        Name => 'ColorProfileSettings',
+        Writable => 'int16s',
+        Count => 14,
+        PrintConv => [
+            '"Min $val"',
+            '"Max $val"',
+            '"Yellow $val"',
+            '"Orange $val"',
+            '"Orange-red $val"',
+            '"Red $val"',
+            '"Magenta $val"',
+            '"Violet $val"',
+            '"Blue $val"',
+            '"Blue-cyan $val"',
+            '"Cyan $val"',
+            '"Green-cyan $val"',
+            '"Green $val"',
+            '"Yellow-green $val"',
+        ],
+    },
+    0x53a => { #23
+        Name => 'MonochromeVignetting',
+        Writable => 'int16s',
+        Notes => '-5 to +5: positive is white vignetting, negative is black vignetting',
+    },
+    0x53b => { #23
+        Name => 'MonochromeColor',
+        Writable => 'int16s',
+        PrintConv => {
+            0 => '(none)',
+            1 => 'Normal',
+            2 => 'Sepia',
+            3 => 'Blue',
+            4 => 'Purple',
+            5 => 'Green',
+        },
+    },
+    0x600 => { #PH/4/22
         Name => 'DriveMode',
         Writable => 'int16u',
         Count => -1,
-        Notes => '2 or 3 numbers: 1. Mode, 2. Shot number, 3. Mode bits',
+        Notes => '2, 3 or 5 numbers: 1. Mode, 2. Shot number, 3. Mode bits, 5. Shutter mode',
         PrintConv => q{
-            my ($a,$b,$c) = split ' ',$val;
-            return 'Single Shot' unless $a;
+            my ($a,$b,$c,$d,$e) = split ' ',$val;
+            if ($e) {
+                $e = '; ' . ({ 2 => 'Anti-shock 0', 4 => 'Electronic shutter' }->{$e} || "Unknown ($e)");
+            } else {
+                $e = '';
+            }
+            return "Single Shot$e" unless $a;
             if ($a == 5 and defined $c) {
                 $a = DecodeBits($c, { #6
                     0 => 'AE',
                     1 => 'WB',
                     2 => 'FL',
                     3 => 'MF',
+                    4 => 'ISO', #forum8906
+                    5 => 'AE Auto', #forum8906
+                    6 => 'Focus', #PH
                 }) . ' Bracketing';
                 $a =~ s/, /+/g;
             } else {
@@ -2267,7 +2471,7 @@ my %indexInfo = (
                 );
                 $a = $a{$a} || "Unknown ($a)";
             }
-            return "$a, Shot $b";
+            return "$a, Shot $b$e";
         },
     },
     0x601 => { #6
@@ -2283,7 +2487,7 @@ my %indexInfo = (
                 3 => 'Bottom to Top',
                 4 => 'Top to Bottom',
             );
-            return ($a{$a} || "Unknown ($a)") . ', Shot ' . $b;
+            return(($a{$a} || "Unknown ($a)") . ', Shot ' . $b);
         },
     },
     0x603 => { #PH/4
@@ -2308,6 +2512,44 @@ my %indexInfo = (
             2 => 'On, Mode 2',
             3 => 'On, Mode 3',
             4 => 'On, Mode 4', # (NC, E-P5)
+        },
+    },
+    0x804 => { #PH (E-M1 with firmware update)
+        Name => 'StackedImage',
+        Writable => 'int32u',
+        Count => 2,
+        PrintConv => {
+            '0 0' => 'No',
+            '1 *' => 'Live Composite (* images)', #24
+            '4 *' => 'Live Time/Bulb (* images)', #24
+            '3 2' => 'ND2 (1EV)', #IB
+            '3 4' => 'ND4 (2EV)', #IB
+            '3 8' => 'ND8 (3EV)', #IB
+            '3 16' => 'ND16 (4EV)', #IB
+            '3 32' => 'ND32 (5EV)', #IB
+            '5 4' => 'HDR1', #forum8906
+            '6 4' => 'HDR2', #forum8906
+            '8 8' => 'Tripod high resolution', #IB
+            '9 *' => 'Focus-stacked (* images)', #IB (* = 2-15)
+            '11 16' => 'Hand-held high resolution', #IB (perhaps '11 15' would be possible, ref 24)
+            OTHER => sub {
+                my ($val, $inv, $conv) = @_;
+                if ($inv) {
+                    $val = lc $val;
+                    return undef unless $val =~ s/(\d+) images/\* images/;
+                    my $num = $1;
+                    foreach (keys %$conv) {
+                        next unless $val eq lc $$conv{$_};
+                        ($val = $_) =~ s/\*/$num/ or return undef;
+                        return $val;
+                    }
+                } else {
+                    return "Unknown ($_[0])" unless $val =~ s/ (\d+)/ \*/ and $$conv{$val};
+                    my $num = $1;
+                    ($val = $$conv{$val}) =~ s/\*/$num/;
+                    return $val;
+                }
+            },
         },
     },
     0x900 => { #11
@@ -2559,7 +2801,7 @@ my %indexInfo = (
         Count => 4,
     },
     0x100 => { Name => 'WB_RBLevels',       Writable => 'int16u', Count => 2 }, #6
-    # 0x101 - in-camera AutoWB unless it is all 0's or all 256's (ref 21)
+    # 0x101 - in-camera AutoWB unless it is all 0's or all 256's (ref IB)
     0x102 => { Name => 'WB_RBLevels3000K',  Writable => 'int16u', Count => 2 }, #11
     0x103 => { Name => 'WB_RBLevels3300K',  Writable => 'int16u', Count => 2 }, #11
     0x104 => { Name => 'WB_RBLevels3600K',  Writable => 'int16u', Count => 2 }, #11
@@ -2589,8 +2831,8 @@ my %indexInfo = (
     0x11d => { Name => 'WB_GLevel6600K',    Writable => 'int16u' }, #11
     0x11e => { Name => 'WB_GLevel7500K',    Writable => 'int16u' }, #11
     0x11f => { Name => 'WB_GLevel',         Writable => 'int16u' }, #11
-    # 0x121 = WB preset for flash (about 6000K) (ref 21)
-    # 0x125 = WB preset for underwater (ref 21)
+    # 0x121 = WB preset for flash (about 6000K) (ref IB)
+    # 0x125 = WB preset for underwater (ref IB)
     0x200 => { #6
         Name => 'ColorMatrix',
         Writable => 'int16u',
@@ -2632,9 +2874,9 @@ my %indexInfo = (
     },
     # 0x800 LensDistortionParams, float[9] (ref 11)
     # 0x801 LensShadingParams, int16u[16] (ref 11)
-    0x0805 => { #21
+    0x0805 => { #IB
         Name => 'SensorCalibration',
-        Notes => '2 numbers: 1. recommended maximum, 2. calibration midpoint',
+        Notes => '2 numbers: 1. Recommended maximum, 2. Calibration midpoint',
         Writable => 'int16s',
         Count => 2,
     },
@@ -2668,6 +2910,7 @@ my %indexInfo = (
         Count => 2,
         PrintConv => [{
             0 => 'Off',
+            1 => 'Live Composite', #github issue#61
             2 => 'On (2 frames)',
             3 => 'On (3 frames)',
         }],
@@ -2747,7 +2990,32 @@ my %indexInfo = (
         ValueConv => '$val ? $val : undef', # zero for some models (how to differentiate from 0 C?)
         Notes => 'this seems to be in degrees C only for some models',
     },
+    0x1900 => { #23
+        Name => 'KeystoneCompensation',
+        Writable => 'int8u',
+        Count => 2,
+        PrintConv => {
+            '0 0' => 'Off',
+            '0 1' => 'On',
+        },
+    },
+    0x1901 => { #23
+        Name => 'KeystoneDirection',
+        Writable => 'int8u',
+        Count => 2,
+        PrintConv => {
+            0 => 'Vertical',
+            1 => 'Horizontal',
+        },
+    },
     # 0x1905 - focal length (PH, E-M1)
+    0x1906 => { #23
+        Name => 'KeystoneValue',
+        Writable => 'int16s',
+        Count => 3,
+        # (use in conjunction with KeystoneDirection, -ve is Top or Right, +ve is Bottom or Left)
+        Notes => '3 numbers: 1. Keystone Value, 2. Min, 3. Max',
+    },
 );
 
 # Olympus Focus Info IFD
@@ -2782,6 +3050,7 @@ my %indexInfo = (
         Binary => 1,
         Unknown => 1, # (but what does it mean?)
     },
+    # 0x214 - int16u: normally 0, but 1 for E-M1 focus-bracketing, and have seen 1 and 256 at other times
     0x300 => { Name => 'ZoomStepCount',     Writable => 'int16u' }, #6
     0x301 => { Name => 'FocusStepCount',    Writable => 'int16u' }, #11
     0x303 => { Name => 'FocusStepInfinity', Writable => 'int16u' }, #11
@@ -2890,14 +3159,10 @@ my %indexInfo = (
         }
     ],
     # 0x31a Continuous AF parameters?
-    # 0x328 Related to AF (maybe Imager AF data?) (ref PH, E-PL1):
-    #  - offset 0x2a (int8u)  ImagerAFMode?  0=Manual, 1=Auto
-    #  - offset 0x30 (int16u) AFAreaXPosition
-    #  - offset 0x32 (int16u) AFAreaWidth (202)
-    #  - offset 0x34 (int16u) AFAreaYPosition
-    #  - offset 0x36 (int16u) AFAreaHeight (50)
-    #  (AF area positions above give the top-left coordinates of the AF area in the
-    #   AF frame. Increasing Y is downwards, and the AF frame size is about 1280x256)
+    0x328 => { #PH
+        Name => 'AFInfo',
+        SubDirectory => { TagTable => 'Image::ExifTool::Olympus::AFInfo' },
+    },
     # 0x1200-0x1209 Flash information:
     0x1201 => { #6
         Name => 'ExternalFlash',
@@ -2962,7 +3227,7 @@ my %indexInfo = (
         Writable => 'int16s',
         RawConv => '($val and $val ne "-32768") ? $val : undef', # ignore 0 and -32768
         # ValueConv => '-2*(($val/135)**2)+55', #11
-        ValueConv => '84 - 3 * $val / 26', #http://u88.n24.queensu.ca/exiftool/forum/index.php/topic,5423.0.html
+        ValueConv => '84 - 3 * $val / 26', #https://exiftool.org/forum/index.php/topic,5423.0.html
         ValueConvInv => 'int((84 - $val) * 26 / 3 + 0.5)',
         PrintConv => 'sprintf("%.1f C",$val)',
         PrintConvInv => '$val=~s/ ?C$//; $val',
@@ -3001,6 +3266,20 @@ my %indexInfo = (
         },
     },
     # 0x102a same as Subdir4-0x300
+);
+
+# AF information (ref PH)
+%Image::ExifTool::Olympus::AFInfo = (
+    PROCESS_PROC => \&Image::ExifTool::ProcessBinaryData,
+    GROUPS => { 0 => 'MakerNotes', 2 => 'Camera' },
+    FIRST_ENTRY => 0,
+    # 0x2a - int8u:  ImagerAFMode?  0=Manual, 1=Auto
+    # 0x30 - int16u: AFAreaXPosition?
+    # 0x32 - int16u: AFAreaWidth? (202)
+    # 0x34 - int16u: AFAreaYPosition?
+    # 0x36 - int16u: AFAreaHeight? (50)
+    #  (AF area positions above give the top-left coordinates of the AF area in the
+    #   AF frame. Increasing Y is downwards, and the AF frame size is about 1280x256)
 );
 
 # Olympus raw information tags (ref 6)
@@ -3455,6 +3734,7 @@ my %indexInfo = (
     },
     0x7f => {
         Name => 'DateTimeOriginal', #(NC)
+        Description => 'Date/Time Original',
         Format => 'string[24]',
         Groups => { 2 => 'Time' },
         PrintConv => '$self->ConvertDateTime($val)',
@@ -3653,7 +3933,21 @@ my %indexInfo = (
             0 => 'ZoomedPreviewStart',
             1 => 'ZoomedPreviewLength',
         },
-        RawConv => 'Image::ExifTool::Exif::ExtractImage($self,$val[0],$val[1],"ZoomedPreviewImage")',
+        RawConv => q{
+            @grps = $self->GetGroup($$val{0});  # set groups from input tag
+            Image::ExifTool::Exif::ExtractImage($self,$val[0],$val[1],"ZoomedPreviewImage");
+        },
+    },
+    # this is actually for PanasonicRaw tags, but it uses the lens lookup here
+    LensType => {
+        Require => {
+            0 => 'LensTypeMake',
+            1 => 'LensTypeModel',
+        },
+        Notes => 'based on tags found in some Panasonic RW2 images',
+        SeparateTable => 'LensType',
+        ValueConv => '"$val[0] $val[1]"',
+        PrintConv => \%olympusLensTypes,
     },
 );
 
@@ -3682,7 +3976,7 @@ sub ExtenderStatus($$$)
     $lensType =~ / F(\d+(\.\d+)?)/ or return 1;
     # If the maximum aperture at the maximum focal length is greater than the
     # known max/max aperture of the lens, then the extender must be attached
-    return ($maxAperture - $1 > 0.2) ? 1 : 2;
+    return(($maxAperture - $1 > 0.2) ? 1 : 2);
 }
 
 #------------------------------------------------------------------------------
@@ -3763,7 +4057,7 @@ Olympus or Epson maker notes in EXIF information.
 
 =head1 AUTHOR
 
-Copyright 2003-2015, Phil Harvey (phil at owl.phy.queensu.ca)
+Copyright 2003-2020, Phil Harvey (philharvey66 at gmail.com)
 
 This library is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.

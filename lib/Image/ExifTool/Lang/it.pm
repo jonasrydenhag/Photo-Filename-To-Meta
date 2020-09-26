@@ -11,7 +11,7 @@ package Image::ExifTool::Lang::it;
 use strict;
 use vars qw($VERSION);
 
-$VERSION = '1.12';
+$VERSION = '1.14';
 
 %Image::ExifTool::Lang::it::Translate = (
    'A100DataOffset' => 'Offset dati A100',
@@ -1249,6 +1249,7 @@ $VERSION = '1.12';
         'Off' => 'Spento',
       },
     },
+   'ColorBalanceVersion' => 'Versione Bilanciamento Colore',
    'ColorBooster' => {
       PrintConv => {
         'Off' => 'Spento',
@@ -2394,6 +2395,7 @@ $VERSION = '1.12';
       PrintConv => {
         'Aperture Priority' => 'Priorità diaframma',
         'Aperture-priority AE' => 'Priorità diaframma',
+        'Auto' => 'Esposizione automatica',
         'Auto bracket' => 'A forcella automatica',
         'Fireworks' => 'Fuochi artificiali',
         'Landscape' => 'Orizzontale',
@@ -4846,6 +4848,7 @@ $VERSION = '1.12';
       },
     },
    'ObjectTypeReference' => 'Riferimento Tipo Oggetto',
+   'OffsetSchema' => 'Schema Offset',
    'OldSubfileType' => {
       Description => 'Vecchio tipo sotto-file',
       PrintConv => {
@@ -6273,7 +6276,7 @@ $VERSION = '1.12';
     },
    'RecordingTime' => 'Tempo registrazione',
    'RedAdjust' => 'Correzione rosso',
-   'RedBalance' => 'Bilanciamento rosso',
+   'RedBalance' => 'Bilanciamento del rosso',
    'RedCurveLimits' => 'Limiti curva rosso',
    'RedCurvePoints' => 'Punti curva rosso',
    'RedEyeCorrection' => {
@@ -6769,7 +6772,7 @@ $VERSION = '1.12';
         'Change parameters' => 'Cambia parametri',
         'ISO speed' => 'Velocità ISO',
         'Normal (disabled)' => 'Normale (disabilitato)',
-        'White balance' => 'Bilanciameno bianco',
+        'White balance' => 'Bilanciamento del bianco',
       },
     },
    'SetCookie' => 'Imposta cookie',
@@ -7057,7 +7060,7 @@ $VERSION = '1.12';
    'SubfileType' => {
       Description => 'Tipo sotto-file',
       PrintConv => {
-        'Full-resolution Image' => 'Immagine con risoluzione originale',
+        'Full-resolution image' => 'Immagine con risoluzione originale',
         'Reduced-resolution image' => 'Immagine a risoluzione ridotta',
         'Single page of multi-page image' => 'Singola pagina di un\'immagine multi-pagina',
         'Single page of multi-page reduced-resolution image' => 'Singola pagina di un\'immagine multi-pagina a risoluzione ridotta',
@@ -7314,7 +7317,7 @@ $VERSION = '1.12';
       PrintConv => {
         'Self-timer' => 'Autoscatto',
         'Shooting Mode' => 'Modo scatto',
-        'White Balance' => 'Bilanciameno bianco',
+        'White Balance' => 'Bilanciamento del bianco',
       },
     },
    'TimerLength' => {
@@ -7711,9 +7714,9 @@ $VERSION = '1.12';
     },
    'WBAdjLighting' => {
       PrintConv => {
+        'Daylight (cloudy)' => 'Luce del giorno (2)',
         'Daylight (direct sunlight)' => 'Luce del giorno (0)',
         'Daylight (shade)' => 'Luce del giorno (1)',
-        'Daylight (cloudy)' => 'Luce del giorno (2)',
         'None' => 'Nessuno',
       },
     },
@@ -7729,7 +7732,7 @@ $VERSION = '1.12';
     },
    'WCSProfiles' => 'Profilo Windows Color System',
    'WhiteBalance' => {
-      Description => 'Bilanciameno bianco',
+      Description => 'Bilanciamento del bianco',
       PrintConv => {
         'Auto' => 'Equilibrio del bianco automatico',
         'Black & White' => 'Monocromatico',
@@ -7753,7 +7756,7 @@ $VERSION = '1.12';
         'White Fluorescent' => 'Fluorescente bianca',
       },
     },
-   'WhiteBalance2' => 'Bilanciameno bianco 2',
+   'WhiteBalance2' => 'Bilanciamento del bianco 2',
    'WhiteBalanceAdj' => {
       Description => 'Adattamento bilanciamento bianco',
       PrintConv => {
@@ -7900,7 +7903,7 @@ and values.
 
 =head1 AUTHOR
 
-Copyright 2003-2015, Phil Harvey (phil at owl.phy.queensu.ca)
+Copyright 2003-2020, Phil Harvey (philharvey66 at gmail.com)
 
 This library is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.

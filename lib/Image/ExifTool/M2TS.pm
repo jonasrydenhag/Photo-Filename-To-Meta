@@ -31,7 +31,7 @@ use strict;
 use vars qw($VERSION);
 use Image::ExifTool qw(:DataAccess :Utils);
 
-$VERSION = '1.11';
+$VERSION = '1.18';
 
 # program map table "stream_type" lookup (ref 6/1)
 my %streamType = (
@@ -262,7 +262,7 @@ sub ParseAC3Descriptor($$)
 
 #------------------------------------------------------------------------------
 # Parse PID stream data
-# Inputs: 0) Exiftool ref, 1) PID number, 2) PID type, 3) PID name, 4) data ref
+# Inputs: 0) ExifTool ref, 1) PID number, 2) PID type, 3) PID name, 4) data ref
 # Returns: 0=stream parsed OK,
 #          1=stream parsed but we want to parse more of these,
 #          -1=can't parse yet because we don't know the type
@@ -275,9 +275,7 @@ sub ParsePID($$$$$)
     if ($verbose > 1) {
         my $out = $et->Options('TextOut');
         printf $out "Parsing stream 0x%.4x (%s)\n", $pid, $pidName;
-        my %parms = ( Out => $out );
-        $parms{MaxLen} = 96 if $verbose < 4;
-        HexDump($dataPt, undef, %parms) if $verbose > 2;
+        $et->VerboseDump($dataPt);
     }
     my $more = 0;
     if ($type == 0x01 or $type == 0x02) {
@@ -293,7 +291,11 @@ sub ParsePID($$$$$)
         require Image::ExifTool::H264;
         $more = Image::ExifTool::H264::ParseH264Video($et, $dataPt);
         # force parsing additional H264 frames with ExtractEmbedded option
-        $more = 1 if $et->Options('ExtractEmbedded');
+        if ($$et{OPTIONS}{ExtractEmbedded}) {
+            $more = 1;
+        } elsif (not $$et{OPTIONS}{Validate}) {
+            $et->WarnOnce('The ExtractEmbedded option may find more tags in the video data',3);
+        }
     } elsif ($type == 0x81 or $type == 0x87 or $type == 0x91) {
         # AC-3 audio
         ParseAC3Audio($et, $dataPt);
@@ -311,7 +313,7 @@ sub ProcessM2TS($$)
     my $raf = $$dirInfo{RAF};
     my ($buff, $pLen, $upkPrefix, $j, $fileType, $eof);
     my (%pmt, %pidType, %data, %sectLen);
-    my ($startTime, $endTime, $backScan, $maxBack);
+    my ($startTime, $endTime, $fwdTime, $backScan, $maxBack);
     my $verbose = $et->Options('Verbose');
     my $out = $et->Options('TextOut');
 
@@ -327,9 +329,16 @@ sub ProcessM2TS($$)
         $pLen = 192; # 188-byte transport packet + leading 4-byte timecode (ref 4)
         $upkPrefix = 'x4N';
     }
+    my $prePos = $pLen - 188;       # byte position of packet prefix
+    my $readSize = 64 * $pLen;      # size of our read buffer
+    $raf->Seek(0,0);                # rewind to start
+    $raf->Read($buff, $readSize) >= $pLen * 4 or return 0;  # require at least 4 packets
+    # validate the sync byte in the next 3 packets
+    for ($j=1; $j<4; ++$j) {
+        return 0 unless substr($buff, $prePos + $pLen * $j, 1) eq 'G'; # (0x47)
+    }
     $et->SetFileType($fileType);
     SetByteOrder('MM');
-    $raf->Seek(0,0);        # rewind to start
     my $tagTablePtr = GetTagTable('Image::ExifTool::M2TS::Main');
 
     # PID lookup strings (will add to this with entries from program map table)
@@ -341,43 +350,59 @@ sub ProcessM2TS($$)
     );
     my %didPID = ( 1 => 0, 2 => 0, 0x1fff => 0 );
     my %needPID = ( 0 => 1 );       # lookup for stream PID's that we still need to parse
-    my $prePos = $pLen - 188;       # byte position of packet prefix
-    my $readSize = 64 * $pLen;      # read 64 packets at once
     my $pEnd = 0;
-    my $i = 0;
-    $buff = '';
 
     # parse packets from MPEG-2 Transport Stream
     for (;;) {
 
         unless (%needPID) {
             last unless defined $startTime;
-            # seek backwards to find last PCR
-            if (defined $backScan) {
-                last if defined $endTime;
-                $backScan -= $pLen;
-                last if $backScan < $maxBack;
-            } else {
+            # reconfigure to seek backwards for last PCR
+            unless (defined $backScan) {
+                my $saveTime = $endTime;
                 undef $endTime;
                 last if $et->Options('FastScan');
-                $verbose and print "[Starting backscan for last PCR]\n";
-                # calculate position of last complete packet
-                my $fwdPos = $raf->Tell();
+                $verbose and print $out "[Starting backscan for last PCR]\n";
+                # remember how far we got when reading forward through the file
+                my $fwdPos = $raf->Tell() - length($buff) + $pEnd;
+                # determine the position of the last packet relative to the EOF
                 $raf->Seek(0, 2) or last;
                 my $fsize = $raf->Tell();
-                my $nPack = int($fsize / $pLen);
-                $backScan = ($nPack - 1) * $pLen - $fsize;
+                $backScan = int($fsize / $pLen) * $pLen - $fsize;
                 # set limit on how far back we will go
                 $maxBack = $fwdPos - $fsize;
-                $maxBack = -256000 if $maxBack < -256000;
+                # scan back a maximum of 512k (have seen last PCR at -276k)
+                my $nMax = int(512000 / $pLen);     # max packets to backscan
+                if ($nMax < int(-$maxBack / $pLen)) {
+                    $maxBack = $backScan - $nMax * $pLen;
+                } else {
+                    # use this time if none found in all remaining packets
+                    $fwdTime = $saveTime;
+                }
+                $pEnd = 0;
             }
-            $raf->Seek($backScan, 2) or last;
         }
-        my $pos = $pEnd;
+        my $pos;
         # read more if necessary
-        if ($pos + $pLen > length $buff) {
-            $raf->Read($buff, $readSize) >= $pLen or $eof = 1, last;
-            $pos = $pEnd = 0;
+        if (defined $backScan) {
+            last if defined $endTime;
+            $pos = $pEnd = $pEnd - 2 * $pLen;   # step back to previous packet
+            if ($pos < 0) {
+                # read another buffer from end of file
+                last if $backScan <= $maxBack;
+                my $buffLen = $backScan - $maxBack;
+                $buffLen = $readSize if $buffLen > $readSize;
+                $backScan -= $buffLen;
+                $raf->Seek($backScan, 2) or last;
+                $raf->Read($buff, $buffLen) == $buffLen or last;
+                $pos = $pEnd = $buffLen - $pLen;
+            }
+        } else {
+            $pos = $pEnd;
+            if ($pos + $pLen > length $buff) {
+                $raf->Read($buff, $readSize) >= $pLen or $eof = 1, last;
+                $pos = $pEnd = 0;
+            }
         }
         $pEnd += $pLen;
         # decode the packet prefix
@@ -385,7 +410,7 @@ sub ProcessM2TS($$)
         my $prefix = unpack("x${pos}N", $buff); # (use unpack instead of Get32u for speed)
         # validate sync byte
         unless (($prefix & 0xff000000) == 0x47000000) {
-            $et->Warn('Synchronization error') unless defined $backScan;
+            $et->Warn('M2TS synchronization error') unless defined $backScan;
             last;
         }
       # my $transport_error_indicator    = $prefix & 0x00800000;
@@ -398,12 +423,11 @@ sub ProcessM2TS($$)
       # my $continuity_counter           = $prefix & 0x0000000f;
 
         if ($verbose > 1) {
+            my $i = ($raf->Tell() - length($buff) + $pEnd) / $pLen - 1;
             print  $out "Transport packet $i:\n";
-            ++$i;
-            HexDump(\$buff, $pLen, Addr => $i * $pLen, Out => $out,
-                Start => $pos - $prePos) if $verbose > 2;
+            $et->VerboseDump(\$buff, Len => $pLen, Addr => $i * $pLen, Start => $pos - $prePos);
             my $str = $pidName{$pid} ? " ($pidName{$pid})" : '';
-            printf $out "  Timecode:   0x%.4x\n", Get32u(\$buff, 0) if $pLen == 192;
+            printf $out "  Timecode:   0x%.4x\n", Get32u(\$buff, $pos - $prePos) if $pLen == 192;
             printf $out "  Packet ID:  0x%.4x$str\n", $pid;
             printf $out "  Start Flag: %s\n", $payload_unit_start_indicator ? 'Yes' : 'No';
         }
@@ -461,7 +485,7 @@ sub ProcessM2TS($$)
                 delete $sectLen{$pid};
             }
             my $slen = length($buf2);   # section length
-            $pos + 8 > $slen and $et->Warn("Truncated payload"), last;
+            $pos + 8 > $slen and $et->Warn('Truncated payload'), last;
             # validate table ID
             my $table_id = Get8u(\$buf2, $pos);
             my $name = ($tableID{$table_id} || sprintf('Unknown (0x%x)',$table_id)) . ' Table';
@@ -549,7 +573,7 @@ sub ProcessM2TS($$)
                     $pidName{$elementary_pid} = $str;
                     $pidType{$elementary_pid} = $stream_type;
                     $pos += 5;
-                    $pos + $es_info_length > $slen and $et->Warn('Trunacted ES info'), $pos = $end, last;
+                    $pos + $es_info_length > $slen and $et->Warn('Truncated ES info'), $pos = $end, last;
                     # parse elementary stream descriptors
                     for ($j=0; $j<$es_info_length-2; ) {
                         my $descriptor_tag = Get8u(\$buf2, $pos + $j);
@@ -641,7 +665,8 @@ sub ProcessM2TS($$)
     }
 
     # calculate Duration if available
-    if (defined $startTime and defined $endTime and $startTime != $endTime) {
+    $endTime = $fwdTime unless defined $endTime;
+    if (defined $startTime and defined $endTime) {
         $endTime += 0x80000000 * 1200 if $startTime > $endTime; # handle 33-bit wrap
         $et->HandleTag($tagTablePtr, 'Duration', $endTime - $startTime);
     }
@@ -689,7 +714,7 @@ video.
 
 =head1 AUTHOR
 
-Copyright 2003-2015, Phil Harvey (phil at owl.phy.queensu.ca)
+Copyright 2003-2020, Phil Harvey (philharvey66 at gmail.com)
 
 This library is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.

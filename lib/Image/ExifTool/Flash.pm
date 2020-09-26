@@ -363,7 +363,7 @@ Record: for ($rec=0; ; ++$rec) {
                 $pos += 2 + $len;
                 # first string of a typed object is the object name
                 if ($getName) {
-                    $et->VPrint(1,"  | (object name '$tag')\n");
+                    $et->VPrint(1,"  | (object name '${tag}')\n");
                     undef $getName;
                     next; # (ignore name for now)
                 }
@@ -418,7 +418,7 @@ Record: for ($rec=0; ; ++$rec) {
             my $num = Get32u($dataPt, $pos);
             $$dirInfo{Pos} = $pos + 4;
             my ($i, @vals);
-            # add array index to compount tag name
+            # add array index to compound tag name
             my $structName = $$dirInfo{StructName};
             for ($i=0; $i<$num; ++$i) {
                 $$dirInfo{StructName} = $structName . $i if defined $structName;
@@ -454,7 +454,7 @@ Record: for ($rec=0; ; ++$rec) {
             } else {
                 # give verbose indication if we ignore a lone value
                 my $t = $amfType[$type] || sprintf('type 0x%x',$type);
-                $et->VPrint(1, "  | (ignored lone $t value '$val')\n");
+                $et->VPrint(1, "  | (ignored lone $t value '${val}')\n");
             }
         }
     }
@@ -721,7 +721,7 @@ will add AMF3 support.
 
 =head1 AUTHOR
 
-Copyright 2003-2015, Phil Harvey (phil at owl.phy.queensu.ca)
+Copyright 2003-2020, Phil Harvey (philharvey66 at gmail.com)
 
 This library is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.

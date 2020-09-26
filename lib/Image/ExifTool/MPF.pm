@@ -15,11 +15,11 @@ use vars qw($VERSION);
 use Image::ExifTool qw(:DataAccess :Utils);
 use Image::ExifTool::Exif;
 
-$VERSION = '1.11';
+$VERSION = '1.14';
 
 sub ProcessMPImageList($$$);
 
-# Tags found in MPF APP2 segment in JPEG images
+# Tags found in APP2 MPF segment in JPEG images
 %Image::ExifTool::MPF::Main = (
     GROUPS => { 0 => 'MPF', 1 => 'MPF0', 2 => 'Image'},
     NOTES => q{
@@ -97,7 +97,7 @@ sub ProcessMPImageList($$$);
     NOTES => q{
         The first MPF "Large Thumbnail" image is extracted as PreviewImage, and the
         rest of the embedded MPF images are extracted as MPImage#.  The
-        ExtractEmbedded (-ee) option may be used to extract information from these
+        L<ExtractEmbedded|../ExifTool.html#ExtractEmbedded> (-ee) option may be used to extract information from these
         embedded images.
     },
     0.1 => {
@@ -105,9 +105,9 @@ sub ProcessMPImageList($$$);
         Format => 'int32u',
         Mask => 0xf8000000,
         PrintConv => { BITMASK => {
-            29 => 'Representative image',
-            30 => 'Dependent child image',
-            31 => 'Dependent parent image',
+            2 => 'Representative image',
+            3 => 'Dependent child image',
+            4 => 'Dependent parent image',
         }},
     },
     0.2 => {
@@ -163,12 +163,13 @@ sub ProcessMPImageList($$$);
         },
         Notes => q{
             the first MPF "Large Thumbnail" is extracted as PreviewImage, and the rest
-            of the embedded MPF images are extracted as MPImage#.  The ExtractEmbedded
+            of the embedded MPF images are extracted as MPImage#.  The L<ExtractEmbedded|../ExifTool.html#ExtractEmbedded>
             option may be used to extract information from these embedded images.
         },
         # extract all MPF images (not just one)
         RawConv => q{
             require Image::ExifTool::MPF;
+            @grps = $self->GetGroup($$val{0});  # set groups from input tag
             Image::ExifTool::MPF::ExtractMPImages($self);
         },
     },
@@ -191,8 +192,8 @@ sub ExtractMPImages($)
     for ($i=1; $xtra or not defined $xtra; ++$i) {
         # run through MP images in the same order they were extracted
         $xtra = defined $$et{VALUE}{"MPImageStart ($i)"} ? " ($i)" : '';
-        my $off = $et->GetValue("MPImageStart$xtra");
-        my $len = $et->GetValue("MPImageLength$xtra");
+        my $off = $et->GetValue("MPImageStart$xtra", 'ValueConv');
+        my $len = $et->GetValue("MPImageLength$xtra", 'ValueConv');
         if ($off and $len) {
             my $type = $et->GetValue("MPImageType$xtra", 'ValueConv');
             my $tag = "MPImage$i";
@@ -211,12 +212,7 @@ sub ExtractMPImages($)
                     Groups => { 0 => 'Composite', 1 => 'Composite', 2 => 'Preview'},
                 });
             }
-            my $key = $et->FoundTag($tag, $val);
-            # set groups for PreviewImage
-            if ($tag eq 'PreviewImage') {
-                $et->SetGroup($key, 'Composite', 0);
-                $et->SetGroup($key, 'Composite');
-            }
+            my $key = $et->FoundTag($tag, $val, $et->GetGroup("MPImageStart$xtra"));
             # extract information from MP images if ExtractEmbedded option used
             if ($ee) {
                 my $oldBase = $$et{BASE};
@@ -270,7 +266,7 @@ Format (MPF) information from JPEG images.
 
 =head1 AUTHOR
 
-Copyright 2003-2015, Phil Harvey (phil at owl.phy.queensu.ca)
+Copyright 2003-2020, Phil Harvey (philharvey66 at gmail.com)
 
 This library is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.
