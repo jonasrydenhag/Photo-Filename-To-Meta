@@ -15,7 +15,6 @@
 		DD9099091BCA1C4E00F4F8F8 /* PhotoManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD9099081BCA1C4E00F4F8F8 /* PhotoManager.swift */; };
 		DD90990D1BCB412900F4F8F8 /* FileHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD90990C1BCB412900F4F8F8 /* FileHandler.swift */; };
 		DD9099141BCBA0DC00F4F8F8 /* MetaWriter.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD9099131BCBA0DC00F4F8F8 /* MetaWriter.swift */; };
-		DD9099181BCBAD0000F4F8F8 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = DD90991A1BCBAD0000F4F8F8 /* InfoPlist.strings */; };
 		DD90991D1BCBAD0000F4F8F8 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = DD90991F1BCBAD0000F4F8F8 /* Localizable.strings */; };
 		DD9099221BCBAD0100F4F8F8 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = DD9099241BCBAD0100F4F8F8 /* InfoPlist.strings */; };
 		DDAA67971BD2259500E39CA7 /* icon.pxm in Resources */ = {isa = PBXBuildFile; fileRef = DDAA67961BD2259500E39CA7 /* icon.pxm */; };
@@ -24,17 +23,16 @@
 		DDBA7A0B1B83E8B500CB49A3 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDBA7A0A1B83E8B500CB49A3 /* ViewController.swift */; };
 		DDBA7A0D1B83E8B500CB49A3 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DDBA7A0C1B83E8B500CB49A3 /* Images.xcassets */; };
 		DDBA7A101B83E8B500CB49A3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DDBA7A0E1B83E8B500CB49A3 /* Main.storyboard */; };
-		DDBA7A1C1B83E8B500CB49A3 /* PhotoMetaTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDBA7A1B1B83E8B500CB49A3 /* PhotoMetaTests.swift */; };
 		DDF7324B1B89B5BF002BE282 /* Tag.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDF7324A1B89B5BF002BE282 /* Tag.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		DDBA7A161B83E8B500CB49A3 /* PBXContainerItemProxy */ = {
+		DDB11404251F1D3500BB4A64 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = DDBA79FB1B83E8B500CB49A3 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = DDBA7A021B83E8B500CB49A3;
-			remoteInfo = "Photo Meta";
+			remoteInfo = PhotoMeta;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -48,32 +46,31 @@
 		DD90990C1BCB412900F4F8F8 /* FileHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileHandler.swift; sourceTree = "<group>"; };
 		DD9099131BCBA0DC00F4F8F8 /* MetaWriter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MetaWriter.swift; sourceTree = "<group>"; };
 		DD9099151BCBA7B200F4F8F8 /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/Main.strings; sourceTree = "<group>"; };
-		DD9099191BCBAD0000F4F8F8 /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		DD90991E1BCBAD0000F4F8F8 /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/Localizable.strings; sourceTree = "<group>"; };
 		DD9099231BCBAD0100F4F8F8 /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		DDAA67961BD2259500E39CA7 /* icon.pxm */ = {isa = PBXFileReference; lastKnownFileType = file; path = icon.pxm; sourceTree = "<group>"; };
 		DDAD5B601BB7E3AF00728C57 /* PathsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PathsController.swift; sourceTree = "<group>"; };
+		DDB113FF251F1D3500BB4A64 /* PhotoMetaTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PhotoMetaTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		DDB11403251F1D3500BB4A64 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DDBA7A031B83E8B500CB49A3 /* PhotoMeta.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PhotoMeta.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DDBA7A071B83E8B500CB49A3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DDBA7A081B83E8B500CB49A3 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		DDBA7A0A1B83E8B500CB49A3 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		DDBA7A0C1B83E8B500CB49A3 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		DDBA7A0F1B83E8B500CB49A3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		DDBA7A151B83E8B500CB49A3 /* PhotoMetaTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PhotoMetaTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		DDBA7A1A1B83E8B500CB49A3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DDBA7A1B1B83E8B500CB49A3 /* PhotoMetaTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoMetaTests.swift; sourceTree = "<group>"; };
 		DDF7324A1B89B5BF002BE282 /* Tag.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tag.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		DDBA7A001B83E8B500CB49A3 /* Frameworks */ = {
+		DDB113FC251F1D3500BB4A64 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		DDBA7A121B83E8B500CB49A3 /* Frameworks */ = {
+		DDBA7A001B83E8B500CB49A3 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -157,11 +154,19 @@
 			name = Controllers;
 			sourceTree = "<group>";
 		};
+		DDB11400251F1D3500BB4A64 /* PhotoMetaTests */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = PhotoMetaTests;
+			sourceTree = "<group>";
+		};
 		DDBA79FA1B83E8B500CB49A3 = {
 			isa = PBXGroup;
 			children = (
 				DDBA7A051B83E8B500CB49A3 /* PhotoMeta */,
 				DDBA7A181B83E8B500CB49A3 /* PhotoMetaTests */,
+				DDB11400251F1D3500BB4A64 /* PhotoMetaTests */,
 				DDBA7A041B83E8B500CB49A3 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -170,7 +175,7 @@
 			isa = PBXGroup;
 			children = (
 				DDBA7A031B83E8B500CB49A3 /* PhotoMeta.app */,
-				DDBA7A151B83E8B500CB49A3 /* PhotoMetaTests.xctest */,
+				DDB113FF251F1D3500BB4A64 /* PhotoMetaTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -203,23 +208,32 @@
 			isa = PBXGroup;
 			children = (
 				DDBA7A1B1B83E8B500CB49A3 /* PhotoMetaTests.swift */,
-				DDBA7A191B83E8B500CB49A3 /* Supporting Files */,
+				DDB11403251F1D3500BB4A64 /* Info.plist */,
 			);
 			path = PhotoMetaTests;
-			sourceTree = "<group>";
-		};
-		DDBA7A191B83E8B500CB49A3 /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				DD90991A1BCBAD0000F4F8F8 /* InfoPlist.strings */,
-				DDBA7A1A1B83E8B500CB49A3 /* Info.plist */,
-			);
-			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		DDB113FE251F1D3500BB4A64 /* PhotoMetaTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = DDB11406251F1D3500BB4A64 /* Build configuration list for PBXNativeTarget "PhotoMetaTests" */;
+			buildPhases = (
+				DDB113FB251F1D3500BB4A64 /* Sources */,
+				DDB113FC251F1D3500BB4A64 /* Frameworks */,
+				DDB113FD251F1D3500BB4A64 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				DDB11405251F1D3500BB4A64 /* PBXTargetDependency */,
+			);
+			name = PhotoMetaTests;
+			productName = PhotoMetaTests;
+			productReference = DDB113FF251F1D3500BB4A64 /* PhotoMetaTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		DDBA7A021B83E8B500CB49A3 /* PhotoMeta */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = DDBA7A1F1B83E8B500CB49A3 /* Build configuration list for PBXNativeTarget "PhotoMeta" */;
@@ -237,24 +251,6 @@
 			productReference = DDBA7A031B83E8B500CB49A3 /* PhotoMeta.app */;
 			productType = "com.apple.product-type.application";
 		};
-		DDBA7A141B83E8B500CB49A3 /* PhotoMetaTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = DDBA7A221B83E8B500CB49A3 /* Build configuration list for PBXNativeTarget "PhotoMetaTests" */;
-			buildPhases = (
-				DDBA7A111B83E8B500CB49A3 /* Sources */,
-				DDBA7A121B83E8B500CB49A3 /* Frameworks */,
-				DDBA7A131B83E8B500CB49A3 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				DDBA7A171B83E8B500CB49A3 /* PBXTargetDependency */,
-			);
-			name = PhotoMetaTests;
-			productName = "Photo MetaTests";
-			productReference = DDBA7A151B83E8B500CB49A3 /* PhotoMetaTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -262,18 +258,18 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftMigration = 0700;
-				LastSwiftUpdateCheck = 0700;
+				LastSwiftUpdateCheck = 1200;
 				LastUpgradeCheck = 1200;
 				ORGANIZATIONNAME = "Jonas Rydenhag";
 				TargetAttributes = {
+					DDB113FE251F1D3500BB4A64 = {
+						CreatedOnToolsVersion = 12.0.1;
+						ProvisioningStyle = Automatic;
+						TestTargetID = DDBA7A021B83E8B500CB49A3;
+					};
 					DDBA7A021B83E8B500CB49A3 = {
 						CreatedOnToolsVersion = 6.1.1;
 						LastSwiftMigration = 1200;
-					};
-					DDBA7A141B83E8B500CB49A3 = {
-						CreatedOnToolsVersion = 6.1.1;
-						LastSwiftMigration = 1200;
-						TestTargetID = DDBA7A021B83E8B500CB49A3;
 					};
 				};
 			};
@@ -292,12 +288,19 @@
 			projectRoot = "";
 			targets = (
 				DDBA7A021B83E8B500CB49A3 /* PhotoMeta */,
-				DDBA7A141B83E8B500CB49A3 /* PhotoMetaTests */,
+				DDB113FE251F1D3500BB4A64 /* PhotoMetaTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		DDB113FD251F1D3500BB4A64 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		DDBA7A011B83E8B500CB49A3 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -312,17 +315,16 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		DDBA7A131B83E8B500CB49A3 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				DD9099181BCBAD0000F4F8F8 /* InfoPlist.strings in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		DDB113FB251F1D3500BB4A64 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		DDBA79FF1B83E8B500CB49A3 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -340,33 +342,17 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		DDBA7A111B83E8B500CB49A3 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				DDBA7A1C1B83E8B500CB49A3 /* PhotoMetaTests.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		DDBA7A171B83E8B500CB49A3 /* PBXTargetDependency */ = {
+		DDB11405251F1D3500BB4A64 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = DDBA7A021B83E8B500CB49A3 /* PhotoMeta */;
-			targetProxy = DDBA7A161B83E8B500CB49A3 /* PBXContainerItemProxy */;
+			targetProxy = DDB11404251F1D3500BB4A64 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
-		DD90991A1BCBAD0000F4F8F8 /* InfoPlist.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				DD9099191BCBAD0000F4F8F8 /* sv */,
-			);
-			name = InfoPlist.strings;
-			sourceTree = "<group>";
-		};
 		DD90991F1BCBAD0000F4F8F8 /* Localizable.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -395,6 +381,59 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		DDB11407251F1D3500BB4A64 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = PhotoMetaTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "Jonas-Rydenhag.PhotoMetaTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PhotoMeta.app/Contents/MacOS/PhotoMeta";
+			};
+			name = Debug;
+		};
+		DDB11408251F1D3500BB4A64 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = PhotoMetaTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "Jonas-Rydenhag.PhotoMetaTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PhotoMeta.app/Contents/MacOS/PhotoMeta";
+			};
+			name = Release;
+		};
 		DDBA7A1D1B83E8B500CB49A3 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -532,51 +571,18 @@
 			};
 			name = Release;
 		};
-		DDBA7A231B83E8B500CB49A3 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				COMBINE_HIDPI_IMAGES = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(DEVELOPER_FRAMEWORKS_DIR)",
-					"$(inherited)",
-				);
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				INFOPLIST_FILE = PhotoMetaTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "Jonas-Rydenhag.$(PRODUCT_NAME:rfc1034identifier)";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
-				SWIFT_VERSION = 5.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PhotoMeta.app/Contents/MacOS/PhotoMeta";
-			};
-			name = Debug;
-		};
-		DDBA7A241B83E8B500CB49A3 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				COMBINE_HIDPI_IMAGES = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(DEVELOPER_FRAMEWORKS_DIR)",
-					"$(inherited)",
-				);
-				INFOPLIST_FILE = PhotoMetaTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "Jonas-Rydenhag.$(PRODUCT_NAME:rfc1034identifier)";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
-				SWIFT_VERSION = 5.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PhotoMeta.app/Contents/MacOS/PhotoMeta";
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		DDB11406251F1D3500BB4A64 /* Build configuration list for PBXNativeTarget "PhotoMetaTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DDB11407251F1D3500BB4A64 /* Debug */,
+				DDB11408251F1D3500BB4A64 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		DDBA79FE1B83E8B500CB49A3 /* Build configuration list for PBXProject "PhotoMeta" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -591,15 +597,6 @@
 			buildConfigurations = (
 				DDBA7A201B83E8B500CB49A3 /* Debug */,
 				DDBA7A211B83E8B500CB49A3 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		DDBA7A221B83E8B500CB49A3 /* Build configuration list for PBXNativeTarget "PhotoMetaTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				DDBA7A231B83E8B500CB49A3 /* Debug */,
-				DDBA7A241B83E8B500CB49A3 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
