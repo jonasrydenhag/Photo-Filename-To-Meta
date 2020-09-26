@@ -41,6 +41,8 @@ class PathsController: NSViewController, NSTableViewDataSource, NSTableViewDeleg
     
     if let caller = caller {
       let closure = {
+        self.savePaths()
+
         caller.initProject(sourceURL: self.sourceURL, targetURL: self.targetURL)
         self.view.window?.close()
       }
@@ -130,5 +132,10 @@ class PathsController: NSViewController, NSTableViewDataSource, NSTableViewDeleg
     if result == NSApplication.ModalResponse.alertFirstButtonReturn {
       closure()
     }
+  }
+
+  private func savePaths() {
+    UserDefaults.standard.set(self.sourceURL.path, forKey: "sourceURL")
+    UserDefaults.standard.set(self.targetURL.path, forKey: "targetURL")
   }
 }

@@ -47,11 +47,20 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
   override func viewDidAppear() {
     super.viewDidAppear()
     if photoManager == nil {
-      openSelectPaths()
+      selectPaths()
     }
   }
   
   // MARK: - Source and Target chooser
+
+  private func selectPaths() {
+    if let savedSourceURLString = UserDefaults.standard.string(forKey: "sourceURL"),
+       let savedTargetURLString = UserDefaults.standard.string(forKey: "targetURL") {
+      initProject(sourceURL: NSURL(fileURLWithPath: savedSourceURLString), targetURL: NSURL(fileURLWithPath: savedTargetURLString))
+    } else {
+      openSelectPaths()
+    }
+  }
   
   private func openSelectPaths() {
     self.performSegue(withIdentifier: "selectPaths", sender: self)
