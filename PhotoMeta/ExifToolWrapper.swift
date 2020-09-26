@@ -18,7 +18,7 @@ class ExifToolWrapper: MetaWriter {
   
   let dateFormatter = DateFormatter()
   
-  let supportedFileTypes: [CFString?] = [kUTTypeJPEG, kUTTypeGIF, kUTTypeTIFF]
+  let supportedFileTypes: [CFString?] = [kUTTypeJPEG, kUTTypeGIF, kUTTypeTIFF, kUTTypeImage, "public.heic" as CFString]
   
   init() {
     exifToolPath = Bundle.main.path(forResource: "exiftool", ofType: "")!
