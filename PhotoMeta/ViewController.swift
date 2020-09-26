@@ -113,8 +113,10 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
   @IBAction func read(_ sender: Any) {
     toggleColumnVisibility(tags: selectedTags)
 
+    let tags = self.selectedTags
+
     DispatchQueue.global(qos: .userInitiated).async {
-      self.photoManager?.read(tags: self.selectedTags, afterEach: {
+      self.photoManager?.read(tags: tags, afterEach: {
         DispatchQueue.main.async {
           self.tableView.reloadData()
         }
