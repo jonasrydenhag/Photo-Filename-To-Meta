@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="17156" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="B8D-0N-5wS">
     <dependencies>
-        <deployment identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="17156"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -167,7 +166,7 @@
                         </connections>
                     </window>
                     <connections>
-                        <segue destination="XfG-lQ-9wD" kind="relationship" relationship="window.shadowedContentViewController" id="7OM-ZL-I5D"/>
+                        <segue destination="zf9-lQ-i2T" kind="relationship" relationship="window.shadowedContentViewController" id="ufF-h2-Kci"/>
                     </connections>
                 </windowController>
                 <customObject id="Oky-zY-oP4" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
@@ -186,10 +185,10 @@
                                 <rect key="frame" x="0.0" y="25" width="800" height="348"/>
                                 <clipView key="contentView" id="f5A-aJ-mMQ">
                                     <rect key="frame" x="0.0" y="0.0" width="800" height="348"/>
-                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowSizeStyle="automatic" headerView="Y6s-aC-B5m" viewBased="YES" id="0xu-QC-DLK">
-                                            <rect key="frame" x="0.0" y="0.0" width="805" height="323"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="800" height="323"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <size key="intercellSpacing" width="3" height="2"/>
                                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -207,7 +206,7 @@
                                                     </textFieldCell>
                                                     <prototypeCellViews>
                                                         <tableCellView identifier="statusCell" id="ej8-7g-x3y">
-                                                            <rect key="frame" x="1" y="1" width="15" height="17"/>
+                                                            <rect key="frame" x="1" y="1" width="10" height="17"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
                                                                 <textField hidden="YES" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" id="0B7-HH-Qyi">
@@ -239,7 +238,7 @@
                                                     <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                     <prototypeCellViews>
                                                         <tableCellView identifier="enumCell" id="tfT-xf-lg6">
-                                                            <rect key="frame" x="19" y="1" width="40" height="17"/>
+                                                            <rect key="frame" x="14" y="1" width="40" height="17"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
                                                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" setsMaxLayoutWidthAtFirstLayout="YES" id="ZS3-l1-h4w">
@@ -271,7 +270,7 @@
                                                     <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                     <prototypeCellViews>
                                                         <tableCellView identifier="pathCell" id="ENZ-Hy-F0C">
-                                                            <rect key="frame" x="62" y="1" width="195" height="17"/>
+                                                            <rect key="frame" x="57" y="1" width="195" height="17"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
                                                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" setsMaxLayoutWidthAtFirstLayout="YES" id="zGK-b5-mG0">
@@ -303,7 +302,7 @@
                                                     <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                     <prototypeCellViews>
                                                         <tableCellView identifier="dateCell" id="8oj-sN-LOh">
-                                                            <rect key="frame" x="260" y="1" width="143" height="17"/>
+                                                            <rect key="frame" x="255" y="1" width="143" height="17"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
                                                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" setsMaxLayoutWidthAtFirstLayout="YES" id="Vo4-rz-caF">
@@ -335,7 +334,7 @@
                                                     <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                     <prototypeCellViews>
                                                         <tableCellView identifier="titleCell" id="11M-aA-eVo">
-                                                            <rect key="frame" x="406" y="1" width="194" height="17"/>
+                                                            <rect key="frame" x="401" y="1" width="194" height="17"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
                                                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" setsMaxLayoutWidthAtFirstLayout="YES" id="DQH-Mi-r6C">
@@ -367,7 +366,7 @@
                                                     <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                     <prototypeCellViews>
                                                         <tableCellView identifier="descriptionCell" id="iNp-k2-C4y">
-                                                            <rect key="frame" x="603" y="1" width="200" height="17"/>
+                                                            <rect key="frame" x="598" y="1" width="200" height="17"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
                                                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" setsMaxLayoutWidthAtFirstLayout="YES" id="HUi-Fu-oue">
@@ -394,7 +393,7 @@
                                         </tableView>
                                     </subviews>
                                 </clipView>
-                                <scroller key="horizontalScroller" wantsLayer="YES" verticalHuggingPriority="750" horizontal="YES" id="Qmf-7c-o81">
+                                <scroller key="horizontalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="YES" id="Qmf-7c-o81">
                                     <rect key="frame" x="0.0" y="332" width="800" height="16"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
@@ -403,7 +402,7 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
                                 <tableHeaderView key="headerView" id="Y6s-aC-B5m">
-                                    <rect key="frame" x="0.0" y="0.0" width="805" height="25"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="800" height="25"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </tableHeaderView>
                             </scrollView>
@@ -502,6 +501,62 @@
                 <customObject id="rPt-NT-nkU" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="15" y="875"/>
+        </scene>
+        <!--Split View Controller-->
+        <scene sceneID="ZAF-h6-q0C">
+            <objects>
+                <splitViewController id="zf9-lQ-i2T" sceneMemberID="viewController">
+                    <splitViewItems>
+                        <splitViewItem id="C5q-TT-FfV"/>
+                        <splitViewItem canCollapse="YES" collapsed="YES" id="utz-qK-08Z"/>
+                    </splitViewItems>
+                    <splitView key="splitView" dividerStyle="thin" id="Sy4-t1-aC0">
+                        <rect key="frame" x="0.0" y="0.0" width="450" height="300"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <connections>
+                            <outlet property="delegate" destination="zf9-lQ-i2T" id="U0J-NV-8ag"/>
+                        </connections>
+                    </splitView>
+                    <connections>
+                        <outlet property="splitView" destination="Sy4-t1-aC0" id="5Vl-Ia-QNr"/>
+                        <segue destination="XfG-lQ-9wD" kind="relationship" relationship="splitItems" id="fij-7g-LJp"/>
+                        <segue destination="uAm-a8-Rrj" kind="relationship" relationship="splitItems" id="MUA-nL-sgT"/>
+                    </connections>
+                </splitViewController>
+                <customObject id="8LL-Bj-xly" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-730" y="1062"/>
+        </scene>
+        <!--Photo View Controller-->
+        <scene sceneID="zQs-4V-uB7">
+            <objects>
+                <viewController id="uAm-a8-Rrj" customClass="PhotoViewController" customModule="PhotoMeta" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" id="1Lp-TN-suB">
+                        <rect key="frame" x="0.0" y="0.0" width="800" height="300"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <subviews>
+                            <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" id="epw-no-hrO">
+                                <rect key="frame" x="0.0" y="0.0" width="800" height="280"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES"/>
+                                <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyUpOrDown" id="xb2-mE-7vx"/>
+                            </imageView>
+                            <progressIndicator wantsLayer="YES" maxValue="100" displayedWhenStopped="NO" indeterminate="YES" controlSize="small" style="spinning" translatesAutoresizingMaskIntoConstraints="NO" id="nR0-Ty-7yd">
+                                <rect key="frame" x="392" y="132" width="16" height="16"/>
+                            </progressIndicator>
+                        </subviews>
+                        <constraints>
+                            <constraint firstItem="nR0-Ty-7yd" firstAttribute="centerX" secondItem="epw-no-hrO" secondAttribute="centerX" id="SZW-Ta-0YY"/>
+                            <constraint firstItem="nR0-Ty-7yd" firstAttribute="centerY" secondItem="epw-no-hrO" secondAttribute="centerY" id="WDb-ev-4kD"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="imageView" destination="epw-no-hrO" id="C58-nY-Qpb"/>
+                        <outlet property="progressIndicator" destination="nR0-Ty-7yd" id="UqM-u9-B5L"/>
+                    </connections>
+                </viewController>
+                <customObject id="XfP-bP-KKJ" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="15" y="1281"/>
         </scene>
         <!--Paths Controller-->
         <scene sceneID="zBf-f2-Khw">
@@ -630,7 +685,7 @@ Gw
                 </viewController>
                 <customObject id="Xq4-7R-rHA" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-32" y="1260"/>
+            <point key="canvasLocation" x="698" y="875"/>
         </scene>
     </scenes>
     <resources>
