@@ -12,6 +12,10 @@ enum PathExceptions: Error {
   case TargetURLNotDir
 }
 
+protocol PhotoSelectionDelegate: class {
+  func photoSelected(_ photo: Photo?)
+}
+
 class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelegate, NSToolbarItemValidation {
 
   // MARK: - Outlets
@@ -24,6 +28,8 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
   @IBOutlet weak var sourcePath: NSPathCell!
   
   // MARK: - Vars
+
+  weak var delegate: PhotoSelectionDelegate?
   
   private (set) var photoManager: PhotoManager?
   private var selectedTags: [Tag] {
@@ -75,7 +81,8 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
   // MARK: - Start
   
   func initProject(sourceURL: NSURL, targetURL: NSURL) {
-    hidePhotoView()
+    delegate?.photoSelected(nil)
+
     sourcePath.url = sourceURL as URL
     self.view.window?.setTitleWithRepresentedFilename(targetURL.path!)
     photoManager = PhotoManager(sourceURL: sourceURL, targetURL: targetURL)
@@ -248,7 +255,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
 
   func tableView(_ tableView: NSTableView, shouldSelectRow row: Int) -> Bool {
     if let selectedPhoto = photoManager!.files[row] as? Photo {
-      self.open(photo: selectedPhoto)
+      delegate?.photoSelected(selectedPhoto)
 
       return true
     } else {
@@ -295,27 +302,5 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     cellView?.textField?.stringValue = text
     
     return cellView
-  }
-
-  private func open(photo: Photo) {
-    execInPhotoView { (photoViewController: PhotoViewController) -> Void in
-      photoViewController.open(photo: photo)
-    }
-  }
-
-  private func hidePhotoView() {
-    execInPhotoView { (photoViewController: PhotoViewController) -> Void in
-      photoViewController.viewDisplay(collapsed: true)
-    }
-  }
-
-  private func execInPhotoView(closure: (_ photoViewController: PhotoViewController) -> Void) {
-    if let splitViewController = self.parent as? NSSplitViewController {
-      if let siblingViewItem = splitViewController.splitViewItems[1] as NSSplitViewItem? {
-        if let photoViewController = siblingViewItem.viewController as? PhotoViewController {
-          closure(photoViewController)
-        }
-      }
-    }
   }
 }

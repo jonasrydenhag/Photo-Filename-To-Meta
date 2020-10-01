@@ -10,18 +10,16 @@ import Cocoa
 
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
-
-
-
-  func applicationDidFinishLaunching(aNotification: NSNotification) {
+  func applicationDidFinishLaunching(_ aNotification: Notification) {
     // Insert code here to initialize your application
     //NSUserDefaults.standardUserDefaults().setBool(true, forKey:"NSConstraintBasedLayoutVisualizeMutuallyExclusiveConstraints")
-  }
-  
-  func applicationWillTerminate(aNotification: NSNotification) {
-    // Insert code here to tear down your application
-  }
 
+    guard
+      let splitViewController = NSApplication.shared.mainWindow?.contentViewController as? NSSplitViewController,
+      let viewController = splitViewController.splitViewItems.first?.viewController as? ViewController,
+      let photoViewController = splitViewController.splitViewItems.last?.viewController as? PhotoViewController
+      else { fatalError() }
 
+    viewController.delegate = photoViewController
+  }
 }
-

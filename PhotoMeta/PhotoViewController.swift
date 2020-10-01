@@ -11,6 +11,7 @@ import Cocoa
 class PhotoViewController: NSViewController {
   @IBOutlet weak var imageView: NSImageView!
   @IBOutlet weak var progressIndicator: NSProgressIndicator!
+  private var photo: Photo?
 
   func open(photo: Photo) {
     viewDisplay(collapsed: false)
@@ -48,5 +49,11 @@ class PhotoViewController: NSViewController {
     if imageView != nil {
       imageView.image = nil
     }
+  }
+}
+
+extension PhotoViewController: PhotoSelectionDelegate {
+  func photoSelected(_ photo: Photo?) {
+    self.photo = photo
   }
 }
