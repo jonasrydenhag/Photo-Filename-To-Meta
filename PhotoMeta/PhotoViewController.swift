@@ -9,44 +9,53 @@
 import Cocoa
 
 class PhotoViewController: NSViewController {
+  @IBOutlet weak var contentView: NSView!
+  @IBOutlet weak var dateInput: NSDatePicker!
+  @IBOutlet weak var descriptionInput: NSTextField!
+  @IBOutlet weak var fileExtensionLabel: NSTextField!
   @IBOutlet weak var imageView: NSImageView!
   @IBOutlet weak var progressIndicator: NSProgressIndicator!
-  private var photo: Photo?
 
-  func open(photo: Photo) {
-    viewDisplay(collapsed: false)
-
-    load(photo: photo)
+  private var photo: Photo? {
+    didSet {
+      refresh()
+    }
   }
 
-  func viewDisplay(collapsed: Bool) {
-    if let splitViewController = self.parent as? NSSplitViewController {
-      if let parentSplitView = splitViewController.splitViewItem(for: self) {
-        parentSplitView.isCollapsed = collapsed
+  @IBAction func descriptionInput(_ sender: NSTextField) {
+  }
 
-        if collapsed == true {
-          unloadPhoto()
-        }
+  private func refresh() {
+    contentView.isHidden = true
+    setCollapsedState()
+
+    progressIndicator.startAnimation(nil)
+    progressIndicator.isHidden = false
+
+    DispatchQueue.main.async {
+      self.renderPhoto()
+
+      self.contentView.isHidden = self.photo == nil
+
+      self.progressIndicator.stopAnimation(nil)
+      self.progressIndicator.isHidden = true
+    }
+  }
+
+  func setCollapsedState() {
+    if let splitViewController = parent as? NSSplitViewController {
+      if let parentSplitView = splitViewController.splitViewItem(for: self) {
+        parentSplitView.isCollapsed = photo == nil
       }
     }
   }
 
-  private func load(photo: Photo) {
-    if let photoPath = photo.URL.path {
+  private func renderPhoto() {
+    if let photoPath = photo?.URL.path {
       let image = NSImage(byReferencingFile: photoPath)
 
-      unloadPhoto()
-      progressIndicator.startAnimation(nil)
-
-      DispatchQueue.main.async {
-        self.imageView.image = image
-        self.progressIndicator.stopAnimation(nil)
-      }
-    }
-  }
-
-  private func unloadPhoto() {
-    if imageView != nil {
+      imageView.image = image
+    } else {
       imageView.image = nil
     }
   }
