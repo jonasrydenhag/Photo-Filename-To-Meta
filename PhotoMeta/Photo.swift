@@ -28,6 +28,17 @@ class Photo: File {
       return extractTitle()
     }
   }
+
+  var date: Date? {
+    get {
+      if let date = extractDate() {
+        return date
+      }
+
+      return dateMeta()
+    }
+  }
+
   let dateFormatter = DateFormatter()
   var metaWriter: MetaWriter
   
@@ -155,6 +166,18 @@ class Photo: File {
       tagsValue[tag] = value
     }
     return tagsValue[tag]
+  }
+
+  private func dateMeta() -> Date? {
+    do {
+      let dateValue = try metaWriter.valueFor(tag: Tag.Date, file: self)
+
+      return metaWriter.dateFormatter.date(from: dateValue)
+    } catch {
+      // Ignore value
+    }
+
+    return nil
   }
 
   private func extractTitle() -> String {

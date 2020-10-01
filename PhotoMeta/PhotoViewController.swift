@@ -33,6 +33,7 @@ class PhotoViewController: NSViewController {
     progressIndicator.isHidden = false
 
     DispatchQueue.main.async {
+      self.renderDescription()
       self.renderPhoto()
 
       self.contentView.isHidden = self.photo == nil
@@ -58,6 +59,35 @@ class PhotoViewController: NSViewController {
     } else {
       imageView.image = nil
     }
+  }
+
+  private func renderDescription() {
+    dateInput.dateValue = photo?.date ?? Date()
+
+    if let selectedPhoto = photo {
+      descriptionInput.isEditable = false
+      descriptionInput.stringValue = self.extractDescription(selectedPhoto)
+      descriptionInput.isEditable = true
+      descriptionInput.becomeFirstResponder()
+
+      fileExtensionLabel.stringValue = "." + (selectedPhoto.URL.pathExtension ?? "")
+    } else {
+      descriptionInput?.stringValue = ""
+      fileExtensionLabel?.stringValue = ""
+    }
+  }
+
+  private func extractDescription(_ photo: Photo) -> String {
+    let dateFormatter = DateFormatter()
+    dateFormatter.dateFormat = "yyyy-MM-dd"
+
+    if let photoDate = photo.date {
+      let dateString = dateFormatter.string(from: photoDate)
+
+      return photo.fileName.replacingOccurrences(of: dateString, with: "").trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
+    return photo.fileName
   }
 }
 
