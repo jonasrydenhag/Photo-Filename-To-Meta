@@ -13,7 +13,7 @@ enum PathExceptions: Error {
 }
 
 protocol PhotoSelectionDelegate: class {
-  func photoSelected(_ photo: Photo?)
+  func selected(photo: Photo?, _ renameTo: ((String) throws -> Void)?)
 }
 
 class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelegate, NSToolbarItemValidation {
@@ -81,7 +81,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
   // MARK: - Start
   
   func initProject(sourceURL: NSURL, targetURL: NSURL) {
-    delegate?.photoSelected(nil)
+    delegate?.selected(photo: nil, nil)
 
     sourcePath.url = sourceURL as URL
     self.view.window?.setTitleWithRepresentedFilename(targetURL.path!)
@@ -255,7 +255,11 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
 
   func tableView(_ tableView: NSTableView, shouldSelectRow row: Int) -> Bool {
     if let selectedPhoto = photoManager!.files[row] as? Photo {
-      delegate?.photoSelected(selectedPhoto)
+      delegate?.selected(photo: selectedPhoto, { (proposedFilename: String) throws -> Void in
+        try self.rename(photo: selectedPhoto, to: proposedFilename)
+
+        self.reload(column: NSUserInterfaceItemIdentifier(rawValue: "path"), at: row)
+      })
 
       return true
     } else {
@@ -302,5 +306,19 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
     cellView?.textField?.stringValue = text
     
     return cellView
+  }
+
+  private func reload(column columnId: NSUserInterfaceItemIdentifier, at row: Int) {
+    if let column = self.tableView.tableColumn(withIdentifier: columnId) {
+      if let index = self.tableView.tableColumns.firstIndex(of: column) {
+        tableView.reloadData(forRowIndexes: IndexSet(integer: row), columnIndexes: IndexSet(integer: index))
+      }
+    }
+  }
+
+  private func rename(photo: Photo, to proposedFilename: String) throws {
+    if photo.fileName != proposedFilename {
+      try photoManager?.rename(photo, to: proposedFilename)
+    }
   }
 }

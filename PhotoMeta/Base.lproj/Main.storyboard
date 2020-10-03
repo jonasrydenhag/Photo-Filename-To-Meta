@@ -780,9 +780,12 @@
                                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         </datePickerCell>
+                                        <connections>
+                                            <action selector="dateInput:" target="uAm-a8-Rrj" id="dJB-F4-RlF"/>
+                                        </connections>
                                     </datePicker>
                                     <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="fFx-2K-Xln">
-                                        <rect key="frame" x="194" y="188" width="581" height="21"/>
+                                        <rect key="frame" x="194" y="188" width="558" height="21"/>
                                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" drawsBackground="YES" usesSingleLineMode="YES" id="H2L-JZ-VE3">
                                             <font key="font" metaFont="system"/>
                                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -793,27 +796,38 @@
                                         </connections>
                                     </textField>
                                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="5Ua-KU-NGe" userLabel="File Extension Label">
-                                        <rect key="frame" x="778" y="190" width="4" height="16"/>
-                                        <textFieldCell key="cell" lineBreakMode="clipping" id="a9e-9P-CHy">
+                                        <rect key="frame" x="755" y="190" width="27" height="16"/>
+                                        <textFieldCell key="cell" lineBreakMode="clipping" placeholderString=".jpg" id="a9e-9P-CHy">
                                             <font key="font" metaFont="system"/>
                                             <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                         </textFieldCell>
                                     </textField>
                                     <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" id="epw-no-hrO">
-                                        <rect key="frame" x="0.0" y="10" width="800" height="166"/>
+                                        <rect key="frame" x="0.0" y="10" width="800" height="150"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES"/>
                                         <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyUpOrDown" id="xb2-mE-7vx"/>
                                     </imageView>
+                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="fSX-TX-Iv0">
+                                        <rect key="frame" x="87" y="167" width="34" height="16"/>
+                                        <textFieldCell key="cell" lineBreakMode="clipping" selectable="YES" title="Error" usesSingleLineMode="YES" id="5T8-6f-ML9">
+                                            <font key="font" metaFont="system"/>
+                                            <color key="textColor" name="systemRedColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                    </textField>
                                 </subviews>
                                 <constraints>
                                     <constraint firstItem="fFx-2K-Xln" firstAttribute="centerY" secondItem="OxN-F3-m3N" secondAttribute="centerY" id="6jl-CR-JoX"/>
                                     <constraint firstItem="OxN-F3-m3N" firstAttribute="top" secondItem="5Oa-YV-MxC" secondAttribute="top" constant="20" id="FUl-fb-Leh"/>
+                                    <constraint firstItem="fSX-TX-Iv0" firstAttribute="top" secondItem="Sye-Ux-6Ls" secondAttribute="bottom" constant="3" id="GaJ-QG-CIg"/>
                                     <constraint firstItem="fFx-2K-Xln" firstAttribute="leading" secondItem="Sye-Ux-6Ls" secondAttribute="trailing" constant="5" id="ShY-md-f67"/>
                                     <constraint firstItem="5Ua-KU-NGe" firstAttribute="leading" secondItem="fFx-2K-Xln" secondAttribute="trailing" constant="5" id="WUd-Dl-mFJ"/>
                                     <constraint firstItem="5Ua-KU-NGe" firstAttribute="centerY" secondItem="fFx-2K-Xln" secondAttribute="centerY" id="ZEa-TE-Wfv"/>
                                     <constraint firstItem="OxN-F3-m3N" firstAttribute="leading" secondItem="5Oa-YV-MxC" secondAttribute="leading" constant="20" id="ZSL-f1-5qI"/>
+                                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="fSX-TX-Iv0" secondAttribute="trailing" constant="20" id="dU1-9c-94W"/>
                                     <constraint firstItem="Sye-Ux-6Ls" firstAttribute="centerY" secondItem="OxN-F3-m3N" secondAttribute="centerY" id="gmU-A4-dqz"/>
+                                    <constraint firstItem="fSX-TX-Iv0" firstAttribute="leading" secondItem="Sye-Ux-6Ls" secondAttribute="leading" id="lVc-PO-06z"/>
                                     <constraint firstItem="Sye-Ux-6Ls" firstAttribute="leading" secondItem="OxN-F3-m3N" secondAttribute="trailing" constant="10" id="s9W-7y-JsZ"/>
                                     <constraint firstAttribute="trailing" secondItem="5Ua-KU-NGe" secondAttribute="trailing" constant="20" id="y1N-1v-bEP"/>
                                 </constraints>
@@ -828,6 +842,7 @@
                         <outlet property="contentView" destination="5Oa-YV-MxC" id="SNq-wR-9SK"/>
                         <outlet property="dateInput" destination="Sye-Ux-6Ls" id="sMU-Fw-lyu"/>
                         <outlet property="descriptionInput" destination="fFx-2K-Xln" id="3xb-9Z-1a9"/>
+                        <outlet property="errorMsg" destination="fSX-TX-Iv0" id="DCn-8E-4Dx"/>
                         <outlet property="fileExtensionLabel" destination="5Ua-KU-NGe" id="IDr-T4-3tX"/>
                         <outlet property="imageView" destination="epw-no-hrO" id="C58-nY-Qpb"/>
                         <outlet property="progressIndicator" destination="nR0-Ty-7yd" id="UqM-u9-B5L"/>

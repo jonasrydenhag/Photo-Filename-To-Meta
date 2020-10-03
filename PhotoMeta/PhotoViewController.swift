@@ -12,21 +12,51 @@ class PhotoViewController: NSViewController {
   @IBOutlet weak var contentView: NSView!
   @IBOutlet weak var dateInput: NSDatePicker!
   @IBOutlet weak var descriptionInput: NSTextField!
+  @IBOutlet weak var errorMsg: NSTextField!
   @IBOutlet weak var fileExtensionLabel: NSTextField!
   @IBOutlet weak var imageView: NSImageView!
   @IBOutlet weak var progressIndicator: NSProgressIndicator!
 
+  private let dateFormatter = DateFormatter()
+
+  private var renamePhoto: ((String) throws -> Void)?
+
   private var photo: Photo? {
     didSet {
+      renamePhoto = nil
       refresh()
     }
   }
 
+  public required init?(coder: NSCoder) {
+    super.init(coder: coder)
+
+    dateFormatter.dateFormat = "yyyy-MM-dd"
+  }
+
+  @IBAction func dateInput(_ sender: NSDatePicker) {
+    resetErrors()
+
+    if dateFormatter.string(from: dateInput.dateValue) != dateFormatter.string(from: dateInputDefaultValue()) {
+      processRenaming(senderView: sender.layer)
+    }
+  }
+
   @IBAction func descriptionInput(_ sender: NSTextField) {
+    resetErrors()
+
+    if let selectedPhoto = photo {
+      if descriptionInput.stringValue != extractDescription(selectedPhoto) {
+        processRenaming(senderView: sender.layer)
+      }
+    }
   }
 
   private func refresh() {
     contentView.isHidden = true
+
+    resetErrors()
+
     setCollapsedState()
 
     progressIndicator.startAnimation(nil)
@@ -51,6 +81,12 @@ class PhotoViewController: NSViewController {
     }
   }
 
+  private func resetErrors() {
+    errorMsg.stringValue = ""
+    dateInput.layer?.borderWidth = 0
+    descriptionInput.layer?.borderWidth = 0
+  }
+
   private func renderPhoto() {
     if let photoPath = photo?.URL.path {
       let image = NSImage(byReferencingFile: photoPath)
@@ -62,7 +98,7 @@ class PhotoViewController: NSViewController {
   }
 
   private func renderDescription() {
-    dateInput.dateValue = photo?.date ?? Date()
+    dateInput.dateValue = dateInputDefaultValue()
 
     if let selectedPhoto = photo {
       descriptionInput.isEditable = false
@@ -77,10 +113,11 @@ class PhotoViewController: NSViewController {
     }
   }
 
-  private func extractDescription(_ photo: Photo) -> String {
-    let dateFormatter = DateFormatter()
-    dateFormatter.dateFormat = "yyyy-MM-dd"
+  private func dateInputDefaultValue() -> Date {
+    return photo?.date ?? Date()
+  }
 
+  private func extractDescription(_ photo: Photo) -> String {
     if let photoDate = photo.date {
       let dateString = dateFormatter.string(from: photoDate)
 
@@ -89,10 +126,34 @@ class PhotoViewController: NSViewController {
 
     return photo.fileName
   }
+
+  private func processRenaming(senderView: CALayer?) {
+    do {
+      try renamePhoto?(assembleFilename())
+    } catch {
+      senderView?.borderColor = NSColor.red.cgColor
+      senderView?.borderWidth = 1
+
+      errorMsg.stringValue = error.localizedDescription
+    }
+  }
+
+  private func assembleFilename() -> String {
+    let date = dateInput.dateValue
+    var description = descriptionInput.stringValue.trimmingCharacters(in: .whitespacesAndNewlines)
+
+    let descFirstChar = String(description.prefix(1))
+    if descFirstChar != "-" {
+      description = " " + description
+    }
+
+    return dateFormatter.string(from: date) + description + fileExtensionLabel.stringValue
+  }
 }
 
 extension PhotoViewController: PhotoSelectionDelegate {
-  func photoSelected(_ photo: Photo?) {
+  func selected(photo: Photo?, _ renameTo: ((String) throws -> Void)?) {
     self.photo = photo
+    self.renamePhoto = renameTo
   }
 }

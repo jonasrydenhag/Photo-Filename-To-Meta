@@ -32,7 +32,7 @@ class File {
     }
   }
   
-  func changeURL(fileURL: NSURL, baseURL: NSURL) -> File {
+  @discardableResult func changeURL(fileURL: NSURL, baseURL: NSURL) -> File {
     self.URL = fileURL
     self.baseURL = baseURL
     return self

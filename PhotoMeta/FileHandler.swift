@@ -25,6 +25,11 @@ class FileHandler: FileManager {
     self.collectFiles()
   }
   
+  func rename(_ file: File, to: String) throws {
+    try renameSource(file, to)
+    try renameTarget(file, to)
+  }
+
   internal func collectFiles() {
     if sourceURL.path == nil {
       return
@@ -52,7 +57,7 @@ class FileHandler: FileManager {
     }
   }
   
-  internal func copyIfNeeded(file: Photo) throws {
+  internal func copyIfNeeded(file: File) throws {
     if !fileExists(atPath: file.URL.path!) {
       throw File.FileExceptions.FileDoesNotExist
     }
@@ -121,5 +126,27 @@ class FileHandler: FileManager {
     let URL = NSURL(fileURLWithFileSystemRepresentation: destPath, isDirectory: false, relativeTo: targetURL as URL)
     
     return file.changeURL(fileURL: URL, baseURL: toDir)
+  }
+
+  private func renameSource(_ file: File, _ to: String) throws {
+    let toSourceUrl = URL(fileURLWithPath: to, relativeTo: sourceURL as URL)
+
+    let fileSourceUrl = URL(fileURLWithPath: file.URL.lastPathComponent!, relativeTo: sourceURL as URL)
+
+    try moveItem(at: fileSourceUrl, to: toSourceUrl)
+
+    if file.baseURL == sourceURL {
+      file.changeURL(fileURL: toSourceUrl as NSURL, baseURL: sourceURL)
+    }
+  }
+
+  private func renameTarget(_ file: File, _ to: String) throws {
+    let toTargetUrl = URL(fileURLWithPath: to, relativeTo: targetURL as URL)
+
+    if file.baseURL == targetURL {
+      try moveItem(at: file.URL as URL, to: toTargetUrl)
+
+      file.changeURL(fileURL: toTargetUrl as NSURL, baseURL: targetURL)
+    }
   }
 }
