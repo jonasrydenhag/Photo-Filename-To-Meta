@@ -52,10 +52,18 @@ class PhotoManager: FileHandler {
   }
 
   func rename(_ photo: Photo, to: String) throws {
+    let currentSourceFilename = photo.sourceFile.filename
+
     try rename(photo.sourceFile, to)
 
     if let targetFile = photo.targetFile {
-      try rename(targetFile, to)
+      do {
+        try rename(targetFile, to)
+      } catch {
+        try rename(photo.sourceFile, currentSourceFilename)
+
+        throw error
+      }
     }
   }
 
