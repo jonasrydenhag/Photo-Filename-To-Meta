@@ -8,33 +8,32 @@
 
 import Foundation
 
-class File {
-
+class File: FileURL {
   enum FileExceptions: Error {
     case NotAFile
     case FileDoesNotExist
   }
-  
-  private (set) var URL: NSURL
-  private (set) var baseURL: NSURL
+
+  private (set) var baseURL: URL
+
   var relativePath: String {
     get {
-      return URL.path!.replacingOccurrences(of: baseURL.path! + "/", with: "", options: NSString.CompareOptions.literal, range: nil)
+      return URL.path.replacingOccurrences(of: baseURL.path + "/", with: "", options: NSString.CompareOptions.literal, range: nil)
     }
   }
-  
-  init(fileURL: NSURL, baseURL: NSURL) throws {
+
+  private (set) var URL: URL
+
+  init(fileURL: URL, baseURL: URL) throws {
     self.URL = fileURL
     self.baseURL = baseURL
 
-    if self.URL.resourceSpecifier == URLFileResourceType.directory.rawValue {
+    if self.URL.hasDirectoryPath {
       throw FileExceptions.NotAFile
     }
   }
-  
-  @discardableResult func changeURL(fileURL: NSURL, baseURL: NSURL) -> File {
-    self.URL = fileURL
-    self.baseURL = baseURL
-    return self
+
+  func change(URL: URL) {
+    self.URL = URL
   }
 }

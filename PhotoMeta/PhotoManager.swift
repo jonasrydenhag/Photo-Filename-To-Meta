@@ -14,93 +14,103 @@ class PhotoManager: FileHandler {
   private var photos: [Photo] = []
   private (set) var running = false
   private var cancel = false
-  
+
   override func collectFiles() {
     super.collectFiles();
     self.photos = self.files.compactMap{ $0 as? Photo }
   }
-  
+
   func read(tags: [Tag], afterEach: () -> Void) {
     resetLatestRunStatus(files: photos)
-    
+
     running = true
-    
+
     for photo in photos {
       if cancel {
         break
       }
-      
-      photo.read(tags: tags)
-      
+
+      photo.parseMetaValueFor(tags: tags)
+
       afterEach()
     }
-    
+
     running = false
     cancel = false
   }
-  
+
   func write(tags: [Tag], overwriteValues: Bool = false, withSelected: [Photo] = [], afterEach: () -> Void) {
     run(tags: tags, overwriteValues: overwriteValues, withSelected: withSelected, afterEach: afterEach)
   }
-  
+
   func delete(tags: [Tag], afterEach: () -> Void) {
     run(tags: tags, deleteTags: true, afterEach: afterEach)
   }
-  
+
   func cancelRun() {
     cancel = true
   }
-  
-  internal override func createFileFrom(URL: NSURL, baseURL: NSURL) -> File? {
+
+  func rename(_ photo: Photo, to: String) throws {
+    try rename(photo.sourceFile, to)
+
+    if let targetFile = photo.targetFile {
+      try rename(targetFile, to)
+    }
+  }
+
+  internal override func createFrom(_ URL: URL, baseURL: URL) -> FileURL? {
     do {
-      let file = try Photo(fileURL: URL, baseURL: baseURL, metaWriter: metaWriter)
-      return file
-      
+      return try Photo(URL, baseURL: baseURL, metaWriter: metaWriter)
     } catch Photo.PhotoExceptions.NotSupported {
-      return super.createFileFrom(URL: URL, baseURL: baseURL)
-      
+      return super.createFrom(URL, baseURL: baseURL)
     } catch  {
       return nil
     }
   }
-  
+
   private func run(tags: [Tag], overwriteValues: Bool = false, deleteTags: Bool = false, withSelected: [Photo] = [], afterEach: () -> Void) {
     running = true
     let runPhotos: [Photo]
-    
+
     if withSelected.count > 0 {
       runPhotos = withSelected 
     } else {
       runPhotos = photos
     }
-    
+
     resetLatestRunStatus(files: runPhotos)
-    
+
     for photo in runPhotos {
       if cancel {
         break
       }
-      
+
       do {
-        try copyIfNeeded(file: photo)
+        photo.targetFile = try copy(photoFile: photo.sourceFile)
       } catch {
         continue
       }
-        
+
       if deleteTags {
         photo.deleteValueFor(tags: tags)
-        
       } else {
         photo.write(tags: tags, overwriteValues: overwriteValues)
       }
-      
+
       afterEach()
     }
-    
+
     running = false
     cancel = false
   }
-  
+
+  private func copy(photoFile: ReadOnlyPhotoFile) throws -> PhotoFile {
+    let targetURL = try copy(file: photoFile)
+
+    return try PhotoFile(targetURL, baseURL: targetDir, from: photoFile)
+  }
+
   private func resetLatestRunStatus(files: [Photo]) {
     for file in files {
       file.resetLatestRunStatus()

@@ -14,15 +14,15 @@ enum MetaWriteError: Error {
 }
 
 protocol MetaWriter {
-  
+
   var supportedFileTypes: [CFString?] { get }
-  
+
   var dateFormatter: DateFormatter { get }
-  
+
   func valueFor(tag: Tag, file: File) throws -> String
-  
+
   func write(tagsValue: [Tag: String], file: File) throws
-  
+
   func deleteValueFor(tags: [Tag], file: File) throws
-  
+
 }

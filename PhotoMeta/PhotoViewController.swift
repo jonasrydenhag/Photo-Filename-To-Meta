@@ -88,7 +88,7 @@ class PhotoViewController: NSViewController {
   }
 
   private func renderPhoto() {
-    if let photoPath = photo?.URL.path {
+    if let photoPath = photo?.sourceFile.URL.path {
       let image = NSImage(byReferencingFile: photoPath)
 
       imageView.image = image
@@ -106,7 +106,7 @@ class PhotoViewController: NSViewController {
       descriptionInput.isEditable = true
       descriptionInput.becomeFirstResponder()
 
-      fileExtensionLabel.stringValue = "." + (selectedPhoto.URL.pathExtension ?? "")
+      fileExtensionLabel.stringValue = "." + selectedPhoto.sourceFile.URL.pathExtension
     } else {
       descriptionInput?.stringValue = ""
       fileExtensionLabel?.stringValue = ""
@@ -121,10 +121,10 @@ class PhotoViewController: NSViewController {
     if let photoDate = photo.date {
       let dateString = dateFormatter.string(from: photoDate)
 
-      return photo.fileName.replacingOccurrences(of: dateString, with: "").trimmingCharacters(in: .whitespacesAndNewlines)
+      return photo.title.replacingOccurrences(of: dateString, with: "").trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
-    return photo.fileName
+    return photo.title
   }
 
   private func processRenaming(senderView: CALayer?) {

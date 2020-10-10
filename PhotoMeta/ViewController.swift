@@ -12,6 +12,10 @@ enum PathExceptions: Error {
   case TargetURLNotDir
 }
 
+protocol FileURL {
+  var relativePath: String { get }
+}
+
 protocol PhotoSelectionDelegate: class {
   func selected(photo: Photo?, _ renameTo: ((String) throws -> Void)?)
 }
@@ -19,18 +23,18 @@ protocol PhotoSelectionDelegate: class {
 class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelegate, NSToolbarItemValidation {
 
   // MARK: - Outlets
-  
+
   @IBOutlet weak var tableView: NSTableView!
   @IBOutlet weak var overwriteCheckBtn: NSButton!
   @IBOutlet weak var tagCheckDate: NSButton!
   @IBOutlet weak var tagCheckDescription: NSButton!
   @IBOutlet weak var tagCheckTitle: NSButton!
   @IBOutlet weak var sourcePath: NSPathCell!
-  
+
   // MARK: - Vars
 
   weak var delegate: PhotoSelectionDelegate?
-  
+
   private (set) var photoManager: PhotoManager?
   private var selectedTags: [Tag] {
     get {
@@ -47,27 +51,27 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
       return checkedTags
     }
   }
-  
+
   // MARK: - ViewControlller
-  
+
   override func viewDidAppear() {
     super.viewDidAppear()
     if photoManager == nil {
       selectPaths()
     }
   }
-  
+
   // MARK: - Source and Target chooser
 
   private func selectPaths() {
     if let savedSourceURLString = UserDefaults.standard.string(forKey: "sourceURL"),
        let savedTargetURLString = UserDefaults.standard.string(forKey: "targetURL") {
-      initProject(sourceURL: NSURL(fileURLWithPath: savedSourceURLString), targetURL: NSURL(fileURLWithPath: savedTargetURLString))
+      initProject(sourceURL: URL(fileURLWithPath: savedSourceURLString), targetURL: URL(fileURLWithPath: savedTargetURLString))
     } else {
       openSelectPaths()
     }
   }
-  
+
   private func openSelectPaths() {
     self.performSegue(withIdentifier: "selectPaths", sender: self)
   }
@@ -77,19 +81,19 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
       pathsController.caller = self
     }
   }
-  
+
   // MARK: - Start
-  
-  func initProject(sourceURL: NSURL, targetURL: NSURL) {
+
+  func initProject(sourceURL: URL, targetURL: URL) {
     delegate?.selected(photo: nil, nil)
 
     sourcePath.url = sourceURL as URL
-    self.view.window?.setTitleWithRepresentedFilename(targetURL.path!)
+    self.view.window?.setTitleWithRepresentedFilename(targetURL.path)
     photoManager = PhotoManager(sourceURL: sourceURL, targetURL: targetURL)
     toggleColumnVisibility()
     tableView.reloadData()
   }
-  
+
   // MARK: - Action buttons
 
   func validateToolbarItem(_ item: NSToolbarItem) -> Bool {
@@ -116,17 +120,17 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
       return false
     }
   }
-  
+
   // MARK: - Actions
-  
+
   @IBAction func tagCheckClick(_ sender: NSButton) {
     toggleColumnVisibility(tags: selectedTags)
   }
-  
+
   @IBAction func open(_ sender: Any) {
     openSelectPaths()
   }
-  
+
   @IBAction func read(_ sender: Any) {
     toggleColumnVisibility(tags: selectedTags)
 
@@ -144,54 +148,54 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
       }
     }
   }
-  
+
   @IBAction func write(_ sender: Any) {
     run(tags: selectedTags, overwriteValues: (overwriteCheckBtn.state == NSControl.StateValue.on))
   }
-  
+
   @IBAction func delete(_ sender: Any) {
     run(tags: selectedTags, deleteTags: true)
   }
-  
+
   @IBAction func cancel(_ sender: Any) {
     photoManager?.cancelRun()
   }
-  
+
   private func run(tags: [Tag], overwriteValues: Bool = false, deleteTags: Bool = false) {
     if photoManager == nil {
       return
     }
-    
+
     toggleColumnVisibility(tags: selectedTags)
-    
+
     DispatchQueue.global(qos: .userInitiated).async {
       let afterEach = {
           DispatchQueue.main.async {
             self.tableView.reloadData()
           }
       }
-      
+
       if deleteTags {
         self.photoManager?.delete(tags: tags, afterEach: afterEach)
-        
+
       } else {
         self.photoManager?.write(tags: tags, overwriteValues: overwriteValues, afterEach: afterEach)
       }
-      
+
       DispatchQueue.main.async {
         self.view.window?.toolbar?.validateVisibleItems()
       }
     }
   }
-  
+
   // MARK: - Table View
-  
+
   private func toggleColumnVisibility(tags: [Tag] = []) {
     for column in tableView.tableColumns {
       switch column.identifier.rawValue {
       case "status", "enum", "path":
         column.isHidden = false
-        
+
       default:
         var tagFound = false
         for tag in tags {
@@ -215,41 +219,41 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
   func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
     var cellView: NSTableCellView?
     let columnID: String
-    
+
     if photoManager == nil {
       return cellView
     }
-    
+
     if photoManager!.files.count < row {
       return cellView
     }
-    
+
     if (tableColumn?.identifier.rawValue != nil) {
       columnID = tableColumn!.identifier.rawValue
     } else {
       return cellView
     }
-    
+
     let file = photoManager!.files[row]
-    
+
     if columnID == "enum" {
       cellView = tableView.makeView(withIdentifier: NSUserInterfaceItemIdentifier(rawValue: "enumCell"), owner: self) as? NSTableCellView
       cellView?.textField?.stringValue = "\(row + 1)"
-      
+
     } else if columnID == "path" {
       cellView = tableView.makeView(withIdentifier: NSUserInterfaceItemIdentifier(rawValue: "pathCell"), owner: self) as? NSTableCellView
       cellView?.textField?.stringValue = file.relativePath
-      
+
     } else if let photo = file as? Photo {
       cellView = renderPhoto(tableView: tableView, viewForTableColumnID: columnID, photo: photo)
     }
-    
+
     if !(file is Photo) {
       cellView?.textField?.textColor = NSColor.gray
     } else {
       cellView?.textField?.textColor = nil
     }
-    
+
     return cellView
   }
 
@@ -270,11 +274,11 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
   private func renderPhoto(tableView: NSTableView, viewForTableColumnID columnID: String, photo: Photo) -> NSTableCellView? {
     var cellView: NSTableCellView?
     var text = ""
-    
+
     if columnID == "status" {
       cellView = tableView.makeView(withIdentifier: NSUserInterfaceItemIdentifier(rawValue: "statusCell"), owner: self) as? NSTableCellView
       cellView?.textField?.isHidden = false
-      
+
       switch photo.latestRunStatus {
       case .Success:
         cellView?.textField?.backgroundColor = NSColor.green
@@ -285,26 +289,20 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
       default:
         cellView?.textField?.isHidden = true
       }
-      
+
     } else if columnID == "Date" {
       cellView = tableView.makeView(withIdentifier: NSUserInterfaceItemIdentifier(rawValue: "dateCell"), owner: self) as? NSTableCellView
-      if photo.tagsValue[Tag.Date] != nil {
-        text = photo.tagsValue[Tag.Date]!
-      }
+      text = photo.parsedTagValue(for: Tag.Date) ?? ""
     } else if columnID == "Description" {
       cellView = tableView.makeView(withIdentifier: NSUserInterfaceItemIdentifier(rawValue: "descriptionCell"), owner: self) as? NSTableCellView
-      if photo.tagsValue[Tag.Description] != nil {
-        text = photo.tagsValue[Tag.Description]!
-      }
+      text = photo.parsedTagValue(for: Tag.Description) ?? ""
     } else if columnID == "Title" {
       cellView = tableView.makeView(withIdentifier: NSUserInterfaceItemIdentifier(rawValue: "titleCell"), owner: self) as? NSTableCellView
-      if photo.tagsValue[Tag.Title] != nil {
-        text = photo.tagsValue[Tag.Title]!
-      }
+      text = photo.parsedTagValue(for: Tag.Title) ?? ""
     }
-    
+
     cellView?.textField?.stringValue = text
-    
+
     return cellView
   }
 
@@ -317,7 +315,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
   }
 
   private func rename(photo: Photo, to proposedFilename: String) throws {
-    if photo.fileName != proposedFilename {
+    if photo.filename != proposedFilename {
       try photoManager?.rename(photo, to: proposedFilename)
     }
   }

@@ -17,16 +17,16 @@ class PathsController: NSViewController, NSTableViewDataSource, NSTableViewDeleg
   @IBOutlet weak var targetTextFieldLabel: NSTextField!
   @IBOutlet weak var cancelBtn: NSButton!
   @IBOutlet weak var okBtn: NSButton!
-  
+
   @IBAction func selectSourceDialog(_ sender: Any) {
     if let selectedPath = choosePath() {
-      sourceURL = selectedPath as NSURL
+      sourceURL = selectedPath
     }
   }
 
   @IBAction func selectTargetDialog(_ sender: Any) {
     if let selectedPath = choosePath(canChooseFiles: false, canCreateDirectories: true) {
-      targetURL = selectedPath as NSURL
+      targetURL = selectedPath
     }
   }
 
@@ -35,67 +35,67 @@ class PathsController: NSViewController, NSTableViewDataSource, NSTableViewDeleg
   }
 
   @IBAction func okBtnClick(_ sender: Any) {
-    if sourceURL.path == nil || targetURL.path == nil {
-      return
-    }
-    
-    if let caller = caller {
-      let closure = {
-        self.savePaths()
+    if let selectedSource = sourceURL,
+       let selectedTarget = targetURL {
 
-        caller.initProject(sourceURL: self.sourceURL, targetURL: self.targetURL)
-        self.view.window?.close()
-      }
-      
-      if sourceURL.path == targetURL.path {
-        samePaths(closure: closure)
-      } else {
-        closure()
+      if let caller = caller {
+        let closure = {
+          self.savePaths(selectedSource, selectedTarget)
+
+          caller.initProject(sourceURL: selectedSource, targetURL: selectedTarget)
+          self.view.window?.close()
+        }
+
+        if selectedSource.path == selectedTarget.path {
+          samePaths(closure: closure)
+        } else {
+          closure()
+        }
       }
     }
   }
-  
+
   var caller: ViewController?
-  
+
   private let fileManager = FileHandler.default
-  var sourceURL: NSURL = NSURL() {
+  var sourceURL: URL? {
     didSet {
       setOutletsEnableState()
-      sourcePath.url = sourceURL as URL
+      sourcePath.url = sourceURL
     }
   }
-  
-  var targetURL: NSURL = NSURL() {
+
+  var targetURL: URL? {
     didSet {
       setOutletsEnableState()
-      targetPath.url = targetURL as URL
+      targetPath.url = targetURL
     }
   }
-  
+
   override func viewDidLoad() {
     super.viewDidLoad()
-    
+
     setOutletsEnableState()
-    
+
     if caller?.photoManager != nil {
-      sourceURL = caller!.photoManager!.sourceURL
-      targetURL = caller!.photoManager!.targetURL
+      sourceURL = caller!.photoManager!.sourceDir
+      targetURL = caller!.photoManager!.targetDir
     }
   }
-  
+
   override func viewDidAppear() {
     super.viewDidAppear()
     self.view.window?.preventsApplicationTerminationWhenModal = false
   }
-  
+
   override var representedObject: Any? {
     didSet {
       // Update the view, if already loaded.
     }
   }
-  
+
   private func setOutletsEnableState() {
-    if sourceURL.path != nil && targetURL.path != nil {
+    if sourceURL != nil && targetURL != nil {
       okBtn?.isEnabled = true
     } else {
       okBtn?.isEnabled = false
@@ -108,7 +108,7 @@ class PathsController: NSViewController, NSTableViewDataSource, NSTableViewDeleg
     myOpenDialog.canChooseFiles = canChooseFiles
     myOpenDialog.canCreateDirectories = canCreateDirectories
     let clickedBtn = myOpenDialog.runModal()
-    
+
     if clickedBtn.rawValue == NSApplication.ModalResponse.OK.rawValue {
       // Make sure that a path was chosen
       if let selectedPath = myOpenDialog.url {
@@ -117,9 +117,9 @@ class PathsController: NSViewController, NSTableViewDataSource, NSTableViewDeleg
     }
     return nil
   }
-  
+
   // MARK: - Alert
-  
+
   func samePaths(closure: () -> Void) {
     let alert = NSAlert()
     alert.addButton(withTitle: NSLocalizedString("Continue", comment: "Same paths alert"))
@@ -134,8 +134,8 @@ class PathsController: NSViewController, NSTableViewDataSource, NSTableViewDeleg
     }
   }
 
-  private func savePaths() {
-    UserDefaults.standard.set(self.sourceURL.path, forKey: "sourceURL")
-    UserDefaults.standard.set(self.targetURL.path, forKey: "targetURL")
+  private func savePaths(_ sourcePath: URL, _ targetPath: URL) {
+    UserDefaults.standard.set(sourcePath.path, forKey: "sourceURL")
+    UserDefaults.standard.set(targetPath.path, forKey: "targetURL")
   }
 }
