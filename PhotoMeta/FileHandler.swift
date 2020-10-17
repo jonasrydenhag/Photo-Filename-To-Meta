@@ -30,10 +30,10 @@ class FileHandler: FileManager {
     if fileExists(atPath: sourceDir.path, isDirectory: &baseUrlIsDir) && baseUrlIsDir.boolValue == false {
       add(sourceDir, baseURL: sourceDir.deletingLastPathComponent())
     } else {
-      let enumerator: FileManager.DirectoryEnumerator? = __enumerator(at: sourceDir, includingPropertiesForKeys: nil, options: [], errorHandler: nil)
-
-      while let url: URL = enumerator?.nextObject() as? URL {
-        add(url, baseURL: sourceDir)
+      if let urls = __enumerator(at: sourceDir, includingPropertiesForKeys: nil)?.allObjects as? [URL] {
+        for url in urls.reversed() {
+          add(url, baseURL: sourceDir)
+        }
       }
     }
   }
