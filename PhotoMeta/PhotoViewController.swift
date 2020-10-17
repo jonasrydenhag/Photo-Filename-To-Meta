@@ -34,6 +34,10 @@ class PhotoViewController: NSViewController {
     dateFormatter.dateFormat = "yyyy-MM-dd"
   }
 
+  @IBAction func closeButton(_ sender: NSButton) {
+    photo = nil
+  }
+
   @IBAction func dateInput(_ sender: NSDatePicker) {
     resetErrors()
 
