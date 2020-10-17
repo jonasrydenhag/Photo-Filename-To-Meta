@@ -71,8 +71,16 @@ class FileHandler: FileManager {
     return targetURL
   }
 
-  internal func rename(_ file: File, _ to: String) throws {
-    let targetURL = URL(fileURLWithPath: to, relativeTo: file.baseURL as URL)
+  internal func rename(_ file: File, _ toFilename: String) throws {
+    let subdir = file.URL.deletingLastPathComponent().relativePath
+
+    var targetRelativePath = toFilename
+
+    if subdir != "" {
+      targetRelativePath = subdir + "/" + toFilename
+    }
+
+    let targetURL = URL(fileURLWithPath: targetRelativePath, relativeTo: file.baseURL as URL)
 
     try moveItem(at: file.URL, to: targetURL)
 
