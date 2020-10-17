@@ -67,11 +67,11 @@ class PhotoManager: FileHandler {
     }
   }
 
-  internal override func createFrom(_ URL: URL, baseURL: URL) -> FileURL? {
+  internal override func createFrom(_ URL: URL) -> FileURL? {
     do {
-      return try Photo(URL, baseURL: baseURL, metaWriter: metaWriter)
+      return try Photo(URL, metaWriter: metaWriter)
     } catch Photo.PhotoExceptions.NotSupported {
-      return super.createFrom(URL, baseURL: baseURL)
+      return super.createFrom(URL)
     } catch  {
       return nil
     }
@@ -116,7 +116,7 @@ class PhotoManager: FileHandler {
   private func copy(photoFile: ReadOnlyPhotoFile) throws -> PhotoFile {
     let targetURL = try copy(file: photoFile)
 
-    return try PhotoFile(targetURL, baseURL: targetDir, from: photoFile)
+    return try PhotoFile(targetURL, from: photoFile)
   }
 
   private func resetLatestRunStatus(files: [Photo]) {

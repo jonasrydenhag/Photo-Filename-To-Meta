@@ -13,7 +13,7 @@ enum PathExceptions: Error {
 }
 
 protocol FileURL {
-  var relativePath: String { get }
+  var URL: URL { get }
 }
 
 protocol PhotoSelectionDelegate: class {
@@ -242,7 +242,7 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
 
     } else if columnID == "path" {
       cellView = tableView.makeView(withIdentifier: NSUserInterfaceItemIdentifier(rawValue: "pathCell"), owner: self) as? NSTableCellView
-      cellView?.textField?.stringValue = file.relativePath
+      cellView?.textField?.stringValue = file.URL.relativePath
 
     } else if let photo = file as? Photo {
       cellView = renderPhoto(tableView: tableView, viewForTableColumnID: columnID, photo: photo)

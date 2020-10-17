@@ -34,12 +34,6 @@ class Photo: FileURL {
 
   private (set) var latestRunStatus = WriteStatus.Unset
 
-  var relativePath: String {
-    get {
-      return targetFile?.relativePath ?? sourceFile.relativePath
-    }
-  }
-
   let sourceFile: ReadOnlyPhotoFile
 
   var targetFile: PhotoFile?
@@ -50,8 +44,14 @@ class Photo: FileURL {
     }
   }
 
-  init(_ URL: URL, baseURL: URL, metaWriter: MetaWriter) throws {
-    self.sourceFile = try ReadOnlyPhotoFile(URL, baseURL: baseURL, metaWriter: metaWriter)
+  var URL: URL {
+    get {
+      return targetFile?.URL ?? sourceFile.URL
+    }
+  }
+
+  init(_ URL: URL, metaWriter: MetaWriter) throws {
+    self.sourceFile = try ReadOnlyPhotoFile(URL, metaWriter: metaWriter)
   }
 
   func write(tags: [Tag], overwriteValues: Bool = false) {

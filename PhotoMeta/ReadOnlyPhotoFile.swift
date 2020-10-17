@@ -37,9 +37,9 @@ class ReadOnlyPhotoFile: File {
     }
   }
 
-  init(_ URL: URL, baseURL: URL, metaWriter: MetaWriter) throws {
+  init(_ URL: URL, metaWriter: MetaWriter) throws {
     self.metaWriter = metaWriter
-    try super.init(fileURL: URL, baseURL: baseURL)
+    try super.init(URL)
     dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
 
     if !self.fileTypeConformsTo(types: metaWriter.supportedFileTypes) {

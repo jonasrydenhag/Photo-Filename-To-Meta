@@ -9,8 +9,8 @@
 import Foundation
 
 class PhotoFile: ReadOnlyPhotoFile {
-  init(_ URL: URL, baseURL: URL, from readOnlyPhotoFile: ReadOnlyPhotoFile) throws {
-    try super.init(URL, baseURL: baseURL, metaWriter: readOnlyPhotoFile.metaWriter)
+  init(_ URL: URL, from readOnlyPhotoFile: ReadOnlyPhotoFile) throws {
+    try super.init(URL, metaWriter: readOnlyPhotoFile.metaWriter)
 
     self.parsedTagValues = readOnlyPhotoFile.parsedTagValues
   }

@@ -10,23 +10,23 @@ import Foundation
 
 class File: FileURL {
   enum FileExceptions: Error {
-    case NotAFile
     case FileDoesNotExist
+    case MissingBaseURL
+    case NotAFile
   }
 
   private (set) var baseURL: URL
 
-  var relativePath: String {
-    get {
-      return URL.path.replacingOccurrences(of: baseURL.path + "/", with: "", options: NSString.CompareOptions.literal, range: nil)
-    }
-  }
-
   private (set) var URL: URL
 
-  init(fileURL: URL, baseURL: URL) throws {
-    self.URL = fileURL
-    self.baseURL = baseURL
+  init(_ URL: URL) throws {
+    self.URL = URL
+
+    if let baseURL = URL.baseURL {
+      self.baseURL = baseURL
+    } else {
+      throw FileExceptions.MissingBaseURL
+    }
 
     if self.URL.hasDirectoryPath {
       throw FileExceptions.NotAFile

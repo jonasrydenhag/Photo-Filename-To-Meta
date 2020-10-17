@@ -28,19 +28,25 @@ class FileHandler: FileManager {
   internal func collectFiles() {
     var baseUrlIsDir: ObjCBool = false
     if fileExists(atPath: sourceDir.path, isDirectory: &baseUrlIsDir) && baseUrlIsDir.boolValue == false {
-      add(sourceDir, baseURL: sourceDir.deletingLastPathComponent())
+      let relativePath = sourceDir.path.replacingOccurrences(of: sourceDir.deletingLastPathComponent().path + "/", with: "")
+      let URL = NSURL(fileURLWithPath: relativePath, relativeTo: sourceDir.deletingLastPathComponent()) as URL
+
+      add(URL)
     } else {
       if let urls = __enumerator(at: sourceDir, includingPropertiesForKeys: nil)?.allObjects as? [URL] {
-        for url in urls.reversed() {
-          add(url, baseURL: sourceDir)
+        for rawURL in urls.reversed() {
+          let relativePath = rawURL.path.replacingOccurrences(of: sourceDir.path + "/", with: "")
+          let URL = NSURL(fileURLWithPath: relativePath, relativeTo: sourceDir) as URL
+
+          add(URL)
         }
       }
     }
   }
 
-  internal func createFrom(_ URL: URL, baseURL: URL) -> FileURL? {
+  internal func createFrom(_ URL: URL) -> FileURL? {
     do {
-      return try File(fileURL: URL, baseURL: baseURL)
+      return try File(URL)
     } catch  {
       return nil
     }
@@ -73,20 +79,20 @@ class FileHandler: FileManager {
     file.change(URL: targetURL)
   }
 
-  private func add(_ URL: URL, baseURL: URL) {
+  private func add(_ URL: URL) {
     var isDir: ObjCBool = false
 
     if !fileExists(atPath: URL.path, isDirectory: &isDir) || isDir.boolValue || URL.lastPathComponent == ".DS_Store"{
       return
     }
 
-    if let file = createFrom(URL, baseURL: baseURL) {
+    if let file = createFrom(URL) {
       files.append(file)
     }
   }
 
   private func prepareCopyDestPath(sourceFile: File) throws -> URL {
-    let targetURL = URL(fileURLWithPath: sourceFile.relativePath, relativeTo: targetDir)
+    let targetURL = URL(fileURLWithPath: sourceFile.URL.relativePath, relativeTo: targetDir)
 
     if targetURL.path != sourceFile.URL.path {
       if fileExists(atPath: targetURL.path) {
