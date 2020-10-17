@@ -88,6 +88,9 @@
 /* Class = "NSMenuItem"; title = "Bring All to Front"; ObjectID = "LE2-aR-0XJ"; */
 "LE2-aR-0XJ.title" = "Lägg alla överst";
 
+/* Class = "NSTextFieldCell"; title = "Filename:"; ObjectID = "lYP-jI-A04"; */
+"lYP-jI-A04.title" = "Filnamn:";
+
 /* Class = "NSPathCell"; placeholderString = "Not selected"; ObjectID = "MH1-Ru-5fb"; */
 "MH1-Ru-5fb.placeholderString" = "Inte vald";
 
