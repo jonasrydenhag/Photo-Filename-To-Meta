@@ -57,6 +57,8 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
   override func viewDidAppear() {
     super.viewDidAppear()
     if photoManager == nil {
+      setDefaultTagChecksState()
+
       selectPaths()
     }
   }
@@ -125,6 +127,8 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
 
   @IBAction func tagCheckClick(_ sender: NSButton) {
     toggleColumnVisibility(tags: selectedTags)
+
+    saveSelectedTags()
   }
 
   @IBAction func open(_ sender: Any) {
@@ -208,6 +212,38 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
         } else {
           column.isHidden = true
         }
+      }
+    }
+  }
+
+  private func saveSelectedTags() {
+    var tagValues = [String]()
+
+    for tag in selectedTags {
+      tagValues.append(tag.rawValue)
+    }
+
+    UserDefaults.standard.set(tagValues, forKey: "selectedTags")
+  }
+
+  private func setDefaultTagChecksState() {
+    if let savedSelected = UserDefaults.standard.array(forKey: "selectedTags") as? [String] {
+      if savedSelected.contains(Tag.Date.rawValue) {
+        tagCheckDate.state = NSControl.StateValue.on
+      } else {
+        tagCheckDate.state = NSControl.StateValue.off
+      }
+
+      if savedSelected.contains(Tag.Description.rawValue) {
+        tagCheckDescription.state = NSControl.StateValue.on
+      } else {
+        tagCheckDescription.state = NSControl.StateValue.off
+      }
+
+      if savedSelected.contains(Tag.Title.rawValue) {
+        tagCheckTitle.state = NSControl.StateValue.on
+      } else {
+        tagCheckTitle.state = NSControl.StateValue.off
       }
     }
   }
