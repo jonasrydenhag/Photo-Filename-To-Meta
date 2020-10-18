@@ -33,8 +33,12 @@ class FileHandler: FileManager {
 
       add(URL)
     } else {
-      if let urls = __enumerator(at: sourceDir, includingPropertiesForKeys: nil)?.allObjects as? [URL] {
-        for rawURL in urls.reversed() {
+      if var urls = __enumerator(at: sourceDir, includingPropertiesForKeys: nil)?.allObjects as? [URL] {
+        urls.sort(by: { x, y in
+          return x.path.localizedStandardCompare(y.path) == ComparisonResult.orderedAscending
+        })
+
+        for rawURL in urls {
           let relativePath = rawURL.path.replacingOccurrences(of: sourceDir.path + "/", with: "")
           let URL = NSURL(fileURLWithPath: relativePath, relativeTo: sourceDir) as URL
 
