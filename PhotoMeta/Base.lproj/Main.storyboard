@@ -429,18 +429,14 @@
                                                             <rect key="frame" x="1" y="1" width="10" height="17"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                             <subviews>
-                                                                <textField hidden="YES" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" id="0B7-HH-Qyi">
-                                                                    <rect key="frame" x="0.0" y="1" width="4" height="16"/>
-                                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                                    <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" drawsBackground="YES" id="Rlx-ze-BJS">
-                                                                        <font key="font" metaFont="system"/>
-                                                                        <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                                                    </textFieldCell>
-                                                                </textField>
+                                                                <imageView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="mQ3-bF-Zh9">
+                                                                    <rect key="frame" x="0.0" y="4" width="10" height="10"/>
+                                                                    <autoresizingMask key="autoresizingMask"/>
+                                                                    <imageCell key="cell" refusesFirstResponder="YES" alignment="left" animates="YES" imageScaling="proportionallyDown" image="NSStatusNone" id="fUL-F0-fP7"/>
+                                                                </imageView>
                                                             </subviews>
                                                             <connections>
-                                                                <outlet property="textField" destination="0B7-HH-Qyi" id="icv-s3-EOa"/>
+                                                                <outlet property="imageView" destination="mQ3-bF-Zh9" id="Sa5-oO-oOn"/>
                                                             </connections>
                                                         </tableCellView>
                                                     </prototypeCellViews>
@@ -999,6 +995,7 @@ Gw
         <image name="Erase" width="256" height="256"/>
         <image name="Eye" width="256" height="256"/>
         <image name="Folder" width="256" height="256"/>
+        <image name="NSStatusNone" width="16" height="16"/>
         <image name="PenAndPaper" width="256" height="256"/>
         <image name="buttonCell:hxX-s2-xPf:image" width="1" height="1">
             <mutableData key="keyedArchiveRepresentation">

@@ -313,19 +313,18 @@ class ViewController: NSViewController, NSTableViewDataSource, NSTableViewDelega
 
     if columnID == "status" {
       cellView = tableView.makeView(withIdentifier: NSUserInterfaceItemIdentifier(rawValue: "statusCell"), owner: self) as? NSTableCellView
-      cellView?.textField?.isHidden = false
+      cellView?.imageView?.isHidden = false
 
       switch photo.latestRunStatus {
       case .Success:
-        cellView?.textField?.backgroundColor = NSColor.green
+        cellView?.imageView?.image = NSImage(named: "NSStatusAvailable")
       case .Partially:
-        cellView?.textField?.backgroundColor = NSColor.yellow
+        cellView?.imageView?.image = NSImage(named: "NSStatusPartiallyAvailable")
       case .Failed:
-        cellView?.textField?.backgroundColor = NSColor.red
+        cellView?.imageView?.image = NSImage(named: "NSStatusUnavailable")
       default:
-        cellView?.textField?.isHidden = true
+        cellView?.imageView?.isHidden = true
       }
-
     } else if columnID == "Date" {
       cellView = tableView.makeView(withIdentifier: NSUserInterfaceItemIdentifier(rawValue: "dateCell"), owner: self) as? NSTableCellView
       text = photo.parsedTagValue(for: Tag.Date) ?? ""
