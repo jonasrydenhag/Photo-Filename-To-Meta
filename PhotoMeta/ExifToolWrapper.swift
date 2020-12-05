@@ -68,7 +68,7 @@ class ExifToolWrapper: MetaWriter {
   }
 
   private func descriptionFor(file: File) throws -> String {
-    return try read(URL: file.URL, arguments: ["-description", "-s3"]).replacingOccurrences(of: "\\n*", with: "", options: .regularExpression)
+    return try read(URL: file.URL, arguments: ["-imageDescription", "-s3"]).replacingOccurrences(of: "\\n*", with: "", options: .regularExpression)
   }
 
   private func titleFor(file: File) throws -> String {
@@ -85,7 +85,7 @@ class ExifToolWrapper: MetaWriter {
   }
 
   private func writeDescriptionArgs(description: String) -> [String] {
-    let tag = "-description"
+    let tag = "-imageDescription"
     if description == "" {
       return ["\(tag)="]
     } else {
